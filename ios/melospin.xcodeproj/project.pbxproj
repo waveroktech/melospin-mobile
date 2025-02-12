@@ -9,9 +9,14 @@
 /* Begin PBXBuildFile section */
 		0C80B921A6F3F58F76C31292 /* libPods-melospin.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DCACB8F33CDC322A6C60F78 /* libPods-melospin.a */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
+		5FDE9B9792A2414E9BC1C811 /* AvenirNextCyr-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D709AFD733F84C31B2F2675B /* AvenirNextCyr-Bold.ttf */; };
 		761780ED2CA45674006654EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780EC2CA45674006654EE /* AppDelegate.swift */; };
 		800AB75C94C659F2DB7DA2B8 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		87E14864D4AF4F28BA7F470B /* AvenirNextCyr-Heavy.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5FF4B863D53546488BDEB52E /* AvenirNextCyr-Heavy.ttf */; };
+		B7D9AE0C115A47488CDDB4CD /* AvenirNextCyr-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 916BAAF30A074976BE134CF2 /* AvenirNextCyr-Medium.ttf */; };
+		D8547FE604F94240965497C6 /* AvenirNextCyr-Demi.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 354A62CBE46C4F1CA0AD9A07 /* AvenirNextCyr-Demi.ttf */; };
+		F53761F5B1AF4DA2A7C101CA /* AvenirNextCyr-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7B9C64B06581480F84ADDE6C /* AvenirNextCyr-Regular.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -19,11 +24,16 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = melospin/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = melospin/Info.plist; sourceTree = "<group>"; };
 		13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = PrivacyInfo.xcprivacy; path = melospin/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		354A62CBE46C4F1CA0AD9A07 /* AvenirNextCyr-Demi.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "AvenirNextCyr-Demi.ttf"; path = "../src/assets/fonts/AvenirNextCyr-Demi.ttf"; sourceTree = "<group>"; };
 		3B4392A12AC88292D35C810B /* Pods-melospin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-melospin.debug.xcconfig"; path = "Target Support Files/Pods-melospin/Pods-melospin.debug.xcconfig"; sourceTree = "<group>"; };
 		5709B34CF0A7D63546082F79 /* Pods-melospin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-melospin.release.xcconfig"; path = "Target Support Files/Pods-melospin/Pods-melospin.release.xcconfig"; sourceTree = "<group>"; };
 		5DCACB8F33CDC322A6C60F78 /* libPods-melospin.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-melospin.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		5FF4B863D53546488BDEB52E /* AvenirNextCyr-Heavy.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "AvenirNextCyr-Heavy.ttf"; path = "../src/assets/fonts/AvenirNextCyr-Heavy.ttf"; sourceTree = "<group>"; };
 		761780EC2CA45674006654EE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = melospin/AppDelegate.swift; sourceTree = "<group>"; };
+		7B9C64B06581480F84ADDE6C /* AvenirNextCyr-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "AvenirNextCyr-Regular.ttf"; path = "../src/assets/fonts/AvenirNextCyr-Regular.ttf"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = melospin/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		916BAAF30A074976BE134CF2 /* AvenirNextCyr-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "AvenirNextCyr-Medium.ttf"; path = "../src/assets/fonts/AvenirNextCyr-Medium.ttf"; sourceTree = "<group>"; };
+		D709AFD733F84C31B2F2675B /* AvenirNextCyr-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "AvenirNextCyr-Bold.ttf"; path = "../src/assets/fonts/AvenirNextCyr-Bold.ttf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -51,6 +61,19 @@
 			name = melospin;
 			sourceTree = "<group>";
 		};
+		264D10365B2541A6B5FF314C /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				D709AFD733F84C31B2F2675B /* AvenirNextCyr-Bold.ttf */,
+				354A62CBE46C4F1CA0AD9A07 /* AvenirNextCyr-Demi.ttf */,
+				5FF4B863D53546488BDEB52E /* AvenirNextCyr-Heavy.ttf */,
+				916BAAF30A074976BE134CF2 /* AvenirNextCyr-Medium.ttf */,
+				7B9C64B06581480F84ADDE6C /* AvenirNextCyr-Regular.ttf */,
+			);
+			name = Resources;
+			path = "";
+			sourceTree = "<group>";
+		};
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -75,6 +98,7 @@
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				BBD78D7AC51CEA395F1C20DB /* Pods */,
+				264D10365B2541A6B5FF314C /* Resources */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -161,6 +185,11 @@
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				800AB75C94C659F2DB7DA2B8 /* PrivacyInfo.xcprivacy in Resources */,
+				5FDE9B9792A2414E9BC1C811 /* AvenirNextCyr-Bold.ttf in Resources */,
+				D8547FE604F94240965497C6 /* AvenirNextCyr-Demi.ttf in Resources */,
+				87E14864D4AF4F28BA7F470B /* AvenirNextCyr-Heavy.ttf in Resources */,
+				B7D9AE0C115A47488CDDB4CD /* AvenirNextCyr-Medium.ttf in Resources */,
+				F53761F5B1AF4DA2A7C101CA /* AvenirNextCyr-Regular.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
