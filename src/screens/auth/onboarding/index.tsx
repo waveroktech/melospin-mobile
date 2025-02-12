@@ -12,8 +12,11 @@ import {
   hp,
   wp,
 } from 'utils';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {AuthStackParamList} from 'types';
 
 export const Onboarding = () => {
+  const {navigate} = useNavigation<NavigationProp<AuthStackParamList>>();
   const [sliderState, setSliderState] = useState({currentPage: 0});
 
   const {currentPage: pageIndex} = sliderState;
@@ -126,6 +129,7 @@ export const Onboarding = () => {
             borderColor="#FFFFFF26"
             bg={'transparent'}
             title="Login"
+            onPress={() => navigate('Login')}
             fontStyle={{paddingLeft: wp(2)}}
             buttonStyle={{borderTopWidth: hp(1)}}
           />
@@ -133,6 +137,7 @@ export const Onboarding = () => {
             width={wp(160)}
             title="Sign up"
             hasBorder
+            onPress={() => navigate('Signup')}
             fontStyle={{paddingLeft: wp(2)}}
             containerStyle={{right: wp(20)}}
           />
