@@ -73,5 +73,11 @@ export const getMarkup: any = (color?: string) => {
 <path d="M102 8L106 12L102 16" stroke="#FF8CF2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
 `,
+
+    'success-icon': `<svg width="48" height="49" viewBox="0 0 48 49" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M24 44.5288C29.5228 44.5288 34.5228 42.2902 38.1421 38.6709C41.7614 35.0516 44 30.0516 44 24.5288C44 19.006 41.7614 14.006 38.1421 10.3867C34.5228 6.76739 29.5228 4.52881 24 4.52881C18.4772 4.52881 13.4772 6.76739 9.85786 10.3867C6.23858 14.006 4 19.006 4 24.5288C4 30.0516 6.23858 35.0516 9.85786 38.6709C13.4772 42.2902 18.4772 44.5288 24 44.5288Z" stroke="#300D2C" stroke-width="2" stroke-linejoin="round"/>
+<path d="M16 24.5288L22 30.5288L34 18.5288" stroke="#300D2C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+`,
   };
 };

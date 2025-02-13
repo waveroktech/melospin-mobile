@@ -1,6 +1,14 @@
 import React from 'react';
 import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
-import {Login, Onboarding, Signup, VerifyEmail} from 'screens/auth';
+import {
+  ForgotPassword,
+  Login,
+  Onboarding,
+  ResetPassword,
+  Signup,
+  VerifyEmail,
+  VerifyPasswordReset,
+} from 'screens/auth';
 import {AuthStackParamList} from 'types';
 
 const AuthStack = createStackNavigator<AuthStackParamList>();
@@ -17,6 +25,12 @@ const AuthNavigation = () => {
       <AuthStack.Screen name="Login" component={Login} />
       <AuthStack.Screen name="Signup" component={Signup} />
       <AuthStack.Screen name="VerifyEmail" component={VerifyEmail} />
+      <AuthStack.Screen name="ForgotPassword" component={ForgotPassword} />
+      <AuthStack.Screen
+        name="VerifyPasswordReset"
+        component={VerifyPasswordReset}
+      />
+      <AuthStack.Screen name="ResetPassword" component={ResetPassword} />
     </AuthStack.Navigator>
   );
 };

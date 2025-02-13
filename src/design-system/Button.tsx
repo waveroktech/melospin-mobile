@@ -17,7 +17,7 @@ interface Props extends BoxProps {
   textColor?: string;
   textVariant?: any;
   backgroundColor?: string;
-  hasIcon?: string;
+  hasIcon?: boolean;
   loading?: boolean;
   isNotBottom?: boolean;
   containerStyle?: ViewStyle;
@@ -43,6 +43,7 @@ export const Button = ({
   hasBorder,
   buttonStyle,
   borderColor,
+  hasIcon,
   ...props
 }: Props) => {
   return (
@@ -75,7 +76,7 @@ export const Button = ({
             <Box
               flexDirection={'row'}
               alignItems={'center'}
-              justifyContent={'space-between'}>
+              justifyContent={hasIcon ? 'center' : 'space-between'}>
               <Text
                 color={disabled ? theme.colors.WHITE : textColor || 'white'}
                 variant={textVariant || 'bodyMedium'}
@@ -83,7 +84,7 @@ export const Button = ({
                 style={fontStyle}>
                 {title}
               </Text>
-              <Icon name="button-icon" />
+              {hasIcon ? null : <Icon name="button-icon" />}
             </Box>
           )}
         </Box>
