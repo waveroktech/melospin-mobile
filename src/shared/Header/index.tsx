@@ -42,11 +42,25 @@ export const Header = ({
           activeOpacity={0.8}
           position={'absolute'}
           left={0}
+          borderWidth={1}
+          minWidth={wp(90)}
+          px={wp(10)}
+          height={hp(40)}
+          borderRadius={hp(24)}
+          borderColor={theme.colors.ACCENT_04}
+          flexDirection={'row'}
+          justifyContent={'space-between'}
+          alignItems={'center'}
+          hitSlop={populateHitSlop(5)}
           onPress={() =>
             onPressLeftIcon ? onPressLeftIcon() : navigation.goBack()
-          }
-          hitSlop={populateHitSlop(5)}>
-          <Text>{goBackText}</Text>
+          }>
+          <Text
+            variant="bodyMedium"
+            fontSize={fontSz(14)}
+            color={theme.colors.WHITE}>
+            {goBackText}
+          </Text>
           <Icon name="back-arrow" />
         </Box>
       );
