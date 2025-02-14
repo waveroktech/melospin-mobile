@@ -11,6 +11,8 @@ import {
 } from 'react-native-confirmation-code-field';
 import {TouchableOpacity} from 'react-native';
 import {styles} from './style';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {AuthStackParamList} from 'types';
 
 const CELL_COUNT = 6;
 
@@ -21,6 +23,8 @@ export const VerifyEmail = () => {
     value: otp,
     setValue: setOtp,
   });
+
+  const {navigate} = useNavigation<NavigationProp<AuthStackParamList>>();
 
   const [minutes, setMinutes] = useState<number>(2);
   const [seconds, setSeconds] = useState<number>(0);
@@ -100,7 +104,12 @@ export const VerifyEmail = () => {
         </Box>
       </Box>
 
-      <Button title="Confirm email" bg={theme.colors.PRIMARY_100} hasBorder />
+      <Button
+        title="Confirm email"
+        bg={theme.colors.PRIMARY_100}
+        onPress={() => navigate('SelectProfile')}
+        hasBorder
+      />
     </Screen>
   );
 };

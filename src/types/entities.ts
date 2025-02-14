@@ -12,4 +12,6 @@ export type AuthStackParamList = {
   ForgotPassword: undefined;
   VerifyPasswordReset: undefined;
   ResetPassword: undefined;
+  SelectProfile: undefined;
+  SetupProfile: undefined;
 };

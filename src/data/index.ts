@@ -16,3 +16,42 @@ export const onboardingData = [
     bgImage: theme.images.bg['onboarding-bg-2'],
   },
 ];
+
+export const genres = [
+  {
+    id: 1,
+    title: 'RnB',
+  },
+  {
+    id: 2,
+    title: 'Hip-pop',
+  },
+  {
+    id: 3,
+    title: 'Rap Music',
+  },
+  {
+    id: 4,
+    title: 'Amapiano',
+  },
+  {
+    id: 5,
+    title: 'Pop',
+  },
+  {
+    id: 6,
+    title: 'House',
+  },
+  {
+    id: 7,
+    title: 'Electronica',
+  },
+  {
+    id: 8,
+    title: 'Jazz',
+  },
+  {
+    id: 9,
+    title: 'EDM',
+  },
+];

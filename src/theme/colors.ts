@@ -8,4 +8,5 @@ export const colors = {
   LIGHT_PRIMARY: '#FF8CF2',
   TEXT_INPUT_BG: '#F7F8F926',
   BLACK_DEFAULT: '#1A1E1F',
+  OFF_PRIMARY_100: '#4C1548',
 };

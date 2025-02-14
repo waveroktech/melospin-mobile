@@ -8,4 +8,6 @@ export const images = {
     'onboarding-bg-2': require('assets/images/bg/onboarding-bg-2.png'),
   },
   'artist-list': require('assets/images/artist-list.png'),
+  artist: require('assets/images/artist.png'),
+  dj: require('assets/images/dj.png'),
 };

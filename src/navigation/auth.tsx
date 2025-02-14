@@ -5,6 +5,8 @@ import {
   Login,
   Onboarding,
   ResetPassword,
+  SelectProfile,
+  SetupProfile,
   Signup,
   VerifyEmail,
   VerifyPasswordReset,
@@ -31,6 +33,8 @@ const AuthNavigation = () => {
         component={VerifyPasswordReset}
       />
       <AuthStack.Screen name="ResetPassword" component={ResetPassword} />
+      <AuthStack.Screen name="SelectProfile" component={SelectProfile} />
+      <AuthStack.Screen name="SetupProfile" component={SetupProfile} />
     </AuthStack.Navigator>
   );
 };
