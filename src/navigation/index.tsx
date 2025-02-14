@@ -6,11 +6,14 @@ import {RootStackParamList} from 'types';
 import {navigationRef} from './utils';
 import {Linking, Platform} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useMelospinStore} from 'store';
+import DashboardNavigation from './dashboard';
 
 const PERSISTENCE_KEY = 'NAVIGATION_STATE';
 const Stack = createStackNavigator<RootStackParamList>();
 
 const AppNav = () => {
+  const {isLoggedIn} = useMelospinStore();
   return (
     <Stack.Navigator
       screenOptions={{
@@ -18,7 +21,11 @@ const AppNav = () => {
         ...TransitionPresets.SlideFromRightIOS,
       }}
       initialRouteName={'Auth'}>
-      <Stack.Screen name="Auth" component={AuthStack} />
+      {isLoggedIn ? (
+        <Stack.Screen name="DashboardStack" component={DashboardNavigation} />
+      ) : (
+        <Stack.Screen name="Auth" component={AuthStack} />
+      )}
     </Stack.Navigator>
   );
 };

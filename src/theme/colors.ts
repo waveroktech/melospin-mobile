@@ -16,4 +16,5 @@ export const colors = {
   SUCCESS_TONE: '#D9FFE3',
   ERROR_TONE: '#FFD9DA',
   WARNING_TONE: '#FFF3C3',
+  GREY: '#A6A8AA',
 };

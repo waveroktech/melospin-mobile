@@ -9,7 +9,7 @@ import * as yup from 'yup';
 import {Box, Button, FormInput} from 'design-system';
 import {hp, wp} from 'utils';
 import {TouchableOpacity} from 'react-native';
-import {showMessage} from 'react-native-flash-message';
+import {useMelospinStore} from 'store';
 
 interface FormData {
   email: string;
@@ -25,6 +25,8 @@ export const Login = () => {
   const {navigate} = useNavigation<NavigationProp<AuthStackParamList>>();
   const [showPassword, setShowPassword] = useState(true);
 
+  const {setIsLoggedIn} = useMelospinStore();
+
   const {control, watch} = useForm<FormData>({
     resolver: yupResolver(schema),
     defaultValues: {
@@ -37,11 +39,7 @@ export const Login = () => {
   const form = watch();
 
   const login = async () => {
-    showMessage({
-      message: 'Passwords do not match. Kindly check again.',
-      type: 'danger',
-      duration: 2000,
-    });
+    setIsLoggedIn(true);
   };
 
   return (

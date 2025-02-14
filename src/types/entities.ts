@@ -2,6 +2,7 @@ import {NavigatorScreenParams} from '@react-navigation/native';
 
 export type RootStackParamList = {
   Auth: NavigatorScreenParams<AuthStackParamList>;
+  DashboardStack: NavigatorScreenParams<DashboardStackParamList>;
 };
 
 export type AuthStackParamList = {
@@ -14,4 +15,15 @@ export type AuthStackParamList = {
   ResetPassword: undefined;
   SelectProfile: undefined;
   SetupProfile: undefined;
+};
+
+export type BottomTabStackParamList = {
+  Home: undefined;
+  Discography: undefined;
+  Promotions: undefined;
+  Explore: undefined;
+};
+
+export type DashboardStackParamList = {
+  Dashboard: BottomTabStackParamList;
 };
