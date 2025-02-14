@@ -9,6 +9,7 @@ import * as yup from 'yup';
 import {Box, Button, FormInput} from 'design-system';
 import {hp, wp} from 'utils';
 import {TouchableOpacity} from 'react-native';
+import {showMessage} from 'react-native-flash-message';
 
 interface FormData {
   email: string;
@@ -34,6 +35,14 @@ export const Login = () => {
   });
 
   const form = watch();
+
+  const login = async () => {
+    showMessage({
+      message: 'Passwords do not match. Kindly check again.',
+      type: 'danger',
+      duration: 2000,
+    });
+  };
 
   return (
     <Screen removeSafeaArea backgroundColor={theme.colors.PRIMARY}>
@@ -88,6 +97,7 @@ export const Login = () => {
         <Button
           title="Log in"
           hasBorder
+          onPress={login}
           bg={theme.colors.PRIMARY_100}
           isNotBottom
           width={wp(160)}
