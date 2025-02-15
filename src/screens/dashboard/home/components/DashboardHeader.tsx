@@ -4,10 +4,17 @@ import {GradientBorderView} from '@good-react-native/gradient-border';
 import {styles} from './style';
 import {fontSz, wp} from 'utils';
 import theme from 'theme';
-import {Image} from 'react-native';
+import {Image, TouchableOpacity} from 'react-native';
 import {Icon} from 'shared';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {DashboardStackParamList} from 'types';
 
-export const DashboardHeader = () => {
+interface DashboardHeaderProps {
+  title: string;
+}
+
+export const DashboardHeader = ({title}: DashboardHeaderProps) => {
+  const {navigate} = useNavigation<NavigationProp<DashboardStackParamList>>();
   return (
     <Box
       mx={wp(16)}
@@ -18,7 +25,7 @@ export const DashboardHeader = () => {
         variant="bodyMedium"
         fontSize={fontSz(20)}
         color={theme.colors.WHITE}>
-        Home
+        {title}
       </Text>
 
       <Box
@@ -26,13 +33,18 @@ export const DashboardHeader = () => {
         alignItems={'center'}
         width={wp(80)}
         justifyContent={'space-between'}>
-        <GradientBorderView
-          gradientProps={{
-            colors: ['#FFFFFF', '#D73C3C', '#8932F7'],
-          }}
-          style={styles.gradientContainer}>
-          <Image source={theme.images.artist} style={styles.imageContainer} />
-        </GradientBorderView>
+        <Box
+          as={TouchableOpacity}
+          activeOpacity={0.8}
+          onPress={() => navigate('Profile')}>
+          <GradientBorderView
+            gradientProps={{
+              colors: ['#FFFFFF', '#D73C3C', '#8932F7'],
+            }}
+            style={styles.gradientContainer}>
+            <Image source={theme.images.artist} style={styles.imageContainer} />
+          </GradientBorderView>
+        </Box>
         <Icon name="notification" />
       </Box>
     </Box>

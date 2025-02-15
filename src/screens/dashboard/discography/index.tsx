@@ -1,13 +1,11 @@
 import React from 'react';
-import {Box, Text} from 'design-system';
 import {Screen} from 'shared';
+import {DashboardHeader} from '../home/components';
 
 export const Discography = () => {
   return (
     <Screen removeSafeaArea>
-      <Box>
-        <Text>Discography</Text>
-      </Box>
+      <DashboardHeader title="Discography" />
     </Screen>
   );
 };

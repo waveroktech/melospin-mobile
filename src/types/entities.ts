@@ -26,4 +26,6 @@ export type BottomTabStackParamList = {
 
 export type DashboardStackParamList = {
   Dashboard: BottomTabStackParamList;
+  Profile: undefined;
+  AddPromotion: undefined;
 };

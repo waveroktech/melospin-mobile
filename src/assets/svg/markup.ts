@@ -176,5 +176,16 @@ export const getMarkup: any = (color?: string) => {
 <path d="M10 4L14 8L10 12" stroke="#FF8CF2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
 `,
+
+    'search-icon': `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<circle cx="10" cy="10" r="6" stroke="white" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M14.5 14.5L19 19" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+`,
+
+    'arrow-right-3': `<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M10.6693 16L21.3359 16M21.3359 16L17.3359 20M21.3359 16L17.3359 12" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+`,
   };
 };

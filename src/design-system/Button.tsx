@@ -27,6 +27,7 @@ interface Props extends BoxProps {
   hasBorder?: boolean;
   buttonStyle?: ViewStyle;
   borderColor?: string;
+  iconName?: string;
 }
 
 export const Button = ({
@@ -44,6 +45,7 @@ export const Button = ({
   buttonStyle,
   borderColor,
   hasIcon,
+  iconName,
   ...props
 }: Props) => {
   return (
@@ -84,7 +86,7 @@ export const Button = ({
                 style={fontStyle}>
                 {title}
               </Text>
-              {hasIcon ? null : <Icon name="button-icon" />}
+              {hasIcon ? null : <Icon name={iconName || 'button-icon'} />}
             </Box>
           )}
         </Box>

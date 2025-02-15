@@ -15,5 +15,6 @@ export const images = {
   'artist-list': require('assets/images/artist-list.png'),
   artist: require('assets/images/artist.png'),
   dj: require('assets/images/dj.png'),
+  upload: require('assets/images/upload.jpeg'),
   trending: require('assets/images/trending.png'),
 };

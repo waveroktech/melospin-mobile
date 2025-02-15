@@ -2,11 +2,11 @@ import React from 'react';
 import {Box, Text} from 'design-system';
 import {Screen} from 'shared';
 
-export const Promotions = () => {
+export const Profile = () => {
   return (
     <Screen removeSafeaArea>
       <Box>
-        <Text>Promotions</Text>
+        <Text>Profile</Text>
       </Box>
     </Screen>
   );

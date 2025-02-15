@@ -70,8 +70,8 @@ const BottomTabBar = () => {
         }}
       />
       <DashboardBottomTabs.Screen
-        name="Discography"
-        component={Discography}
+        name="Explore"
+        component={Explore}
         options={{
           headerShown: false,
           tabBarIcon: ({focused}: {focused: boolean}) => (
@@ -80,8 +80,8 @@ const BottomTabBar = () => {
         }}
       />
       <DashboardBottomTabs.Screen
-        name="Explore"
-        component={Explore}
+        name="Discography"
+        component={Discography}
         options={{
           headerShown: false,
           tabBarIcon: ({focused}) => (

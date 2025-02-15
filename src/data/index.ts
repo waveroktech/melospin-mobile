@@ -76,3 +76,47 @@ export const newReleases = [
     cover: theme.images.releases['release-3'],
   },
 ];
+
+export const promotions = [
+  {
+    id: 1,
+    title: 'Baddest.zip',
+    status: 'Completed',
+    sharedWith: 'Shared with DJ Zenzee & 25 Others',
+    bg: theme.colors.WHITE,
+    borderColor: theme.colors.LIGHT_100,
+    textColor: theme.colors.MAIN_900,
+  },
+  {
+    id: 2,
+    title: 'Joy is coming.zip',
+    status: 'Pending approval',
+    sharedWith: 'Shared with DJ Zenzee & 25 Others',
+    bg: theme.colors.LIGHT_YELLOW,
+    textColor: theme.colors.SEMANTIC_YELLOW,
+  },
+  {
+    id: 3,
+    title: 'Erima.zip',
+    status: 'Active',
+    sharedWith: 'Shared with DJ Zenzee & 25 Others',
+    textColor: theme.colors.DARKER_GREEN,
+    bg: theme.colors.SEMANTIC_GREEN,
+  },
+  {
+    id: 4,
+    title: 'Baddest.zip',
+    status: 'Active',
+    sharedWith: 'Shared with DJ Zenzee & 25 Others',
+    textColor: theme.colors.DARKER_GREEN,
+    bg: theme.colors.SEMANTIC_GREEN,
+  },
+  {
+    id: 5,
+    title: 'Erima.zip',
+    status: 'Active',
+    sharedWith: 'Shared with DJ Zenzee & 25 Others',
+    textColor: theme.colors.DARKER_GREEN,
+    bg: theme.colors.SEMANTIC_GREEN,
+  },
+];

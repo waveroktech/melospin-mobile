@@ -22,6 +22,26 @@
       "sha1": "581bf3f11b1fd9ccc58bad25753bebe94e8a782a"
     },
     {
+      "path": "src/assets/fonts/DMSans-Bold.ttf",
+      "sha1": "e2465f11006633e4e4ac7652b543adfa6f0c26cd"
+    },
+    {
+      "path": "src/assets/fonts/DMSans-ExtraBold.ttf",
+      "sha1": "0fbdb613f00b0075941c4abd7b77db4373846bd4"
+    },
+    {
+      "path": "src/assets/fonts/DMSans-Medium.ttf",
+      "sha1": "65cb79753017741ff95b1ecd1689d56e96e2edbd"
+    },
+    {
+      "path": "src/assets/fonts/DMSans-Regular.ttf",
+      "sha1": "8599ebf95f6cd0694dfc3af43522b535fcbfba6d"
+    },
+    {
+      "path": "src/assets/fonts/DMSans-SemiBold.ttf",
+      "sha1": "fa1443d6c5de4532886f152c24840b1d1588a8bc"
+    },
+    {
       "path": "src/assets/fonts/Quicksand-Bold.ttf",
       "sha1": "07ca4486c80653a7f3abc18145c2f251d5c9989b"
     },

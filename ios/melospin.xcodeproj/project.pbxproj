@@ -9,19 +9,24 @@
 /* Begin PBXBuildFile section */
 		0C80B921A6F3F58F76C31292 /* libPods-melospin.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DCACB8F33CDC322A6C60F78 /* libPods-melospin.a */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
+		368EF809DE614BB29059CDA9 /* Quicksand-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BE44D7A10F6B4DE592D76876 /* Quicksand-Bold.ttf */; };
 		5FDE9B9792A2414E9BC1C811 /* AvenirNextCyr-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D709AFD733F84C31B2F2675B /* AvenirNextCyr-Bold.ttf */; };
+		6E90540595DB422DBA5F38DA /* Quicksand-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FB6A7EC5881C479CAE33AB28 /* Quicksand-Light.ttf */; };
 		761780ED2CA45674006654EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780EC2CA45674006654EE /* AppDelegate.swift */; };
 		800AB75C94C659F2DB7DA2B8 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		8708531FBD2F435FBF46942E /* Quicksand-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9614B54F1F3645EF963DF031 /* Quicksand-SemiBold.ttf */; };
 		87E14864D4AF4F28BA7F470B /* AvenirNextCyr-Heavy.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5FF4B863D53546488BDEB52E /* AvenirNextCyr-Heavy.ttf */; };
 		B7D9AE0C115A47488CDDB4CD /* AvenirNextCyr-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 916BAAF30A074976BE134CF2 /* AvenirNextCyr-Medium.ttf */; };
+		C2E391C912474D01B65DE2FB /* Quicksand-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 436DB098782B47A29C6150E3 /* Quicksand-Regular.ttf */; };
 		D8547FE604F94240965497C6 /* AvenirNextCyr-Demi.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 354A62CBE46C4F1CA0AD9A07 /* AvenirNextCyr-Demi.ttf */; };
 		F53761F5B1AF4DA2A7C101CA /* AvenirNextCyr-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7B9C64B06581480F84ADDE6C /* AvenirNextCyr-Regular.ttf */; };
-		368EF809DE614BB29059CDA9 /* Quicksand-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BE44D7A10F6B4DE592D76876 /* Quicksand-Bold.ttf */; };
-		6E90540595DB422DBA5F38DA /* Quicksand-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FB6A7EC5881C479CAE33AB28 /* Quicksand-Light.ttf */; };
 		F664984CDBB545888194A431 /* Quicksand-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7FF197BB5F71440782B4CA99 /* Quicksand-Medium.ttf */; };
-		C2E391C912474D01B65DE2FB /* Quicksand-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 436DB098782B47A29C6150E3 /* Quicksand-Regular.ttf */; };
-		8708531FBD2F435FBF46942E /* Quicksand-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9614B54F1F3645EF963DF031 /* Quicksand-SemiBold.ttf */; };
+		CDF8305FDA944313AE2EB646 /* DMSans-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E429262AD4814BA5925E95A7 /* DMSans-Bold.ttf */; };
+		9253E9F0EFAA4AE1AEB77417 /* DMSans-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4F563C978C0E4EDCA28F2535 /* DMSans-ExtraBold.ttf */; };
+		DC8FB575131E4ED1AFBA70B9 /* DMSans-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E891CB13F90B4F4AB1FEDA70 /* DMSans-Medium.ttf */; };
+		0FEC1BBC6A3B46B586709EFC /* DMSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0341AB7036E74D71A466C258 /* DMSans-Regular.ttf */; };
+		53950902A6364F7389C04E8D /* DMSans-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A49DBD251C174EA79263400E /* DMSans-SemiBold.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,20 +36,25 @@
 		13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = PrivacyInfo.xcprivacy; path = melospin/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		354A62CBE46C4F1CA0AD9A07 /* AvenirNextCyr-Demi.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "AvenirNextCyr-Demi.ttf"; path = "../src/assets/fonts/AvenirNextCyr-Demi.ttf"; sourceTree = "<group>"; };
 		3B4392A12AC88292D35C810B /* Pods-melospin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-melospin.debug.xcconfig"; path = "Target Support Files/Pods-melospin/Pods-melospin.debug.xcconfig"; sourceTree = "<group>"; };
+		436DB098782B47A29C6150E3 /* Quicksand-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Quicksand-Regular.ttf"; path = "../src/assets/fonts/Quicksand-Regular.ttf"; sourceTree = "<group>"; };
 		5709B34CF0A7D63546082F79 /* Pods-melospin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-melospin.release.xcconfig"; path = "Target Support Files/Pods-melospin/Pods-melospin.release.xcconfig"; sourceTree = "<group>"; };
 		5DCACB8F33CDC322A6C60F78 /* libPods-melospin.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-melospin.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5FF4B863D53546488BDEB52E /* AvenirNextCyr-Heavy.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "AvenirNextCyr-Heavy.ttf"; path = "../src/assets/fonts/AvenirNextCyr-Heavy.ttf"; sourceTree = "<group>"; };
 		761780EC2CA45674006654EE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = melospin/AppDelegate.swift; sourceTree = "<group>"; };
 		7B9C64B06581480F84ADDE6C /* AvenirNextCyr-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "AvenirNextCyr-Regular.ttf"; path = "../src/assets/fonts/AvenirNextCyr-Regular.ttf"; sourceTree = "<group>"; };
+		7FF197BB5F71440782B4CA99 /* Quicksand-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Quicksand-Medium.ttf"; path = "../src/assets/fonts/Quicksand-Medium.ttf"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = melospin/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		916BAAF30A074976BE134CF2 /* AvenirNextCyr-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "AvenirNextCyr-Medium.ttf"; path = "../src/assets/fonts/AvenirNextCyr-Medium.ttf"; sourceTree = "<group>"; };
+		9614B54F1F3645EF963DF031 /* Quicksand-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Quicksand-SemiBold.ttf"; path = "../src/assets/fonts/Quicksand-SemiBold.ttf"; sourceTree = "<group>"; };
+		BE44D7A10F6B4DE592D76876 /* Quicksand-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Quicksand-Bold.ttf"; path = "../src/assets/fonts/Quicksand-Bold.ttf"; sourceTree = "<group>"; };
 		D709AFD733F84C31B2F2675B /* AvenirNextCyr-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "AvenirNextCyr-Bold.ttf"; path = "../src/assets/fonts/AvenirNextCyr-Bold.ttf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
-		BE44D7A10F6B4DE592D76876 /* Quicksand-Bold.ttf */ = {isa = PBXFileReference; name = "Quicksand-Bold.ttf"; path = "../src/assets/fonts/Quicksand-Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		FB6A7EC5881C479CAE33AB28 /* Quicksand-Light.ttf */ = {isa = PBXFileReference; name = "Quicksand-Light.ttf"; path = "../src/assets/fonts/Quicksand-Light.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		7FF197BB5F71440782B4CA99 /* Quicksand-Medium.ttf */ = {isa = PBXFileReference; name = "Quicksand-Medium.ttf"; path = "../src/assets/fonts/Quicksand-Medium.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		436DB098782B47A29C6150E3 /* Quicksand-Regular.ttf */ = {isa = PBXFileReference; name = "Quicksand-Regular.ttf"; path = "../src/assets/fonts/Quicksand-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		9614B54F1F3645EF963DF031 /* Quicksand-SemiBold.ttf */ = {isa = PBXFileReference; name = "Quicksand-SemiBold.ttf"; path = "../src/assets/fonts/Quicksand-SemiBold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		FB6A7EC5881C479CAE33AB28 /* Quicksand-Light.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Quicksand-Light.ttf"; path = "../src/assets/fonts/Quicksand-Light.ttf"; sourceTree = "<group>"; };
+		E429262AD4814BA5925E95A7 /* DMSans-Bold.ttf */ = {isa = PBXFileReference; name = "DMSans-Bold.ttf"; path = "../src/assets/fonts/DMSans-Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		4F563C978C0E4EDCA28F2535 /* DMSans-ExtraBold.ttf */ = {isa = PBXFileReference; name = "DMSans-ExtraBold.ttf"; path = "../src/assets/fonts/DMSans-ExtraBold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		E891CB13F90B4F4AB1FEDA70 /* DMSans-Medium.ttf */ = {isa = PBXFileReference; name = "DMSans-Medium.ttf"; path = "../src/assets/fonts/DMSans-Medium.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		0341AB7036E74D71A466C258 /* DMSans-Regular.ttf */ = {isa = PBXFileReference; name = "DMSans-Regular.ttf"; path = "../src/assets/fonts/DMSans-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		A49DBD251C174EA79263400E /* DMSans-SemiBold.ttf */ = {isa = PBXFileReference; name = "DMSans-SemiBold.ttf"; path = "../src/assets/fonts/DMSans-SemiBold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -84,6 +94,11 @@
 				7FF197BB5F71440782B4CA99 /* Quicksand-Medium.ttf */,
 				436DB098782B47A29C6150E3 /* Quicksand-Regular.ttf */,
 				9614B54F1F3645EF963DF031 /* Quicksand-SemiBold.ttf */,
+				E429262AD4814BA5925E95A7 /* DMSans-Bold.ttf */,
+				4F563C978C0E4EDCA28F2535 /* DMSans-ExtraBold.ttf */,
+				E891CB13F90B4F4AB1FEDA70 /* DMSans-Medium.ttf */,
+				0341AB7036E74D71A466C258 /* DMSans-Regular.ttf */,
+				A49DBD251C174EA79263400E /* DMSans-SemiBold.ttf */,
 			);
 			name = Resources;
 			path = "";
@@ -210,6 +225,11 @@
 				F664984CDBB545888194A431 /* Quicksand-Medium.ttf in Resources */,
 				C2E391C912474D01B65DE2FB /* Quicksand-Regular.ttf in Resources */,
 				8708531FBD2F435FBF46942E /* Quicksand-SemiBold.ttf in Resources */,
+				CDF8305FDA944313AE2EB646 /* DMSans-Bold.ttf in Resources */,
+				9253E9F0EFAA4AE1AEB77417 /* DMSans-ExtraBold.ttf in Resources */,
+				DC8FB575131E4ED1AFBA70B9 /* DMSans-Medium.ttf in Resources */,
+				0FEC1BBC6A3B46B586709EFC /* DMSans-Regular.ttf in Resources */,
+				53950902A6364F7389C04E8D /* DMSans-SemiBold.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

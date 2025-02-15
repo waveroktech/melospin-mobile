@@ -20,6 +20,7 @@ interface headerProps {
   goBackText?: string;
   hasHeaderIcon?: boolean;
   hasGoForward?: string;
+  hasBackText?: string;
 }
 
 export const Header = ({
@@ -31,6 +32,7 @@ export const Header = ({
   goBackText,
   hasHeaderIcon,
   hasGoForward,
+  hasBackText,
 }: headerProps) => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
@@ -62,6 +64,42 @@ export const Header = ({
             {goBackText}
           </Text>
           <Icon name="back-arrow" />
+        </Box>
+      );
+    }
+
+    if (hasBackText) {
+      return (
+        <Box
+          as={TouchableOpacity}
+          activeOpacity={0.8}
+          flexDirection={'row'}
+          alignItems={'center'}
+          position={'absolute'}
+          hitSlop={populateHitSlop(5)}
+          onPress={() =>
+            onPressLeftIcon ? onPressLeftIcon() : navigation.goBack()
+          }
+          left={0}>
+          <Box
+            borderWidth={1}
+            px={wp(10)}
+            height={hp(40)}
+            borderRadius={hp(24)}
+            borderColor={theme.colors.ACCENT_04}
+            flexDirection={'row'}
+            alignItems={'center'}>
+            <Icon name="back-arrow" />
+          </Box>
+
+          <Text
+            pl={wp(16)}
+            variant="bodyMedium"
+            fontSize={fontSz(16)}
+            fontFamily={theme.font.AvenirNextSemiBold}
+            color={theme.colors.WHITE}>
+            {hasBackText}
+          </Text>
         </Box>
       );
     }

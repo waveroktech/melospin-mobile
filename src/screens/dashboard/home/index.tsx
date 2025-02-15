@@ -12,7 +12,7 @@ export const Home = () => {
   return (
     <Screen removeSafeaArea backgroundColor={theme.colors.PRIMARY}>
       <ScrollView>
-        <DashboardHeader />
+        <DashboardHeader title="Home" />
 
         <Box mt={hp(30)} mx={wp(16)}>
           <Text
