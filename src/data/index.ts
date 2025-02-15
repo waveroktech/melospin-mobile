@@ -55,3 +55,24 @@ export const genres = [
     title: 'EDM',
   },
 ];
+
+export const newReleases = [
+  {
+    id: 1,
+    title: 'Baddest',
+    artist: 'DJ  Shawn',
+    cover: theme.images.releases['release-1'],
+  },
+  {
+    id: 2,
+    title: 'Lonely at the top',
+    artist: 'Asake',
+    cover: theme.images.releases['release-2'],
+  },
+  {
+    id: 3,
+    title: 'Funds',
+    artist: 'Davido Ft Odumodublack',
+    cover: theme.images.releases['release-3'],
+  },
+];

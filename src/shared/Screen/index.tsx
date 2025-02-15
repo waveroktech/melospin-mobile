@@ -14,7 +14,7 @@ interface Props {
 
 export const Screen = ({
   children,
-  backgroundColor,
+  backgroundColor = theme.colors.PRIMARY,
   removeSafeaArea,
   opacity,
 }: Props) => {

@@ -20,7 +20,7 @@ const AppNav = () => {
         headerShown: false,
         ...TransitionPresets.SlideFromRightIOS,
       }}
-      initialRouteName={'Auth'}>
+      initialRouteName={isLoggedIn ? 'DashboardStack' : 'Auth'}>
       {isLoggedIn ? (
         <Stack.Screen name="DashboardStack" component={DashboardNavigation} />
       ) : (

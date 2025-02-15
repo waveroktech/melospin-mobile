@@ -54,6 +54,11 @@
 		<string>AvenirNextCyr-Heavy.ttf</string>
 		<string>AvenirNextCyr-Medium.ttf</string>
 		<string>AvenirNextCyr-Regular.ttf</string>
+		<string>Quicksand-Bold.ttf</string>
+		<string>Quicksand-Light.ttf</string>
+		<string>Quicksand-Medium.ttf</string>
+		<string>Quicksand-Regular.ttf</string>
+		<string>Quicksand-SemiBold.ttf</string>
 	</array>
 </dict>
 </plist>
