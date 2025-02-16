@@ -187,5 +187,33 @@ export const getMarkup: any = (color?: string) => {
 <path d="M10.6693 16L21.3359 16M21.3359 16L17.3359 20M21.3359 16L17.3359 12" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
 `,
+    'last-indicator': `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect x="0.132812" y="0.466797" width="22.8669" height="23.0667" rx="11.4335" fill="#4D1649"/>
+<circle cx="11.6661" cy="12.0001" r="10.8125" stroke="#D1D5DB" stroke-width="1.44167"/>
+</svg>
+`,
+
+    'done-indicator': `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<circle cx="11.5333" cy="12" r="11.5333" fill="#6D3868"/>
+<path d="M7.32812 12.6007L9.7309 15.0035L15.7378 8.99653" stroke="white" stroke-width="1.44167" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+`,
+    'current-indicator': `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<circle cx="11.5333" cy="12.0001" r="10.8125" fill="#4D1649" stroke="#6D3868" stroke-width="1.44167"/>
+<circle cx="11.5329" cy="11.9997" r="3.60417" fill="#6D3868"/>
+</svg>
+`,
+
+    'next-indicator': `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<circle cx="11.6036" cy="12.0001" r="10.8125" fill="#4D1649" stroke="#9CA3AF" stroke-width="1.44167"/>
+<circle cx="11.6032" cy="11.9997" r="3.60417" fill="#D1D5DB"/>
+</svg>
+`,
+
+    'file-upload': `<svg width="57" height="56" viewBox="0 0 57 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect x="0.5" width="56" height="56" rx="12" fill="black" fill-opacity="0.2"/>
+<path d="M25.5 34V21L37.5 19V32M25.5 34C25.5 35.6569 24.1569 37 22.5 37C20.8431 37 19.5 35.6569 19.5 34C19.5 32.3431 20.8431 31 22.5 31C24.1569 31 25.5 32.3431 25.5 34ZM37.5 32C37.5 33.6569 36.1569 35 34.5 35C32.8431 35 31.5 33.6569 31.5 32C31.5 30.3431 32.8431 29 34.5 29C36.1569 29 37.5 30.3431 37.5 32Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+`,
   };
 };

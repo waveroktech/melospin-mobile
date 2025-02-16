@@ -5,14 +5,18 @@ import {createJSONStorage, persist} from 'zustand/middleware';
 interface MelospinStore {
   isLoggedIn: boolean;
   setIsLoggedIn: (isLoggedIn: boolean) => void;
+  authToken: string;
+  setAuthToken: (authToken: string) => void;
 }
 
 const melospinSlice: StateCreator<
   MelospinStore,
   [['zustand/persist', unknown]]
 > = set => ({
+  authToken: '',
   isLoggedIn: false,
 
+  setAuthToken: (authToken: string) => set({authToken: authToken}),
   setIsLoggedIn: (isLoggedIn: boolean) => set({isLoggedIn: isLoggedIn}),
 });
 
