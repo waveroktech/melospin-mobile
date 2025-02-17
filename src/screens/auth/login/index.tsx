@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {Header, HeaderText, Icon, Screen} from 'shared';
 import theme from 'theme';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
@@ -7,9 +7,10 @@ import {yupResolver} from '@hookform/resolvers/yup';
 import {useForm} from 'react-hook-form';
 import * as yup from 'yup';
 import {Box, Button, FormInput} from 'design-system';
-import {hp, wp} from 'utils';
+import {ErrorInfo, hp, wp} from 'utils';
 import {TouchableOpacity} from 'react-native';
-import {useMelospinStore} from 'store';
+import {useLogin, useMelospinStore} from 'store';
+import {showMessage} from 'react-native-flash-message';
 
 interface FormData {
   email: string;
@@ -38,9 +39,44 @@ export const Login = () => {
 
   const form = watch();
 
-  const login = async () => {
-    setIsLoggedIn(true);
-  };
+  const {mutate: loginUser, isPending} = useLogin({
+    onError: (error: ErrorInfo) => {
+      console.log(error);
+      return showMessage({
+        message: 'Error',
+        description: error?.message,
+        type: 'danger',
+        duration: 2000,
+      });
+    },
+    onSuccess: (data: any) => {
+      console.log(data);
+      if (!data?.status) {
+        return showMessage({
+          message: 'Error',
+          description: data?.message,
+          type: 'danger',
+          duration: 2000,
+        });
+      }
+      showMessage({
+        message: 'Success',
+        description: data.message,
+        type: 'success',
+        duration: 2000,
+      });
+      setIsLoggedIn(true);
+    },
+  });
+
+  const loginAccount = useCallback(() => {
+    const data = {
+      email: form.email,
+      password: form.password,
+    };
+
+    loginUser(data);
+  }, [form.email, form.password, loginUser]);
 
   return (
     <Screen removeSafeaArea backgroundColor={theme.colors.PRIMARY}>
@@ -95,9 +131,11 @@ export const Login = () => {
         <Button
           title="Log in"
           hasBorder
-          onPress={login}
-          bg={theme.colors.PRIMARY_100}
+          onPress={loginAccount}
+          backgroundColor={theme.colors.PRIMARY_100}
           isNotBottom
+          disabled={form.email && form.password ? false : true}
+          isLoading={isPending}
           width={wp(160)}
         />
       </Box>

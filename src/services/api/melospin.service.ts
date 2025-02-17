@@ -9,6 +9,8 @@ import Config from 'react-native-config';
 
 const MELOSPIN_ENDPOINT = Config.BASE_URL;
 
+console.log(MELOSPIN_ENDPOINT);
+
 const defaultHeaders = {};
 
 const getEndpoint = (endpoint: string, query?: Record<string, string>) => {

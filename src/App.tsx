@@ -4,6 +4,7 @@ import React, {useEffect} from 'react';
 import theme from 'theme';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {FlashMessageToast} from 'shared';
+import {ApiProvider} from 'services/api';
 
 const App = () => {
   useEffect(() => {
@@ -14,10 +15,12 @@ const App = () => {
 
   return (
     <SafeAreaProvider>
-      <ThemeProvider theme={theme}>
-        <Navigation />
-        <FlashMessageToast />
-      </ThemeProvider>
+      <ApiProvider>
+        <ThemeProvider theme={theme}>
+          <Navigation />
+          <FlashMessageToast />
+        </ThemeProvider>
+      </ApiProvider>
     </SafeAreaProvider>
   );
 };

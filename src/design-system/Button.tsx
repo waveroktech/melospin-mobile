@@ -28,6 +28,7 @@ interface Props extends BoxProps {
   buttonStyle?: ViewStyle;
   borderColor?: string;
   iconName?: string;
+  isLoading?: boolean;
 }
 
 export const Button = ({
@@ -46,8 +47,10 @@ export const Button = ({
   borderColor,
   hasIcon,
   iconName,
+  isLoading,
   ...props
 }: Props) => {
+  console.log(disabled, 'disabled');
   return (
     <Box style={!isNotBottom && [styles.containerStyle, containerStyle]}>
       <Box
@@ -62,7 +65,7 @@ export const Button = ({
         width={wp(344)}
         backgroundColor={
           disabled
-            ? theme.colors.ACCENT_04
+            ? theme.colors.OFF_WHITE_100
             : backgroundColor || theme.colors.PRIMARY
         }
         borderColor={borderColor || theme.colors.LIGHT_PRIMARY}
@@ -86,7 +89,16 @@ export const Button = ({
                 style={fontStyle}>
                 {title}
               </Text>
-              {hasIcon ? null : <Icon name={iconName || 'button-icon'} />}
+              {isLoading ? (
+                <ActivityIndicator
+                  size={'small'}
+                  color={loadingColor || theme.colors.WHITE}
+                />
+              ) : (
+                <>
+                  {hasIcon ? null : <Icon name={iconName || 'button-icon'} />}
+                </>
+              )}
             </Box>
           )}
         </Box>

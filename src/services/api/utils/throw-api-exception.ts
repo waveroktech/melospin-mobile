@@ -1,4 +1,4 @@
-import {HttpError} from 'utils';
+import {HttpError} from 'utils/classes';
 
 export function throwApiException(
   message: string,
