@@ -7,6 +7,7 @@ interface MelospinStore {
   setIsLoggedIn: (isLoggedIn: boolean) => void;
   authToken: string;
   setAuthToken: (authToken: string) => void;
+  logoutUser: () => void;
 }
 
 const melospinSlice: StateCreator<
@@ -18,6 +19,9 @@ const melospinSlice: StateCreator<
 
   setAuthToken: (authToken: string) => set({authToken: authToken}),
   setIsLoggedIn: (isLoggedIn: boolean) => set({isLoggedIn: isLoggedIn}),
+  logoutUser: () => {
+    set({authToken: '', isLoggedIn: false});
+  },
 });
 
 export const useMelospinStore = create<MelospinStore>()(

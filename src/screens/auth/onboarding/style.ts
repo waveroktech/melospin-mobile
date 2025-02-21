@@ -4,7 +4,7 @@ import {deviceHeight, deviceWidth, fontSz, hp, wp} from 'utils';
 
 export const styles = StyleSheet.create({
   bgContainer: {
-    width: wp(deviceWidth),
+    width: deviceWidth,
     margin: 0,
     padding: 0,
     height: deviceHeight,

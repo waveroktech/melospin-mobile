@@ -4,5 +4,6 @@ export * from './FlashMessageToast';
 export * from './Header';
 export * from './HeaderText';
 export * from './Icon';
+export * from './Loader';
 export * from './ModalHeader';
 export * from './Screen';

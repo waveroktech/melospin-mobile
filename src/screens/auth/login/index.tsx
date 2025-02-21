@@ -1,5 +1,5 @@
 import React, {useCallback, useState} from 'react';
-import {Header, HeaderText, Icon, Screen} from 'shared';
+import {Header, HeaderText, Icon, Loader, Screen} from 'shared';
 import theme from 'theme';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {AuthStackParamList} from 'types';
@@ -51,21 +51,19 @@ export const Login = () => {
     },
     onSuccess: (data: any) => {
       console.log(data);
-      if (!data?.status) {
+      if (data?.status === 'failed') {
         return showMessage({
-          message: 'Error',
-          description: data?.message,
+          message: data?.message,
           type: 'danger',
           duration: 2000,
         });
       }
       showMessage({
-        message: 'Success',
-        description: data.message,
+        message: data.message,
         type: 'success',
         duration: 2000,
       });
-      setIsLoggedIn(true);
+      // setIsLoggedIn(true);
     },
   });
 
@@ -136,10 +134,11 @@ export const Login = () => {
           backgroundColor={theme.colors.PRIMARY_100}
           isNotBottom
           disabled={form.email && form.password ? false : true}
-          isLoading={isPending}
           width={wp(160)}
         />
       </Box>
+
+      <Loader loading={isPending} />
     </Screen>
   );
 };

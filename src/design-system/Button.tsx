@@ -64,11 +64,15 @@ export const Button = ({
         width={wp(344)}
         backgroundColor={
           disabled
-            ? theme.colors.OFF_WHITE_100
+            ? theme.colors.PRIMARY_200
             : backgroundColor || theme.colors.PRIMARY
         }
         borderColor={borderColor || theme.colors.LIGHT_PRIMARY}
-        style={[hasBorder && styles.borderStyle, buttonStyle]}
+        style={[
+          hasBorder && styles.borderStyle,
+          disabled && styles.disabledStyle,
+          buttonStyle,
+        ]}
         {...props}>
         <Box width={'90%'}>
           {loading ? (
@@ -117,5 +121,10 @@ const styles = StyleSheet.create({
     borderLeftWidth: 1,
     borderRightWidth: 1,
     borderBottomWidth: 2,
+  },
+  disabledStyle: {
+    borderLeftWidth: 0,
+    borderRightWidth: 0,
+    borderBottomWidth: 0,
   },
 });
