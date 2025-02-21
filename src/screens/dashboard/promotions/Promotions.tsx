@@ -1,13 +1,13 @@
 import React from 'react';
 import {Icon, Screen} from 'shared';
 import {DashboardHeader} from '../home/components';
-import {ScrollView, TextInput} from 'react-native';
+import {FlatList, TextInput} from 'react-native';
 import {Box, Button, Text} from 'design-system';
 import {fontSz, hp, wp} from 'utils';
 import theme from 'theme';
 import {styles} from './style';
 import {promotions} from 'data';
-import {PromotionItem} from './components';
+import {EmptyPromotionContainer, PromotionItem} from './components';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {DashboardStackParamList} from 'types';
 
@@ -16,29 +16,37 @@ export const Promotions = () => {
   return (
     <Screen removeSafeaArea>
       <DashboardHeader title="Promotions" />
-      <ScrollView>
-        <Box mt={hp(20)} mx={wp(16)}>
-          <Text variant="body" fontSize={fontSz(14)} color={theme.colors.WHITE}>
-            Promo history
-          </Text>
+      <Box mt={hp(20)} mx={wp(16)}>
+        <Text variant="body" fontSize={fontSz(14)} color={theme.colors.WHITE}>
+          Promo history
+        </Text>
 
-          <Box mt={hp(20)} style={styles.searchInputContainer}>
-            <Icon name="search-icon" />
-            <TextInput
-              style={styles.searchTextInput}
-              placeholder="Search"
-              selectionColor={theme.colors.WHITE}
-              placeholderTextColor={theme.colors.TEXT_INPUT_PLACEHOLDER}
-            />
-          </Box>
-
-          <Box mt={hp(20)}>
-            {promotions?.map(promotion => {
-              return <PromotionItem promotion={promotion} />;
-            })}
-          </Box>
+        <Box mt={hp(20)} style={styles.searchInputContainer}>
+          <Icon name="search-icon" />
+          <TextInput
+            style={styles.searchTextInput}
+            placeholder="Search"
+            selectionColor={theme.colors.WHITE}
+            placeholderTextColor={theme.colors.TEXT_INPUT_PLACEHOLDER}
+          />
         </Box>
-      </ScrollView>
+
+        <FlatList
+          style={styles.flatListContainer}
+          contentContainerStyle={styles.contentContainerStyle}
+          data={promotions}
+          renderItem={({item, index}) => (
+            <PromotionItem promotion={item} key={index} />
+          )}
+          ListEmptyComponent={
+            <EmptyPromotionContainer
+              icon="empty-folder"
+              title="No Promotions Yet"
+              subTitle="You can view and track all promotions history as soon as they are made."
+            />
+          }
+        />
+      </Box>
 
       <Button
         isNotBottom
@@ -50,7 +58,7 @@ export const Promotions = () => {
         onPress={() => navigate('AddPromotion')}
         right={wp(20)}
         width={wp(160)}
-        bottom={hp(130)}
+        bottom={20}
       />
     </Screen>
   );

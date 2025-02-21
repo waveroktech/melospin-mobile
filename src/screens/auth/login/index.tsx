@@ -131,7 +131,7 @@ export const Login = () => {
         <Button
           title="Log in"
           hasBorder
-          onPress={loginAccount}
+          onPress={() => setIsLoggedIn(true)}
           backgroundColor={theme.colors.PRIMARY_100}
           isNotBottom
           disabled={form.email && form.password ? false : true}

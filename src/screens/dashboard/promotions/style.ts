@@ -21,4 +21,22 @@ export const styles = StyleSheet.create({
     fontSize: fontSz(16),
     marginLeft: wp(12),
   },
+  contentContainerStyle: {
+    marginTop: hp(20),
+  },
+  flatListContainer: {
+    height: hp(500),
+  },
+  optionContainer: {
+    width: 56,
+    height: 56,
+    borderRadius: 24,
+    backgroundColor: theme.colors.BASE_SECONDARY,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  inputContainerStyle: {
+    width: wp(270),
+    marginBottom: 0,
+  },
 });

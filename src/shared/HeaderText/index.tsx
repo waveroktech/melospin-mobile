@@ -13,6 +13,7 @@ interface HeaderTextProps {
   fontSize?: number;
   hasHeaderTextStyle?: TextStyle;
   hasIndicatorLevel?: boolean;
+  currentPage?: number;
 }
 
 export const HeaderText = ({
@@ -22,6 +23,7 @@ export const HeaderText = ({
   fontSize = fontSz(14),
   hasHeaderTextStyle,
   hasIndicatorLevel,
+  currentPage,
 }: HeaderTextProps) => {
   return (
     <Box px={wp(16)} mt={20}>
@@ -49,16 +51,28 @@ export const HeaderText = ({
           alignItems={'center'}
           justifyContent={'space-between'}>
           <Box zIndex={1000}>
-            <Icon name="current-indicator" />
+            <Icon
+              name={
+                currentPage && currentPage > 1
+                  ? 'done-indicator'
+                  : 'current-indicator'
+              }
+            />
           </Box>
           <Box
             borderWidth={1}
             width={'50%'}
-            borderColor={theme.colors.WHITE}
+            borderColor={
+              currentPage && currentPage > 1
+                ? theme.colors.PRIMARY_200
+                : theme.colors.WHITE
+            }
             position={'absolute'}
           />
           <Box zIndex={1000}>
-            <Icon name="next-indicator" />
+            <Icon
+              name={currentPage === 2 ? 'current-indicator' : 'next-indicator'}
+            />
           </Box>
           <Box
             borderWidth={1}

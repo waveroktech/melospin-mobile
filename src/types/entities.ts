@@ -28,4 +28,5 @@ export type DashboardStackParamList = {
   Dashboard: BottomTabStackParamList;
   Profile: undefined;
   AddPromotion: undefined;
+  AddDjs: undefined;
 };

@@ -33,7 +33,6 @@ interface FormTextInputProps extends RNTextInputProps {
   control: any;
   errorText?: string;
   name: string;
-  fontSize?: number;
   inputTextStyle?: ViewStyle;
   dropDownStyle?: ViewStyle;
   isLoading?: boolean;
@@ -52,7 +51,6 @@ export const FormInput = forwardRef<RNTextInput, FormTextInputProps>(
       name,
       onPressPasswordIcon,
       containerStyle,
-      fontSize,
       labelStyle,
       inputTextStyle,
       isDate,
@@ -76,14 +74,14 @@ export const FormInput = forwardRef<RNTextInput, FormTextInputProps>(
         {
           translateY: animatedValue?.current?.interpolate({
             inputRange: [0, 1],
-            outputRange: [hp(22), 10],
+            outputRange: [hp(20), hp(10)],
             extrapolate: 'clamp',
           }),
         },
       ],
       fontSize: animatedValue?.current?.interpolate({
         inputRange: [0, 1],
-        outputRange: [fontSize || fontSz(14), fontSz(10)],
+        outputRange: [fontSz(14), fontSz(10)],
         extrapolate: 'clamp',
       }),
       color: animatedValue?.current?.interpolate({
@@ -222,10 +220,10 @@ export const FormInput = forwardRef<RNTextInput, FormTextInputProps>(
 
 const styles = StyleSheet.create({
   subContainer: {
-    paddingHorizontal: wp(14),
-    height: hp(58),
+    paddingHorizontal: wp(20),
     backgroundColor: theme.colors.TEXT_INPUT_BG,
     width: wp(340),
+    height: hp(56),
     borderRadius: hp(24),
     marginBottom: hp(24),
   },
