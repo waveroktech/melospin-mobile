@@ -63,7 +63,7 @@ export const Login = () => {
         type: 'success',
         duration: 2000,
       });
-      // setIsLoggedIn(true);
+      setIsLoggedIn(true);
     },
   });
 

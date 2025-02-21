@@ -1,6 +1,6 @@
-import React, {useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {Box, Button, FormInput} from 'design-system';
-import {AvoidingView, Header, HeaderText, Icon, Screen} from 'shared';
+import {AvoidingView, Header, HeaderText, Icon, Loader, Screen} from 'shared';
 import theme from 'theme';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {AuthStackParamList} from 'types';
@@ -9,6 +9,8 @@ import {yupResolver} from '@hookform/resolvers/yup';
 import {useForm} from 'react-hook-form';
 import * as yup from 'yup';
 import {hp, wp} from 'utils';
+import {useCreateAccount} from 'store';
+import {showMessage} from 'react-native-flash-message';
 
 interface FormData {
   firstName: string;
@@ -42,6 +44,41 @@ export const Signup = () => {
   });
 
   const form = watch();
+
+  const {mutate: createAccount, isPending} = useCreateAccount({
+    onSuccess: (data: any) => {
+      console.log(data);
+      if (data?.status === 'failed') {
+        return showMessage({
+          message: data?.message,
+          type: 'danger',
+          duration: 2000,
+        });
+      } else if (data?.status === 'pending') {
+        return showMessage({
+          message: data?.message,
+          type: 'info',
+          duration: 2000,
+        });
+      }
+      showMessage({
+        message: data.message,
+        type: 'success',
+        duration: 2000,
+      });
+      // navigate('VerifyEmail', {email: form.email});
+    },
+  });
+
+  const handleCreateAccount = useCallback(() => {
+    createAccount({
+      email: form.email,
+      password: form.password,
+      confirmPassword: form.confirmPassword,
+      firstName: form.firstName,
+      lastName: form.lastName,
+    });
+  }, [createAccount, form]);
   return (
     <Screen removeSafeaArea backgroundColor={theme.colors.PRIMARY}>
       <Header
@@ -130,12 +167,23 @@ export const Signup = () => {
         <Button
           title="Sign up"
           hasBorder
-          onPress={() => navigate('VerifyEmail')}
+          onPress={handleCreateAccount}
           bg={theme.colors.PRIMARY_100}
           isNotBottom
+          disabled={
+            form?.confirmPassword &&
+            form?.email &&
+            form?.lastName &&
+            form?.firstName &&
+            form?.password
+              ? false
+              : true
+          }
           width={wp(160)}
         />
       </Box>
+
+      <Loader loading={isPending} />
     </Screen>
   );
 };
