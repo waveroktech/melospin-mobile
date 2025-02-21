@@ -50,7 +50,6 @@ export const Button = ({
   isLoading,
   ...props
 }: Props) => {
-  console.log(disabled, 'disabled');
   return (
     <Box style={!isNotBottom && [styles.containerStyle, containerStyle]}>
       <Box

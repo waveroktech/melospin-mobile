@@ -7,12 +7,17 @@ import {FlatList, TouchableOpacity} from 'react-native';
 import {DjPromoItem, EmptyPromotionContainer} from './components';
 import {SelectDjs} from './modals';
 import {djs} from 'data';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {DashboardStackParamList} from 'types';
 
 export const AddDjs = () => {
   const [open, setOpen] = useState<'select-dj' | ''>('');
+
+  const {navigate, goBack} =
+    useNavigation<NavigationProp<DashboardStackParamList>>();
   return (
     <Screen removeSafeaArea>
-      <Header hasBackText="Set up Promotion" />
+      <Header hasBackText="Set up Promotion" onPressLeftIcon={goBack} />
       <HeaderText
         hasHeaderText="Fill Audio details for promotion"
         hasHeaderTextStyle={{fontSize: fontSz(14)}}
@@ -59,21 +64,30 @@ export const AddDjs = () => {
           color={theme.colors.WHITE}>
           DJs on Promo List
         </Text>
-        <FlatList
-          data={djs}
-          renderItem={({item, index}) => <DjPromoItem dj={item} key={index} />}
-          ListEmptyComponent={
-            <EmptyPromotionContainer
-              icon="headphones"
-              containerStyles={{my: hp(40)}}
-              title="No DJs added"
-              subTitle="DJs available for promotions will appear here as you add them to list"
-            />
-          }
-        />
+        <Box height={hp(500)}>
+          <FlatList
+            data={djs?.slice(0, 4)}
+            renderItem={({item, index}) => (
+              <DjPromoItem dj={item} key={index} />
+            )}
+            ListEmptyComponent={
+              <EmptyPromotionContainer
+                icon="headphones"
+                containerStyles={{my: hp(40)}}
+                title="No DJs added"
+                subTitle="DJs available for promotions will appear here as you add them to list"
+              />
+            }
+          />
+        </Box>
       </Box>
 
-      <Button title="Continue" hasBorder bg={theme.colors.PRIMARY_100} />
+      <Button
+        title="Continue"
+        onPress={() => navigate('PromotionBudget')}
+        hasBorder
+        bg={theme.colors.PRIMARY_100}
+      />
 
       <SelectDjs isVisible={open === 'select-dj'} onClose={() => setOpen('')} />
     </Screen>

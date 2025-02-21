@@ -26,4 +26,16 @@ export const styles = StyleSheet.create({
     height: 40,
     borderRadius: 20,
   },
+  gradientContainer: {
+    borderWidth: 0.91,
+    borderRadius: 100,
+    height: 32,
+    width: 32,
+    overflow: 'hidden',
+  },
+  imageContainer: {
+    width: wp(30),
+    height: hp(30),
+    borderRadius: 100,
+  },
 });

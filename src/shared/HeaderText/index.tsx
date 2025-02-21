@@ -71,7 +71,13 @@ export const HeaderText = ({
           />
           <Box zIndex={1000}>
             <Icon
-              name={currentPage === 2 ? 'current-indicator' : 'next-indicator'}
+              name={
+                currentPage === 2
+                  ? 'current-indicator'
+                  : currentPage && currentPage > 2
+                  ? 'done-indicator'
+                  : 'next-indicator'
+              }
             />
           </Box>
           <Box
@@ -80,10 +86,20 @@ export const HeaderText = ({
             position={'absolute'}
             right={0}
             zIndex={1}
-            borderColor={theme.colors.WHITE}
+            borderColor={
+              currentPage && currentPage > 2
+                ? theme.colors.PRIMARY_200
+                : theme.colors.WHITE
+            }
           />
           <Box zIndex={1000}>
-            <Icon name="last-indicator" />
+            <Icon
+              name={
+                currentPage && currentPage > 2
+                  ? 'current-indicator'
+                  : 'last-indicator'
+              }
+            />
           </Box>
         </Box>
       )}

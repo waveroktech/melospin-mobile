@@ -48,5 +48,28 @@ export const ModalHeader = ({
         </Text>
       </Box>
     );
+  } else {
+    return (
+      <Box
+        mx={wp(16)}
+        borderBottomWidth={1}
+        pb={20}
+        flexDirection={'row'}
+        justifyContent={'space-between'}
+        alignItems={'center'}
+        borderBottomColor={theme.colors.BASE_SECONDARY}>
+        <Text
+          variant="bodyMedium"
+          fontFamily={theme.font.AvenirNextSemiBold}
+          fontSize={fontSz(16)}
+          color={theme.colors.WHITE}>
+          {modalHeaderText}
+        </Text>
+
+        <Box as={TouchableOpacity} activeOpacity={0.9} onPress={onClose}>
+          <Icon name="close-icon" />
+        </Box>
+      </Box>
+    );
   }
 };

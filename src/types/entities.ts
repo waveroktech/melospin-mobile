@@ -29,4 +29,5 @@ export type DashboardStackParamList = {
   Profile: undefined;
   AddPromotion: undefined;
   AddDjs: undefined;
+  PromotionBudget: undefined;
 };

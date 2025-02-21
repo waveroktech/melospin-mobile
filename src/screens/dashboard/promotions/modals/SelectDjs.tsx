@@ -3,10 +3,11 @@ import {Box, Button} from 'design-system';
 import {BaseModal, Icon, ModalHeader} from 'shared';
 import {hp} from 'utils';
 import theme from 'theme';
-import {FlatList, TextInput} from 'react-native';
+import {TextInput} from 'react-native';
 import {styles} from './style';
 import {djs} from 'data';
 import {SelectDjItem} from '../components';
+import {FlashList} from '@shopify/flash-list';
 
 interface SelectDjsProps {
   isVisible: boolean;
@@ -32,7 +33,10 @@ export const SelectDjs = ({isVisible, onClose}: SelectDjsProps) => {
           />
         </Box>
         <Box height={'100%'}>
-          <FlatList
+          <FlashList
+            estimatedItemSize={200}
+            ListFooterComponent={<Box pb={hp(240)} />}
+            //@ts-ignore
             contentContainerStyle={styles.contentContainerStyle}
             data={djs}
             renderItem={({item}) => <SelectDjItem item={item} />}
@@ -41,6 +45,7 @@ export const SelectDjs = ({isVisible, onClose}: SelectDjsProps) => {
       </Box>
       <Button
         hasBorder
+        onPress={onClose}
         bottom={10}
         alignSelf={'center'}
         position={'absolute'}

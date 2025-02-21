@@ -42,6 +42,7 @@ export const BaseModal = ({
       style={[styles.container, containerStyles]}
       propagateSwipe={true}
       backdropOpacity={0.8}
+      onBackButtonPress={removeBackTap ? () => {} : onClose}
       onModalHide={onModalHide}
       onBackdropPress={removeBackTap ? () => {} : onClose}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>

@@ -262,5 +262,31 @@ export const getMarkup: any = (color?: string) => {
 <path fill-rule="evenodd" clip-rule="evenodd" d="M6.16927 7.50001C6.6295 7.50001 7.0026 7.12691 7.0026 6.66668C7.0026 6.20644 6.6295 5.83334 6.16927 5.83334C5.70904 5.83334 5.33594 6.20644 5.33594 6.66668C5.33594 7.12691 5.70904 7.50001 6.16927 7.50001Z" fill="white"/>
 </svg>
 `,
+
+    trash: `<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M6 6.66666V29.3333H26V6.66666H6Z" stroke="#F9719E" stroke-width="1.33333" stroke-linejoin="round"/>
+<path d="M13.3359 13.3333V22" stroke="#F9719E" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M18.6641 13.3333V22" stroke="#F9719E" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M2.66406 6.66666H29.3307" stroke="#F9719E" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M10.6641 6.66666L12.8567 2.66666H19.1821L21.3307 6.66666H10.6641Z" stroke="#F9719E" stroke-width="1.33333" stroke-linejoin="round"/>
+</svg>
+`,
+
+    'chevron-down': `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M19 9L12.7071 15.2929C12.3166 15.6834 11.6834 15.6834 11.2929 15.2929L5 9" stroke="#F2EEFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+`,
+
+    'close-icon': `<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M15.9974 29.3334C23.3612 29.3334 29.3307 23.3638 29.3307 16C29.3307 8.63622 23.3612 2.66669 15.9974 2.66669C8.6336 2.66669 2.66406 8.63622 2.66406 16C2.66406 23.3638 8.6336 29.3334 15.9974 29.3334Z" fill="#C0C0C0"/>
+<path d="M19.769 12.2288L12.2266 19.7713" stroke="#1A1E1F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M12.2266 12.2288L19.769 19.7713" stroke="#1A1E1F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+`,
+
+    'arrow-right-small': `<svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M8 12L10.6653 8.89047C10.8579 8.66578 10.8579 8.33422 10.6653 8.10953L8 5" stroke="#C0C0C0" stroke-width="1.5" stroke-linecap="round"/>
+</svg>
+`,
   };
 };

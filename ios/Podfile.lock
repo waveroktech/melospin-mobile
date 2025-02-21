@@ -1652,6 +1652,27 @@ PODS:
     - React-Core
     - SDWebImage (~> 5.11.1)
     - SDWebImageWebPCoder (~> 0.8.4)
+  - RNFlashList (1.7.3):
+    - DoubleConversion
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2024.11.18.00)
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - Yoga
   - RNGestureHandler (2.23.0):
     - DoubleConversion
     - glog
@@ -1888,6 +1909,7 @@ DEPENDENCIES:
   - "RNCMaskedView (from `../node_modules/@react-native-masked-view/masked-view`)"
   - RNDeviceInfo (from `../node_modules/react-native-device-info`)
   - RNFastImage (from `../node_modules/react-native-fast-image`)
+  - "RNFlashList (from `../node_modules/@shopify/flash-list`)"
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNSVG (from `../node_modules/react-native-svg`)
@@ -2048,6 +2070,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-device-info"
   RNFastImage:
     :path: "../node_modules/react-native-fast-image"
+  RNFlashList:
+    :path: "../node_modules/@shopify/flash-list"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
   RNReanimated:
@@ -2132,6 +2156,7 @@ SPEC CHECKSUMS:
   RNCMaskedView: 308c763227e237d4d260bd8841870e099572bb3e
   RNDeviceInfo: d863506092aef7e7af3a1c350c913d867d795047
   RNFastImage: 462a183c4b0b6b26fdfd639e1ed6ba37536c3b87
+  RNFlashList: d6f5c8e04ae8ce8e27693cd98c0297abce8f4c54
   RNGestureHandler: 0ea07666b2252aa48b192764eb21a25c60e6b6db
   RNReanimated: 8a4ea733f88a33379150eb2e73b375e14de81e84
   RNSVG: 2089e8b3a145acb2f392017279790f007f934567

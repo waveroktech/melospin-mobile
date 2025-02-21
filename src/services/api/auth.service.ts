@@ -13,7 +13,7 @@ export const setCreateAccount = async (
 };
 
 export const setLoginAccount = async (payload: LoginRequest): Promise<any> => {
-  post('auth/login', payload).then(data => data as any);
+  return post('auth/login', payload).then(data => data as any);
 };
 
 export const setAccount = async (

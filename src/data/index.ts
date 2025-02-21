@@ -153,3 +153,18 @@ export const djs = [
     profile: theme.images['dj-images']['dj-1'],
   },
 ];
+
+export const frequency = [
+  {
+    id: 1,
+    title: 'Daily',
+  },
+  {
+    id: 2,
+    title: 'Every weekend',
+  },
+  {
+    id: 3,
+    title: 'Every weekend',
+  },
+];
