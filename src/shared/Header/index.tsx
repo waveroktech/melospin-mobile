@@ -37,7 +37,7 @@ export const Header = ({
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   const renderHeaderLeft = () => {
-    if (hasBackButton && navigation.canGoBack()) {
+    if (hasBackButton && navigation?.canGoBack()) {
       return (
         <Box
           as={TouchableOpacity}

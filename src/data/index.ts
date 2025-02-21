@@ -120,3 +120,36 @@ export const promotions = [
     bg: theme.colors.SEMANTIC_GREEN,
   },
 ];
+
+export const djs = [
+  {
+    id: 1,
+    title: 'DJ Zenzee',
+    rate: 'from 300,000 NGN',
+    profile: theme.images['dj-images']['dj-1'],
+  },
+  {
+    id: 2,
+    title: 'Dj Kulcaddy',
+    rate: 'from 300,000 NGN',
+    profile: theme.images['dj-images']['dj-2'],
+  },
+  {
+    id: 3,
+    title: 'Dj Kulcaddy',
+    rate: 'from 300,000 NGN',
+    profile: theme.images['dj-images']['dj-3'],
+  },
+  {
+    id: 4,
+    title: 'Dj Kulcaddy',
+    rate: 'from 300,000 NGN',
+    profile: theme.images['dj-images']['dj-4'],
+  },
+  {
+    id: 5,
+    title: 'Dj Kulcaddy',
+    rate: 'from 300,000 NGN',
+    profile: theme.images['dj-images']['dj-1'],
+  },
+];

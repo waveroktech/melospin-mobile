@@ -1,16 +1,18 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Box, Button, Text} from 'design-system';
 import {Header, HeaderText, Icon, Screen} from 'shared';
 import {fontSz, hp, wp} from 'utils';
 import theme from 'theme';
 import {FlatList, TouchableOpacity} from 'react-native';
 import {DjPromoItem, EmptyPromotionContainer} from './components';
+import {SelectDjs} from './modals';
+import {djs} from 'data';
 
 export const AddDjs = () => {
+  const [open, setOpen] = useState<'select-dj' | ''>('');
   return (
     <Screen removeSafeaArea>
       <Header hasBackText="Set up Promotion" />
-
       <HeaderText
         hasHeaderText="Fill Audio details for promotion"
         hasHeaderTextStyle={{fontSize: fontSz(14)}}
@@ -23,6 +25,7 @@ export const AddDjs = () => {
         justifyContent={'space-between'}
         alignItems={'center'}
         px={wp(10)}
+        onPress={() => setOpen('select-dj')}
         as={TouchableOpacity}
         activeOpacity={0.8}
         borderColor={theme.colors.ACCENT_04}
@@ -57,7 +60,7 @@ export const AddDjs = () => {
           DJs on Promo List
         </Text>
         <FlatList
-          data={[]}
+          data={djs}
           renderItem={({item, index}) => <DjPromoItem dj={item} key={index} />}
           ListEmptyComponent={
             <EmptyPromotionContainer
@@ -71,6 +74,8 @@ export const AddDjs = () => {
       </Box>
 
       <Button title="Continue" hasBorder bg={theme.colors.PRIMARY_100} />
+
+      <SelectDjs isVisible={open === 'select-dj'} onClose={() => setOpen('')} />
     </Screen>
   );
 };

@@ -21,4 +21,9 @@ export const styles = StyleSheet.create({
     height: 56,
     borderRadius: 12,
   },
+  profileImage: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+  },
 });
