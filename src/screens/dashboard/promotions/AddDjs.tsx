@@ -3,11 +3,15 @@ import {Box, Button, Text} from 'design-system';
 import {Header, HeaderText, Icon, Screen} from 'shared';
 import {fontSz, hp, wp} from 'utils';
 import theme from 'theme';
-import {FlatList, TouchableOpacity} from 'react-native';
+import {BackHandler, FlatList, TouchableOpacity} from 'react-native';
 import {DjPromoItem, EmptyPromotionContainer} from './components';
 import {SelectDjs} from './modals';
 import {djs} from 'data';
-import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {
+  NavigationProp,
+  useFocusEffect,
+  useNavigation,
+} from '@react-navigation/native';
 import {DashboardStackParamList} from 'types';
 
 export const AddDjs = () => {
@@ -15,6 +19,26 @@ export const AddDjs = () => {
 
   const {navigate, goBack} =
     useNavigation<NavigationProp<DashboardStackParamList>>();
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        if (open === 'select-dj') {
+          setOpen(''); // Handle modal close
+          return true; // Prevent screen from going back
+        }
+        return false; // Allow default navigation
+      };
+
+      const backHandler = BackHandler.addEventListener(
+        'hardwareBackPress',
+        onBackPress,
+      );
+
+      return () => backHandler.remove();
+    }, [open]),
+  );
+
   return (
     <Screen removeSafeaArea>
       <Header hasBackText="Set up Promotion" onPressLeftIcon={goBack} />

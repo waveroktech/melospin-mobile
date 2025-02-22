@@ -10,12 +10,10 @@ import {PasswordResetSuccess} from '../modals';
 import {
   NavigationProp,
   RouteProp,
-  useFocusEffect,
   useNavigation,
   useRoute,
 } from '@react-navigation/native';
 import {AuthStackParamList} from 'types';
-import {BackHandler} from 'react-native';
 import {usePasswordReset} from 'store';
 import {showMessage} from 'react-native-flash-message';
 
@@ -37,25 +35,6 @@ export const ResetPassword = () => {
   const params =
     useRoute<RouteProp<AuthStackParamList, 'ResetPassword'>>()?.params;
   const {navigate} = useNavigation<NavigationProp<AuthStackParamList>>();
-
-  useFocusEffect(
-    React.useCallback(() => {
-      const onBackPress = () => {
-        if (open === 'password-reset') {
-          setOpen(''); // Handle modal close
-          return true; // Prevent screen from going back
-        }
-        return false; // Allow default navigation
-      };
-
-      const backHandler = BackHandler.addEventListener(
-        'hardwareBackPress',
-        onBackPress,
-      );
-
-      return () => backHandler.remove();
-    }, [open]),
-  );
 
   const {control, watch} = useForm<FormData>({
     resolver: yupResolver(schema),
