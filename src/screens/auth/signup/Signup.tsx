@@ -66,7 +66,7 @@ export const Signup = () => {
         type: 'success',
         duration: 2000,
       });
-      // navigate('VerifyEmail', {email: form.email});
+      navigate('VerifyEmail', {email: form.email});
     },
   });
 

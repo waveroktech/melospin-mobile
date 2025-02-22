@@ -14,7 +14,7 @@ export type AuthStackParamList = {
   VerifyPasswordReset: undefined;
   ResetPassword: undefined;
   SelectProfile: undefined;
-  SetupProfile: undefined;
+  SetupProfile: {accountType: 'artiste' | 'dj'};
 };
 
 export type BottomTabStackParamList = {

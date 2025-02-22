@@ -14,13 +14,10 @@ export const styles = StyleSheet.create({
   },
   inactiveProfileContainer: {
     zIndex: -10000,
-    position: 'absolute',
     borderRadius: hp(24),
     paddingTop: hp(10),
-    left: -wp(70),
     width: wp(188),
     height: hp(246),
-    top: hp(20),
     opacity: 0.5,
     borderBottomColor: theme.colors.WHITE,
     backgroundColor: '#FFFFFF33',

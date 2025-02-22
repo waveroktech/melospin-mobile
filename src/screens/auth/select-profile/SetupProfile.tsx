@@ -1,32 +1,49 @@
-import React, {useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {Box, Button, FormInput, Text} from 'design-system';
-import {AvoidingView, Header, HeaderText, Icon, Screen} from 'shared';
+import {AvoidingView, Header, HeaderText, Icon, Loader, Screen} from 'shared';
 import theme from 'theme';
 import {fontSz, hp, wp} from 'utils';
 import {ScrollView, TouchableOpacity} from 'react-native';
 import {useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import {genres} from 'data';
+import {useMelospinStore, useSetAccountProfile} from 'store';
+import {RouteProp, useRoute} from '@react-navigation/native';
+import {AuthStackParamList} from 'types';
+import {useGetGenre} from 'store/useGenre';
+import {showMessage} from 'react-native-flash-message';
 
 interface FormData {
-  email: string;
-  password: string;
+  brandName: string;
+  instagram: string;
+  tictok: string;
 }
 
 const schema = yup.object().shape({
-  email: yup.string().email().required(),
-  password: yup.string().required(),
+  brandName: yup.string().required(),
+  instagram: yup.string().required(),
+  tictok: yup.string().required(),
 });
 
 export const SetupProfile = () => {
   const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
 
+  const {setIsLoggedIn} = useMelospinStore();
+  const {accountType} =
+    useRoute<RouteProp<AuthStackParamList, 'SetupProfile'>>()?.params;
+
+  const {data: musicGenres, refetch} = useGetGenre();
+
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
+
   const {control, watch} = useForm<FormData>({
     resolver: yupResolver(schema),
     defaultValues: {
-      email: '',
-      password: '',
+      brandName: '',
+      instagram: '',
+      tictok: '',
     },
     mode: 'all',
   });
@@ -42,6 +59,30 @@ export const SetupProfile = () => {
       }
     });
   };
+
+  const {mutate: setAccountProfile, isPending} = useSetAccountProfile({
+    onSuccess: (data: any) => {
+      if (data?.status === 'success') {
+        showMessage({
+          message: 'Account profile created successfully',
+          type: 'success',
+          duration: 2000,
+        });
+        setIsLoggedIn(true);
+      }
+    },
+  });
+
+  const createAccountProfile = useCallback(() => {
+    setAccountProfile({
+      userType: accountType,
+      brandName: form.brandName,
+      instagram: form.instagram,
+      tictok: form.tictok,
+      musicGenres: selectedGenres,
+    });
+  }, [accountType, form, selectedGenres, setAccountProfile]);
+
   return (
     <Screen removeSafeaArea backgroundColor={theme.colors.PRIMARY}>
       <Header hasBackButton goBackText="Back" />
@@ -58,22 +99,22 @@ export const SetupProfile = () => {
               label="Enter brand name"
               autoCapitalize="none"
               control={control}
-              name="email"
-              value={form.email}
+              name="brandName"
+              value={form.brandName}
             />
             <FormInput
               label="Enter Instagram handle (ex @dj_zee)"
               autoCapitalize="none"
               control={control}
-              name="email"
-              value={form.email}
+              name="instagram"
+              value={form.instagram}
             />
             <FormInput
               label="Enter TikTok handle (ex @dj_zee)"
               autoCapitalize="none"
               control={control}
-              name="email"
-              value={form.email}
+              name="tictok"
+              value={form.tictok}
             />
 
             <Box
@@ -90,45 +131,62 @@ export const SetupProfile = () => {
                 flexDirection={'row'}
                 alignItems={'center'}
                 flexWrap={'wrap'}>
-                {genres?.map(genre => {
-                  return (
-                    <Box
-                      key={genre?.id}
-                      flexDirection={'row'}
-                      alignItems={'center'}
-                      mr={2}
-                      py={2}
-                      onPress={() => selectGenre(genre?.title)}
-                      as={TouchableOpacity}
-                      activeOpacity={0.8}
-                      px={2}
-                      borderRadius={hp(24)}
-                      mb={10}
-                      bg={theme.colors.BASE_SECONDARY}>
-                      <Icon
-                        name={
-                          selectedGenres?.includes(genre?.title)
-                            ? 'active-checkbox'
-                            : 'checkbox'
-                        }
-                      />
-                      <Text
-                        pl={2}
-                        variant="body"
-                        fontSize={fontSz(14)}
-                        color={theme.colors.WHITE}>
-                        {genre?.title}
-                      </Text>
-                    </Box>
-                  );
-                })}
+                {musicGenres?.data?.map(
+                  (genre: {_id: string; title: string}) => {
+                    return (
+                      <Box
+                        key={genre?._id}
+                        flexDirection={'row'}
+                        alignItems={'center'}
+                        mr={2}
+                        py={2}
+                        onPress={() => selectGenre(genre?.title)}
+                        as={TouchableOpacity}
+                        activeOpacity={0.8}
+                        px={2}
+                        borderRadius={hp(24)}
+                        mb={10}
+                        bg={theme.colors.BASE_SECONDARY}>
+                        <Icon
+                          name={
+                            selectedGenres?.includes(genre?.title)
+                              ? 'active-checkbox'
+                              : 'checkbox'
+                          }
+                        />
+                        <Text
+                          pl={2}
+                          variant="body"
+                          fontSize={fontSz(14)}
+                          color={theme.colors.WHITE}>
+                          {genre?.title}
+                        </Text>
+                      </Box>
+                    );
+                  },
+                )}
               </Box>
             </Box>
           </Box>
         </ScrollView>
       </AvoidingView>
 
-      <Button title="Done" bg={theme.colors.PRIMARY_100} hasBorder />
+      <Button
+        title="Done"
+        onPress={createAccountProfile}
+        bg={theme.colors.PRIMARY_100}
+        disabled={
+          form.brandName &&
+          form.instagram &&
+          form.tictok &&
+          selectedGenres?.length > 0
+            ? false
+            : true
+        }
+        hasBorder
+      />
+
+      <Loader loading={isPending} />
     </Screen>
   );
 };

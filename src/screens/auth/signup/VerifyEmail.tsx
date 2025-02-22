@@ -1,6 +1,6 @@
-import React, {Fragment, useEffect, useState} from 'react';
+import React, {Fragment, useCallback, useEffect, useState} from 'react';
 import {Box, Button, Text} from 'design-system';
-import {Header, HeaderText, Icon, Screen} from 'shared';
+import {Header, HeaderText, Icon, Loader, Screen} from 'shared';
 import theme from 'theme';
 import {hp, wp} from 'utils';
 import {
@@ -11,8 +11,15 @@ import {
 } from 'react-native-confirmation-code-field';
 import {TouchableOpacity} from 'react-native';
 import {styles} from './style';
-import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {
+  NavigationProp,
+  RouteProp,
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native';
 import {AuthStackParamList} from 'types';
+import {showMessage} from 'react-native-flash-message';
+import {useMelospinStore, useSetVerifyAccount} from 'store';
 
 const CELL_COUNT = 6;
 
@@ -24,7 +31,10 @@ export const VerifyEmail = () => {
     setValue: setOtp,
   });
 
+  const {setAuthToken, setUserData} = useMelospinStore();
   const {navigate} = useNavigation<NavigationProp<AuthStackParamList>>();
+  const {email} =
+    useRoute<RouteProp<AuthStackParamList, 'VerifyEmail'>>()?.params;
 
   const [minutes, setMinutes] = useState<number>(2);
   const [seconds, setSeconds] = useState<number>(0);
@@ -52,6 +62,40 @@ export const VerifyEmail = () => {
     setMinutes(2);
     setSeconds(0);
   };
+
+  const {mutate: verifyAccount, isPending} = useSetVerifyAccount({
+    onSuccess: (data: any) => {
+      console.log(data);
+      if (data?.status === 'failed') {
+        return showMessage({
+          message: data?.message,
+          type: 'danger',
+          duration: 2000,
+        });
+      } else if (data?.status === 'pending') {
+        return showMessage({
+          message: data?.message,
+          type: 'info',
+          duration: 2000,
+        });
+      }
+      setAuthToken(data?.data?.token);
+      setUserData(data?.data);
+      showMessage({
+        message: data.message,
+        type: 'success',
+        duration: 2000,
+      });
+      navigate('SelectProfile');
+    },
+  });
+
+  const handleVerifyAccount = useCallback(() => {
+    verifyAccount({
+      otpEmail: email,
+      otp: otp,
+    });
+  }, [email, otp, verifyAccount]);
 
   return (
     <Screen removeSafeaArea backgroundColor={theme.colors.PRIMARY}>
@@ -106,10 +150,13 @@ export const VerifyEmail = () => {
 
       <Button
         title="Confirm email"
+        disabled={otp.length === 6 ? false : true}
         bg={theme.colors.PRIMARY_100}
-        onPress={() => navigate('SelectProfile')}
+        onPress={handleVerifyAccount}
         hasBorder
       />
+
+      <Loader loading={isPending} />
     </Screen>
   );
 };

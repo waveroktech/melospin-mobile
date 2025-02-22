@@ -20,6 +20,14 @@ export interface AccountSetupRequest {
 }
 
 export interface VerifyAccountRequest {
-  otpEmail: string;
+  otpEmail?: string;
   otp: string;
+}
+
+export interface AccountProfileRequest {
+  userType: string;
+  instagram: string;
+  tictok: string;
+  brandName: string;
+  musicGenres: string[];
 }

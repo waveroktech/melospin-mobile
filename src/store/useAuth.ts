@@ -1,6 +1,7 @@
 import {useMutation} from '@tanstack/react-query';
 import {
   setAccount,
+  setAccountProfile,
   setCreateAccount,
   setLoginAccount,
   setVerifyAccount,
@@ -57,6 +58,20 @@ export const useSetVerifyAccount = ({
 }) => {
   return useMutation({
     mutationFn: setVerifyAccount,
+    onSuccess,
+    onError,
+  });
+};
+
+export const useSetAccountProfile = ({
+  onError,
+  onSuccess,
+}: {
+  onError?: any;
+  onSuccess?: any;
+}) => {
+  return useMutation({
+    mutationFn: setAccountProfile,
     onSuccess,
     onError,
   });

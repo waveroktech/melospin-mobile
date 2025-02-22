@@ -1,4 +1,5 @@
 import {
+  AccountProfileRequest,
   AccountSetupRequest,
   CreateAccountRequest,
   LoginRequest,
@@ -24,4 +25,8 @@ export const setAccount = async (
 
 export const setVerifyAccount = async (payload: VerifyAccountRequest) => {
   return post('auth/verify-account', payload).then(data => data as any);
+};
+
+export const setAccountProfile = async (payload: AccountProfileRequest) => {
+  return post('auth/setup-account', payload).then(data => data as any);
 };
