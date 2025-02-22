@@ -1,6 +1,6 @@
-import React, {Fragment, useEffect, useState} from 'react';
+import React, {Fragment, useCallback, useEffect, useState} from 'react';
 import {Box, Button, Text} from 'design-system';
-import {Header, HeaderText, Icon, Screen} from 'shared';
+import {Header, HeaderText, Icon, Loader, Screen} from 'shared';
 import theme from 'theme';
 import {hp, wp} from 'utils';
 import {
@@ -11,13 +11,23 @@ import {
 } from 'react-native-confirmation-code-field';
 import {TouchableOpacity} from 'react-native';
 import {styles} from './style';
-import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {
+  NavigationProp,
+  RouteProp,
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native';
 import {AuthStackParamList} from 'types';
+import {showMessage} from 'react-native-flash-message';
+import {useInitPasswordReset, useVerifyPasswordReset} from 'store';
 
 const CELL_COUNT = 6;
 
 export const VerifyPasswordReset = () => {
   const {navigate} = useNavigation<NavigationProp<AuthStackParamList>>();
+
+  const {email} =
+    useRoute<RouteProp<AuthStackParamList, 'VerifyPasswordReset'>>()?.params;
 
   const [otp, setOtp] = useState('');
   const ref = useBlurOnFulfill({value: otp, cellCount: CELL_COUNT});
@@ -48,10 +58,63 @@ export const VerifyPasswordReset = () => {
     };
   });
 
-  const resend = async () => {
-    setMinutes(2);
-    setSeconds(0);
-  };
+  const {mutate: initPasswordReset, isPending} = useInitPasswordReset({
+    onSuccess: (data: any) => {
+      console.log(data);
+      if (data?.status === 'failed') {
+        return showMessage({
+          message: data?.message,
+          type: 'danger',
+          duration: 2000,
+        });
+      }
+      if (data?.status === 'success') {
+        setMinutes(2);
+        setSeconds(0);
+        return showMessage({
+          message: data?.message,
+          type: 'success',
+          duration: 2000,
+        });
+      }
+    },
+    onError: (error: any) => {
+      console.error(error);
+    },
+  });
+
+  const handlePasswordReset = useCallback(() => {
+    initPasswordReset({email});
+  }, [email, initPasswordReset]);
+
+  const {mutate: verifyPasswordReset, isPending: passwordVerifyLoading} =
+    useVerifyPasswordReset({
+      onSuccess: (data: any) => {
+        console.log(data);
+        if (data?.status === 'failed') {
+          return showMessage({
+            message: data?.message,
+            type: 'danger',
+            duration: 2000,
+          });
+        }
+        if (data?.status === 'success') {
+          navigate('ResetPassword', {data: data?.data});
+          return showMessage({
+            message: data?.message,
+            type: 'success',
+            duration: 2000,
+          });
+        }
+      },
+      onError: (error: any) => {
+        console.error(error);
+      },
+    });
+
+  const handleVerifyPasswordReset = useCallback(() => {
+    verifyPasswordReset({otpEmail: email, otp});
+  }, [email, otp, verifyPasswordReset]);
 
   return (
     <Screen removeSafeaArea backgroundColor={theme.colors.PRIMARY}>
@@ -91,7 +154,7 @@ export const VerifyPasswordReset = () => {
             <Box
               as={TouchableOpacity}
               activeOpacity={0.8}
-              onPress={() => resend()}>
+              onPress={handlePasswordReset}>
               <Icon name="arrow-right" />
             </Box>
           ) : (
@@ -108,8 +171,12 @@ export const VerifyPasswordReset = () => {
         title="Continue"
         bg={theme.colors.PRIMARY_100}
         hasBorder
-        onPress={() => navigate('ResetPassword')}
+        onPress={handleVerifyPasswordReset}
+        disabled={otp?.length === 6 ? false : true}
+        // onPress={() => navigate('ResetPassword')}
       />
+
+      <Loader loading={isPending || passwordVerifyLoading} />
     </Screen>
   );
 };

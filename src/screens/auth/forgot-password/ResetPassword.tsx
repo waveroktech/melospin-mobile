@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {Header, HeaderText, Screen} from 'shared';
+import React, {useCallback, useState} from 'react';
+import {Header, HeaderText, Loader, Screen} from 'shared';
 import theme from 'theme';
 import {yupResolver} from '@hookform/resolvers/yup';
 import {useForm} from 'react-hook-form';
@@ -7,8 +7,17 @@ import * as yup from 'yup';
 import {Box, Button, FormInput} from 'design-system';
 import {wp} from 'utils';
 import {PasswordResetSuccess} from '../modals';
-import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {
+  NavigationProp,
+  RouteProp,
+  useFocusEffect,
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native';
 import {AuthStackParamList} from 'types';
+import {BackHandler} from 'react-native';
+import {usePasswordReset} from 'store';
+import {showMessage} from 'react-native-flash-message';
 
 interface FormData {
   confirmPassword: string;
@@ -25,7 +34,28 @@ export const ResetPassword = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(true);
   const [open, setOpen] = useState<'password-reset' | ''>('');
 
+  const params =
+    useRoute<RouteProp<AuthStackParamList, 'ResetPassword'>>()?.params;
   const {navigate} = useNavigation<NavigationProp<AuthStackParamList>>();
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        if (open === 'password-reset') {
+          setOpen(''); // Handle modal close
+          return true; // Prevent screen from going back
+        }
+        return false; // Allow default navigation
+      };
+
+      const backHandler = BackHandler.addEventListener(
+        'hardwareBackPress',
+        onBackPress,
+      );
+
+      return () => backHandler.remove();
+    }, [open]),
+  );
 
   const {control, watch} = useForm<FormData>({
     resolver: yupResolver(schema),
@@ -44,6 +74,37 @@ export const ResetPassword = () => {
       navigate('Login');
     }, 400);
   };
+
+  const {mutate: resetPassword, isPending} = usePasswordReset({
+    onSuccess: (data: any) => {
+      console.log(data);
+      if (data?.status === 'failed') {
+        return showMessage({
+          message: data?.message,
+          type: 'danger',
+          duration: 2000,
+        });
+      }
+      if (data?.status === 'success') {
+        setOpen('password-reset');
+      }
+    },
+  });
+
+  const handlePasswordReset = useCallback(() => {
+    resetPassword({
+      identifier: params?.data.identifier,
+      password: form.password,
+      resetToken: params?.data.resetToken,
+      confirmPassword: form.confirmPassword,
+    });
+  }, [
+    form.confirmPassword,
+    form.password,
+    params?.data.identifier,
+    params?.data.resetToken,
+    resetPassword,
+  ]);
 
   return (
     <Screen removeSafeaArea backgroundColor={theme.colors.PRIMARY}>
@@ -82,14 +143,23 @@ export const ResetPassword = () => {
       <Button
         title="Confirm"
         hasBorder
+        disabled={
+          form.confirmPassword === form.password &&
+          form.confirmPassword &&
+          form.password
+            ? false
+            : true
+        }
         bg={theme.colors.PRIMARY_100}
-        onPress={() => setOpen('password-reset')}
+        onPress={handlePasswordReset}
       />
 
       <PasswordResetSuccess
         isVisible={open === 'password-reset'}
         onClose={onClose}
       />
+
+      <Loader loading={isPending} />
     </Screen>
   );
 };

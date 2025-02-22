@@ -3,6 +3,7 @@ import {
   AccountSetupRequest,
   CreateAccountRequest,
   LoginRequest,
+  SetPasswordResetRequest,
   VerifyAccountRequest,
 } from 'interfaces';
 import {post} from './melospin.service';
@@ -29,4 +30,16 @@ export const setVerifyAccount = async (payload: VerifyAccountRequest) => {
 
 export const setAccountProfile = async (payload: AccountProfileRequest) => {
   return post('auth/setup-account', payload).then(data => data as any);
+};
+
+export const setInitPasswordReset = async (payload: {email: string}) => {
+  return post('auth/forgot-password', payload).then(data => data as any);
+};
+
+export const setVerifyPasswordReset = async (payload: VerifyAccountRequest) => {
+  return post('auth/verify-reset-password', payload).then(data => data as any);
+};
+
+export const setNewPassword = async (payload: SetPasswordResetRequest) => {
+  return post('auth/set-password', payload).then(data => data as any);
 };

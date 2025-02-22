@@ -31,3 +31,10 @@ export interface AccountProfileRequest {
   brandName: string;
   musicGenres: string[];
 }
+
+export interface SetPasswordResetRequest {
+  resetToken: string;
+  identifier: string;
+  password: string;
+  confirmPassword: string;
+}

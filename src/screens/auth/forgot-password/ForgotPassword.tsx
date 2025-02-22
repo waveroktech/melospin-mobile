@@ -1,6 +1,6 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 import {Box, Button, FormInput} from 'design-system';
-import {Header, HeaderText, Screen} from 'shared';
+import {Header, HeaderText, Loader, Screen} from 'shared';
 import theme from 'theme';
 import {yupResolver} from '@hookform/resolvers/yup';
 import {useForm} from 'react-hook-form';
@@ -8,6 +8,8 @@ import * as yup from 'yup';
 import {wp} from 'utils';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {AuthStackParamList} from 'types';
+import {useInitPasswordReset} from 'store';
+import {showMessage} from 'react-native-flash-message';
 
 interface FormData {
   email: string;
@@ -29,6 +31,34 @@ export const ForgotPassword = () => {
   });
 
   const form = watch();
+
+  const {mutate: initPasswordReset, isPending} = useInitPasswordReset({
+    onSuccess: (data: any) => {
+      console.log(data);
+      if (data?.status === 'failed') {
+        return showMessage({
+          message: data?.message,
+          type: 'danger',
+          duration: 2000,
+        });
+      }
+      if (data?.status === 'success') {
+        navigate('VerifyPasswordReset', {email: form.email});
+        return showMessage({
+          message: data?.message,
+          type: 'success',
+          duration: 2000,
+        });
+      }
+    },
+    onError: (error: any) => {
+      console.error(error);
+    },
+  });
+
+  const handlePasswordReset = useCallback(() => {
+    initPasswordReset({email: form.email});
+  }, [form.email, initPasswordReset]);
 
   return (
     <Screen removeSafeaArea backgroundColor={theme.colors.PRIMARY}>
@@ -55,8 +85,12 @@ export const ForgotPassword = () => {
         bg={theme.colors.PRIMARY_100}
         title="Send reset code"
         hasBorder
-        onPress={() => navigate('VerifyPasswordReset')}
+        disabled={form?.email ? false : true}
+        // onPress={() => navigate('VerifyPasswordReset')}
+        onPress={handlePasswordReset}
       />
+
+      <Loader loading={isPending} />
     </Screen>
   );
 };

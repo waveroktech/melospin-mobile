@@ -11,8 +11,14 @@ export type AuthStackParamList = {
   Login: undefined;
   VerifyEmail: {email?: string};
   ForgotPassword: undefined;
-  VerifyPasswordReset: undefined;
-  ResetPassword: undefined;
+  VerifyPasswordReset: {email: string};
+  ResetPassword: {
+    data: {
+      identifier: string;
+      message: string;
+      resetToken: string;
+    };
+  };
   SelectProfile: undefined;
   SetupProfile: {accountType: 'artiste' | 'dj'};
 };
