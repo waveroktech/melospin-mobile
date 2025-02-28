@@ -6449,6 +6449,11 @@ react-native-safe-area-context@^5.2.0:
   resolved "https://registry.yarnpkg.com/react-native-safe-area-context/-/react-native-safe-area-context-5.2.0.tgz#60a9faab2a6319a61411a652ed862ec0f59384be"
   integrity sha512-QpcGA6MRKe8Zbpf1hirCBudNQYGsMv0n/CTTROMOFcXbqRUoEXLCsYxUmYKi7JJb3ziL2DbyzWXyH2/gw4Tkfw==
 
+react-native-splash-view@^0.0.9:
+  version "0.0.9"
+  resolved "https://registry.yarnpkg.com/react-native-splash-view/-/react-native-splash-view-0.0.9.tgz#bc767b1c7fe6bd8fcf1e76001070d289f81686b0"
+  integrity sha512-NfPHoKeLfv6t+H7pJf50H6VsrQhfghSBHf8d/olScr1nC6xlrivzRM+dtmY34G1bfo/kq/uVWnmg8N2jIsftpQ==
+
 react-native-svg-transformer@^1.5.0:
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/react-native-svg-transformer/-/react-native-svg-transformer-1.5.0.tgz#75ae4dbdc4b1a1508e75282d54d66900ee5fe3c2"

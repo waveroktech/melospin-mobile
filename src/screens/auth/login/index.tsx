@@ -31,8 +31,8 @@ export const Login = () => {
   const {control, watch} = useForm<FormData>({
     resolver: yupResolver(schema),
     defaultValues: {
-      email: '',
-      password: '',
+      email: __DEV__ ? 'great4u@gmail.com' : '',
+      password: __DEV__ ? 'Password@1' : '',
     },
     mode: 'all',
   });
@@ -57,13 +57,14 @@ export const Login = () => {
           type: 'danger',
           duration: 2000,
         });
+      } else if (data?.status === 'success') {
+        showMessage({
+          message: data.message,
+          type: 'success',
+          duration: 2000,
+        });
+        setIsLoggedIn(true);
       }
-      showMessage({
-        message: data.message,
-        type: 'success',
-        duration: 2000,
-      });
-      setIsLoggedIn(true);
     },
   });
 
