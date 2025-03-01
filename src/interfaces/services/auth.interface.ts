@@ -1,3 +1,5 @@
+import {ApiResponseSingular} from './response.singular.interface';
+
 export interface CreateAccountRequest {
   email: string;
   password: string;
@@ -38,3 +40,27 @@ export interface SetPasswordResetRequest {
   password: string;
   confirmPassword: string;
 }
+
+export interface LoginResponseData {
+  brandName: string;
+  completionPercent: string;
+  connectCount: number;
+  connectedUsers: any[];
+  currentUserType: string;
+  dateJoined: string;
+  email: string;
+  firstName: string;
+  instagram: string;
+  isProfileCompleted: true;
+  lastName: string;
+  musicGenres: string[];
+  profileUrl: string | null;
+  recentUploads: any[];
+  tictok: string;
+  token: string;
+  totalConnections: number;
+  totalPromotions: number;
+  userId: string;
+}
+
+export interface LoginResponse extends ApiResponseSingular<LoginResponseData> {}

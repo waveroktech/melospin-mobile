@@ -26,7 +26,7 @@ export const Login = () => {
   const {navigate} = useNavigation<NavigationProp<AuthStackParamList>>();
   const [showPassword, setShowPassword] = useState(true);
 
-  const {setIsLoggedIn} = useMelospinStore();
+  const {setIsLoggedIn, setAuthToken, setUserData} = useMelospinStore();
 
   const {control, watch} = useForm<FormData>({
     resolver: yupResolver(schema),
@@ -63,6 +63,8 @@ export const Login = () => {
           type: 'success',
           duration: 2000,
         });
+        setAuthToken(data?.data?.token);
+        setUserData(data?.data);
         setIsLoggedIn(true);
       }
     },

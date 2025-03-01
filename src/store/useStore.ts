@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {LoginResponseData} from 'interfaces';
 import {StateCreator, create} from 'zustand';
 import {createJSONStorage, persist} from 'zustand/middleware';
 
@@ -8,7 +9,7 @@ interface MelospinStore {
   authToken: string;
   setAuthToken: (authToken: string) => void;
   logoutUser: () => void;
-  userData: any;
+  userData?: LoginResponseData;
   setUserData: (userData: any) => void;
 }
 
@@ -18,7 +19,7 @@ const melospinSlice: StateCreator<
 > = set => ({
   authToken: '',
   isLoggedIn: false,
-  userData: {},
+  userData: undefined,
 
   setAuthToken: (authToken: string) => set({authToken: authToken}),
   setIsLoggedIn: (isLoggedIn: boolean) => set({isLoggedIn: isLoggedIn}),

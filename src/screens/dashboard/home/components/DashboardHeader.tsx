@@ -34,7 +34,7 @@ export const DashboardHeader = ({title}: DashboardHeaderProps) => {
     }, 400);
   };
   return (
-    <>
+    <Box>
       <Box
         mx={wp(16)}
         flexDirection={'row'}
@@ -129,6 +129,6 @@ export const DashboardHeader = ({title}: DashboardHeaderProps) => {
           </Box>
         </Box>
       )}
-    </>
+    </Box>
   );
 };

@@ -13,6 +13,10 @@ export const images = {
     'dj-3': require('assets/images/djs/dj-3.png'),
     'dj-4': require('assets/images/djs/dj-4.png'),
   },
+  icons: {
+    'active-tick': require('assets/images/icons/active-tick.png'),
+    'inactive-tick': require('assets/images/icons/inactive-tick.png'),
+  },
   releases: {
     'release-1': require('assets/images/releases/release-1.png'),
     'release-2': require('assets/images/releases/release-2.png'),
@@ -20,7 +24,9 @@ export const images = {
   },
   'artist-list': require('assets/images/artist-list.png'),
   artist: require('assets/images/artist.png'),
+  'cover-image': require('assets/images/cover-image.jpeg'),
   dj: require('assets/images/dj.png'),
+  headphones: require('assets/images/headphones.png'),
   spinner: require('assets/images/spinner.png'),
   upload: require('assets/images/upload.jpeg'),
   trending: require('assets/images/trending.png'),

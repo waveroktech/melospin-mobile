@@ -3,6 +3,7 @@ import {
   AccountSetupRequest,
   CreateAccountRequest,
   LoginRequest,
+  LoginResponse,
   SetPasswordResetRequest,
   VerifyAccountRequest,
 } from 'interfaces';
@@ -14,8 +15,10 @@ export const setCreateAccount = async (
   return post('auth/sign-up', payload).then(data => data as any);
 };
 
-export const setLoginAccount = async (payload: LoginRequest): Promise<any> => {
-  return post('auth/login', payload).then(data => data as any);
+export const setLoginAccount = async (
+  payload: LoginRequest,
+): Promise<LoginResponse> => {
+  return post('auth/login', payload).then(data => data as LoginResponse);
 };
 
 export const setAccount = async (
