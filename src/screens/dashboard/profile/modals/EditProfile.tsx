@@ -1,6 +1,6 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {Box, Button, FormInput, Text} from 'design-system';
-import {AvoidingView, BaseModal, ModalHeader} from 'shared';
+import {AvoidingView, BaseModal, Loader, ModalHeader} from 'shared';
 import {fontSz, hp, wp} from 'utils';
 import {Image, ScrollView, TouchableOpacity} from 'react-native';
 import {useForm} from 'react-hook-form';
@@ -8,8 +8,9 @@ import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import theme from 'theme';
 import {useGetGenre} from 'store/useGenre';
-import {useMelospinStore} from 'store';
+import {useGetUserProfile, useMelospinStore, useUserProfileUpdate} from 'store';
 import {styles} from './style';
+import {showMessage} from 'react-native-flash-message';
 
 interface EditProfileProps {
   isVisible: boolean;
@@ -32,8 +33,13 @@ const schema = yup.object().shape({
 
 export const EditProfile = ({isVisible, onClose}: EditProfileProps) => {
   const {data: musicGenres, refetch} = useGetGenre();
+
   const {userData} = useMelospinStore();
 
+  const {data: userProfile, refetch: refetchUserProfile} = useGetUserProfile({
+    userId: userData?.userId,
+  });
+  console.log(userProfile);
   const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
 
   useEffect(() => {
@@ -70,6 +76,46 @@ export const EditProfile = ({isVisible, onClose}: EditProfileProps) => {
       }
     });
   };
+
+  const {mutate: updateProfile, isPending} = useUserProfileUpdate({
+    onSuccess: (data: any) => {
+      if (data?.status === 'failed') {
+        return showMessage({
+          message: data?.message,
+          type: 'danger',
+          duration: 2000,
+        });
+      }
+      if (data?.status === 'success') {
+        showMessage({
+          message: 'Profile updated successfully.',
+          type: 'success',
+          duration: 2000,
+        });
+        refetchUserProfile();
+        // onClose();
+      }
+    },
+  });
+
+  const handleProfileUpdate = useCallback(() => {
+    updateProfile({
+      music_genres: selectedGenres,
+      brandName: form.brandName,
+      twitter: form.tiktok,
+      instagram: form.instagram,
+      user_id: userData?.userId,
+      userType: userData?.currentUserType,
+    });
+  }, [
+    form.brandName,
+    form.instagram,
+    form.tiktok,
+    selectedGenres,
+    updateProfile,
+    userData?.currentUserType,
+    userData?.userId,
+  ]);
   return (
     <BaseModal visible={isVisible} onClose={onClose}>
       <Box py={hp(20)} height={'100%'}>
@@ -168,7 +214,15 @@ export const EditProfile = ({isVisible, onClose}: EditProfileProps) => {
         </AvoidingView>
       </Box>
 
-      <Button title="Save" hasBorder iconName="arrow-right-3" />
+      <Button
+        title="Save"
+        hasBorder
+        onPress={handleProfileUpdate}
+        iconName="arrow-right-3"
+        disabled={form.brandName && selectedGenres?.length > 0 ? false : true}
+      />
+
+      <Loader loading={isPending} />
     </BaseModal>
   );
 };
