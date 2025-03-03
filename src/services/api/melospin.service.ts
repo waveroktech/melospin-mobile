@@ -41,6 +41,7 @@ export const post = async <T>(
   headers?: Record<string, string>,
   query?: Record<string, string>,
 ): Promise<T> => {
+  console.log(headers);
   return postConfig(
     getEndpoint(`${MELOSPIN_ENDPOINT}/${endpoint}`, query),
     data,

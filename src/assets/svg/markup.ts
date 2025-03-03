@@ -389,5 +389,17 @@ export const getMarkup: any = (color?: string) => {
 <path d="M24.875 44.7161L33 51.487L43.8333 37.9453" stroke="#34C759" stroke-width="5.41667" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
 `,
+
+    'song-icon': `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M9 18V5L21 3V16M9 18C9 19.6569 7.65685 21 6 21C4.34315 21 3 19.6569 3 18C3 16.3431 4.34315 15 6 15C7.65685 15 9 16.3431 9 18ZM21 16C21 17.6569 19.6569 19 18 19C16.3431 19 15 17.6569 15 16C15 14.3431 16.3431 13 18 13C19.6569 13 21 14.3431 21 16Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+`,
+
+    'like-song': `<svg width="37" height="37" viewBox="0 0 37 37" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect x="0.5" y="0.5" width="36" height="36" rx="18" stroke="white" stroke-opacity="0.11"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M11.1539 18.1987C10.3491 15.6862 11.2896 12.8145 13.9274 11.9647C15.3149 11.517 16.8464 11.781 17.9999 12.6487C19.0911 11.805 20.6789 11.52 22.0649 11.9647C24.7026 12.8145 25.6491 15.6862 24.8451 18.1987C23.5926 22.1812 17.9999 25.2487 17.9999 25.2487C17.9999 25.2487 12.4484 22.2277 11.1539 18.1987Z" stroke="#FF8CF2" stroke-width="0.5625" stroke-linecap="round" stroke-linejoin="round"/>
+<path opacity="0.4" d="M21 14.5249C21.8025 14.7844 22.3695 15.5007 22.4377 16.3414" stroke="#FF8CF2" stroke-width="0.5625" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+`,
   };
 };

@@ -9,6 +9,7 @@ export const getSingleDiscography = async (payload: {discoId: string}) => {
 };
 
 export const setAddDiscography = async (payload: any) => {
+  console.log(payload, 'payload');
   return post('discographs', payload, {
     'Content-Type': 'multipart/form-data;',
   }).then(data => data as any);

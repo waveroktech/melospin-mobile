@@ -21,4 +21,7 @@ export const styles = StyleSheet.create({
     fontSize: fontSz(16),
     marginLeft: wp(12),
   },
+  contentContainerStyle: {
+    marginTop: hp(20),
+  },
 });

@@ -10,8 +10,9 @@ import {
   pick,
   types,
 } from '@react-native-documents/picker';
-import {useAddDiscography} from 'store';
+import {useMelospinStore} from 'store';
 import {showMessage} from 'react-native-flash-message';
+import Config from 'react-native-config';
 
 interface AddDiscographyProps {
   isVisible: boolean;
@@ -28,6 +29,8 @@ export const AddDiscography = ({
     DocumentPickerResponse | undefined
   >(undefined);
 
+  const {authToken} = useMelospinStore();
+
   const openMediaPicker = async () => {
     const files = await pick({
       allowMultiSelection: false,
@@ -41,38 +44,48 @@ export const AddDiscography = ({
     }
   };
 
-  const {mutate, isPending} = useAddDiscography({
-    onSuccess: (data: any) => {
-      console.log(data);
-      if (data?.status === 'failed') {
-        return showMessage({
-          message: data?.message,
-          type: 'danger',
-          duration: 2000,
-        });
-      } else if (data?.status === 'pending') {
-        return showMessage({
-          message: data?.message,
-          type: 'danger',
-          duration: 2000,
-        });
-      } else {
-        onComplete();
-      }
-    },
-  });
-
   const handleUpload = useCallback(() => {
-    if (selectedFile?.name) {
-      const formData = new FormData();
-      formData.append('media', {
-        uri: selectedFile?.uri,
-        type: selectedFile?.type,
-        name: selectedFile?.name,
+    const myHeaders = new Headers();
+    myHeaders.append('Authorization', `Bearer ${authToken}`);
+
+    const formdata = new FormData();
+    formdata.append('media', {
+      uri: selectedFile?.uri,
+      name: selectedFile?.name,
+      type: selectedFile?.type,
+    });
+
+    const requestOptions = {
+      method: 'POST',
+      headers: myHeaders,
+      body: formdata,
+      redirect: 'follow',
+    };
+
+    //@ts-ignore
+    fetch(`${Config.BASE_URL}/discographs`, requestOptions)
+      .then(response => response.json())
+      .then(result => {
+        if (result) {
+          showMessage({
+            message: `${selectedFile?.name} uploaded successfully`,
+            type: 'success',
+            duration: 2000,
+          });
+          onComplete();
+        }
+      })
+      .catch(error => {
+        console.error(error);
+        showMessage({
+          message: 'Failed to upload file',
+          type: 'danger',
+          duration: 2000,
+        });
       });
-      mutate(formData);
-    }
-  }, [mutate, selectedFile]);
+  }, [authToken, selectedFile, onComplete]);
+
+  console.log(selectedFile);
   return (
     <Box>
       <Modal

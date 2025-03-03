@@ -20,3 +20,10 @@ export function formatNumber(num: number = 0) {
     return num?.toString();
   }
 }
+
+export function removeUUID(filename: string) {
+  return filename.replace(
+    /[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}-/,
+    '',
+  );
+}

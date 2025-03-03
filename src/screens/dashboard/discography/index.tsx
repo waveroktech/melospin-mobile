@@ -32,6 +32,13 @@ export const Discography = () => {
     }, 500);
   };
 
+  const onClose = async () => {
+    refetch();
+    setTimeout(() => {
+      setOpen('');
+    }, 400);
+  };
+
   return (
     <Screen removeSafeaArea backgroundColor={theme.colors.BASE_PRIMARY}>
       <DashboardHeader title="Discography" />
@@ -47,6 +54,7 @@ export const Discography = () => {
 
       <FlatList
         data={data?.data}
+        contentContainerStyle={styles.contentContainerStyle}
         renderItem={({item}) => <DiscographyItem item={item} />}
         ListEmptyComponent={
           <EmptyPromotionContainer
@@ -78,7 +86,7 @@ export const Discography = () => {
 
       <AddedDiscography
         isVisible={open === 'added-discography'}
-        onClose={() => setOpen('')}
+        onClose={onClose}
       />
 
       <Loader loading={isPending} />
