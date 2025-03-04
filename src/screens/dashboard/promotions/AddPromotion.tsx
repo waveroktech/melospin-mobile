@@ -12,6 +12,7 @@ import {styles} from './style';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {DashboardStackParamList} from 'types';
 import {DocumentPickerResponse} from '@react-native-documents/picker';
+import {SelectDiscography} from './modals';
 
 interface FormData {
   spotify?: string;
@@ -27,6 +28,7 @@ const schema = yup.object().shape({
 
 export const AddPromotion = () => {
   const {navigate} = useNavigation<NavigationProp<DashboardStackParamList>>();
+  const [open, setOpen] = useState<'select-audio' | ''>('');
   const [selectedFile, setSelectedFile] = useState<
     DocumentPickerResponse | undefined
   >(undefined);
@@ -47,6 +49,11 @@ export const AddPromotion = () => {
     setSelectedFile(file);
   };
 
+  const onSelectAudio = async (audioFile: any) => {
+    setSelectedFile(audioFile);
+    setOpen('');
+  };
+
   return (
     <Screen removeSafeaArea backgroundColor={theme.colors.BASE_PRIMARY}>
       <Header hasBackText="Set up Promotion" />
@@ -60,8 +67,8 @@ export const AddPromotion = () => {
           />
 
           <FileUpload
-            onSelectFile={handleSelectFile}
             selectedFile={selectedFile}
+            onPress={() => setOpen('select-audio')}
             clearSelectedFile={() => setSelectedFile(undefined)}
           />
 
@@ -132,6 +139,12 @@ export const AddPromotion = () => {
         disabled={selectedFile?.name ? false : true}
         onPress={() => navigate('AddDjs')}
         iconName="arrow-right-white"
+      />
+
+      <SelectDiscography
+        isVisible={open === 'select-audio'}
+        onClose={() => setOpen('')}
+        onSelectAudio={onSelectAudio}
       />
     </Screen>
   );

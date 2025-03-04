@@ -2,7 +2,7 @@ import React from 'react';
 import {Box, Text} from 'design-system';
 import theme from 'theme';
 import {hp, removeUUID, wp} from 'utils';
-import {ImageBackground} from 'react-native';
+import {ImageBackground, TouchableOpacity, View} from 'react-native';
 import {styles} from './style';
 import {Icon} from 'shared';
 
@@ -17,13 +17,21 @@ interface DiscographyItemProps {
     __v: number;
     _id: string;
   };
+  isPressable: boolean;
+  onPress?: () => void;
 }
-export const DiscographyItem = ({item}: DiscographyItemProps) => {
+export const DiscographyItem = ({
+  item,
+  isPressable,
+  onPress,
+}: DiscographyItemProps) => {
   return (
     <Box
       bg={theme.colors.OFF_BLACK_100}
       mb={hp(16)}
       p={hp(20)}
+      as={isPressable ? TouchableOpacity : View}
+      onPress={onPress}
       flexDirection={'row'}
       alignItems={'center'}
       justifyContent={'space-between'}

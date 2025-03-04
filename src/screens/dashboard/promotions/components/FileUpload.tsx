@@ -1,7 +1,7 @@
 import React from 'react';
 import {Box, Text} from 'design-system';
 import theme from 'theme';
-import {fontSz, hp, wp} from 'utils';
+import {fontSz, hp, removeUUID, wp} from 'utils';
 import {Icon} from 'shared';
 import {TouchableOpacity} from 'react-native';
 import {
@@ -11,15 +11,17 @@ import {
 } from '@react-native-documents/picker';
 
 interface FileUploadProps {
-  onSelectFile: (file: any) => void;
+  onSelectFile?: (file: any) => void;
   selectedFile: DocumentPickerResponse | undefined;
   clearSelectedFile: () => void;
+  onPress: () => void;
 }
 
 export const FileUpload = ({
   onSelectFile,
   selectedFile,
   clearSelectedFile,
+  onPress,
 }: FileUploadProps) => {
   const openMediaPicker = async () => {
     const files = await pick({
@@ -30,7 +32,7 @@ export const FileUpload = ({
     });
 
     if (files && files.length > 0) {
-      onSelectFile(files[0]);
+      onSelectFile?.(files[0]);
     }
   };
   return (
@@ -62,7 +64,7 @@ export const FileUpload = ({
               numberOfLines={1}
               variant="body"
               color={theme.colors.WHITE}>
-              {selectedFile?.name}
+              {removeUUID(selectedFile?.name)}
             </Text>
           </Box>
           <Box
@@ -77,7 +79,7 @@ export const FileUpload = ({
           borderWidth={1}
           p={hp(16)}
           as={TouchableOpacity}
-          onPress={openMediaPicker}
+          onPress={onPress}
           activeOpacity={0.8}
           flexDirection={'row'}
           alignItems={'center'}
