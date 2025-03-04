@@ -1,18 +1,27 @@
-import React from 'react';
-import {Icon, Screen} from 'shared';
+import React, {useEffect} from 'react';
+import {Icon, Loader, Screen} from 'shared';
 import {DashboardHeader} from '../home/components';
 import {FlatList, TextInput} from 'react-native';
 import {Box, Button, Text} from 'design-system';
 import {fontSz, hp, wp} from 'utils';
 import theme from 'theme';
 import {styles} from './style';
-import {promotions} from 'data';
 import {EmptyPromotionContainer, PromotionItem} from './components';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {DashboardStackParamList} from 'types';
+import {useUserPromotions} from 'store/usePromotion';
 
 export const Promotions = () => {
   const {navigate} = useNavigation<NavigationProp<DashboardStackParamList>>();
+
+  const {data, refetch, isPending} = useUserPromotions();
+
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
+
+  console.log(data?.data);
+
   return (
     <Screen removeSafeaArea>
       <DashboardHeader title="Promotions" />
@@ -34,7 +43,7 @@ export const Promotions = () => {
         <FlatList
           style={styles.flatListContainer}
           contentContainerStyle={styles.contentContainerStyle}
-          data={promotions}
+          data={data?.data}
           renderItem={({item, index}) => (
             <PromotionItem promotion={item} key={index} />
           )}
@@ -60,6 +69,8 @@ export const Promotions = () => {
         width={wp(160)}
         bottom={20}
       />
+
+      <Loader loading={isPending} />
     </Screen>
   );
 };

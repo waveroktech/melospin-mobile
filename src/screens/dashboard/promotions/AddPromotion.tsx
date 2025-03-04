@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Box, Button, FormInput} from 'design-system';
 import {AvoidingView, Header, HeaderText, Icon, Screen} from 'shared';
 import {fontSz, hp, wp} from 'utils';
@@ -11,6 +11,7 @@ import {yupResolver} from '@hookform/resolvers/yup';
 import {styles} from './style';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {DashboardStackParamList} from 'types';
+import {DocumentPickerResponse} from '@react-native-documents/picker';
 
 interface FormData {
   spotify?: string;
@@ -26,6 +27,9 @@ const schema = yup.object().shape({
 
 export const AddPromotion = () => {
   const {navigate} = useNavigation<NavigationProp<DashboardStackParamList>>();
+  const [selectedFile, setSelectedFile] = useState<
+    DocumentPickerResponse | undefined
+  >(undefined);
 
   const {control, watch} = useForm<FormData>({
     resolver: yupResolver(schema),
@@ -39,8 +43,12 @@ export const AddPromotion = () => {
 
   const form = watch();
 
+  const handleSelectFile = async (file: DocumentPickerResponse) => {
+    setSelectedFile(file);
+  };
+
   return (
-    <Screen removeSafeaArea>
+    <Screen removeSafeaArea backgroundColor={theme.colors.BASE_PRIMARY}>
       <Header hasBackText="Set up Promotion" />
 
       <AvoidingView>
@@ -51,7 +59,11 @@ export const AddPromotion = () => {
             hasIndicatorLevel
           />
 
-          <FileUpload />
+          <FileUpload
+            onSelectFile={handleSelectFile}
+            selectedFile={selectedFile}
+            clearSelectedFile={() => setSelectedFile(undefined)}
+          />
 
           <Box
             borderBottomWidth={0.6}
@@ -117,6 +129,7 @@ export const AddPromotion = () => {
         title="Continue"
         bg={theme.colors.PRIMARY_100}
         hasBorder
+        disabled={selectedFile?.name ? false : true}
         onPress={() => navigate('AddDjs')}
         iconName="arrow-right-white"
       />
