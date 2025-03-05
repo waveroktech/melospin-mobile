@@ -33,7 +33,7 @@ export const SelectDjItem = ({item}: SelectDjItemProps) => {
               variant="bodyBold"
               fontSize={fontSz(14)}
               color={theme.colors.WHITE}>
-              {item?.title}
+              {item?.name}
             </Text>
             <Icon name="verified" />
           </Box>

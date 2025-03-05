@@ -1,19 +1,27 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Box, Button} from 'design-system';
 import {BaseModal, Icon, ModalHeader} from 'shared';
 import {hp} from 'utils';
 import theme from 'theme';
-import {TextInput} from 'react-native';
+import {FlatList, TextInput} from 'react-native';
 import {styles} from './style';
 import {djs} from 'data';
 import {SelectDjItem} from '../components';
-import {FlashList} from '@shopify/flash-list';
+import {useGetDjs} from 'store';
 
 interface SelectDjsProps {
   isVisible: boolean;
   onClose: () => void;
 }
 export const SelectDjs = ({isVisible, onClose}: SelectDjsProps) => {
+  const {data, isPending, refetch} = useGetDjs();
+
+  useEffect(() => {
+    if (isVisible) {
+      refetch();
+    }
+  }, [isVisible, refetch]);
+
   return (
     <BaseModal visible={isVisible} onClose={onClose}>
       <Box py={hp(20)} height={'100%'}>
@@ -32,16 +40,11 @@ export const SelectDjs = ({isVisible, onClose}: SelectDjsProps) => {
             placeholderTextColor={theme.colors.TEXT_INPUT_PLACEHOLDER}
           />
         </Box>
-        <Box height={'100%'}>
-          <FlashList
-            estimatedItemSize={200}
-            ListFooterComponent={<Box pb={hp(240)} />}
-            //@ts-ignore
-            contentContainerStyle={styles.contentContainerStyle}
-            data={djs}
-            renderItem={({item}) => <SelectDjItem item={item} />}
-          />
-        </Box>
+        <FlatList
+          contentContainerStyle={styles.contentContainerStyle}
+          data={data?.data}
+          renderItem={({item}) => <SelectDjItem item={item} />}
+        />
       </Box>
       <Button
         hasBorder

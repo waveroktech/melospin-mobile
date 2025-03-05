@@ -30,7 +30,7 @@ export const AddPromotion = () => {
   const {navigate} = useNavigation<NavigationProp<DashboardStackParamList>>();
   const [open, setOpen] = useState<'select-audio' | ''>('');
   const [selectedFile, setSelectedFile] = useState<
-    DocumentPickerResponse | undefined
+    DocumentPickerResponse | any | undefined
   >(undefined);
 
   const {control, watch} = useForm<FormData>({
@@ -45,13 +45,30 @@ export const AddPromotion = () => {
 
   const form = watch();
 
-  const handleSelectFile = async (file: DocumentPickerResponse) => {
-    setSelectedFile(file);
-  };
-
   const onSelectAudio = async (audioFile: any) => {
     setSelectedFile(audioFile);
     setOpen('');
+  };
+
+  const continueProcess = async () => {
+    const data = {
+      discographyId: selectedFile?._id,
+      externalLinks: [
+        {
+          name: 'appleMusic',
+          link: form.apple,
+        },
+        {
+          name: 'youtubeMusic',
+          link: form.youtube,
+        },
+        {
+          name: 'spotify',
+          link: form.spotify,
+        },
+      ],
+    };
+    navigate('AddDjs', {data});
   };
 
   return (
@@ -92,7 +109,7 @@ export const AddPromotion = () => {
                 containerStyle={styles.inputContainerStyle}
                 control={control}
                 name="spotify"
-                label="Enter Spotify link"
+                label="Enter Spotify Music link"
                 value={form.spotify}
               />
             </Box>
@@ -107,7 +124,7 @@ export const AddPromotion = () => {
               <FormInput
                 containerStyle={styles.inputContainerStyle}
                 control={control}
-                name="spotify"
+                name="apple"
                 label="Enter Apple Music link"
                 value={form.apple}
               />
@@ -123,9 +140,9 @@ export const AddPromotion = () => {
               <FormInput
                 containerStyle={styles.inputContainerStyle}
                 control={control}
-                name="spotify"
-                label="Enter Apple Music link"
-                value={form.apple}
+                name="youtube"
+                label="Enter Youtube Music link"
+                value={form.youtube}
               />
             </Box>
           </Box>
@@ -137,7 +154,7 @@ export const AddPromotion = () => {
         bg={theme.colors.PRIMARY_100}
         hasBorder
         disabled={selectedFile?.name ? false : true}
-        onPress={() => navigate('AddDjs')}
+        onPress={continueProcess}
         iconName="arrow-right-white"
       />
 

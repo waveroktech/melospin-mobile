@@ -8,6 +8,7 @@ import theme from 'theme';
 import {FlashList} from '@shopify/flash-list';
 import {DiscographyItem} from 'screens/dashboard/discography/component';
 import {useGetDiscography} from 'store';
+import {EmptyPromotionContainer} from '../components';
 
 interface SelectDiscographyProps {
   isVisible: boolean;
@@ -64,6 +65,14 @@ export const SelectDiscography = ({
                 item={item}
               />
             )}
+            ListEmptyComponent={
+              <EmptyPromotionContainer
+                icon="empty-folder"
+                containerStyles={{my: hp(100)}}
+                title="No Files uploaded yet"
+                subTitle="You can view all files history as soon as they are made."
+              />
+            }
           />
         </Box>
       </Box>

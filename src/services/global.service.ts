@@ -7,7 +7,6 @@ export const getDefaultHeaders = () => {
   const token = useMelospinStore.getState().authToken;
   if (token) {
     headers.Authorization = `Bearer ${token}`;
-    console.log(token);
   }
 
   return headers;

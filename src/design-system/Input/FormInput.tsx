@@ -234,7 +234,7 @@ const styles = StyleSheet.create({
   textStyle: {
     fontSize: hp(16),
     height: hp(50),
-    width: wp(270),
+    width: wp(230),
     bottom: hp(0),
     color: theme.colors.WHITE,
     fontFamily: theme.font.AvenirNextRegular,

@@ -34,6 +34,17 @@ export type DashboardStackParamList = {
   Dashboard: BottomTabStackParamList;
   Profile: undefined;
   AddPromotion: undefined;
-  AddDjs: undefined;
+  AddDjs: {
+    data: {
+      discographyId: string;
+      promotionLink?: string;
+      externalLinks?: UploadFileLink[];
+    };
+  };
   PromotionBudget: undefined;
 };
+
+interface UploadFileLink {
+  name?: string;
+  link?: string;
+}

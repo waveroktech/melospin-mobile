@@ -11,3 +11,7 @@ export const setUserProfileUpdate = async (
 export const getUserProfile = async (payload: {userId?: string}) => {
   return get(`users/${payload?.userId}`).then(data => data as any);
 };
+
+export const getDJs = async () => {
+  return get('users?userType=dj').then(data => data as any);
+};
