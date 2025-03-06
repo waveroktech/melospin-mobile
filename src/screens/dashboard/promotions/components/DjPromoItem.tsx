@@ -9,9 +9,10 @@ import {Icon} from 'shared';
 
 interface DjPromoItemProps {
   dj: any;
+  removePromoter: (item: any) => void;
 }
 
-export const DjPromoItem = ({dj}: DjPromoItemProps) => {
+export const DjPromoItem = ({dj, removePromoter}: DjPromoItemProps) => {
   return (
     <Box
       mt={hp(20)}
@@ -31,14 +32,21 @@ export const DjPromoItem = ({dj}: DjPromoItemProps) => {
             colors: ['#FFFFFF', '#D73C3C', '#8932F7'],
           }}
           style={styles.gradientContainer}>
-          <Image source={dj.profile} style={styles.imageContainer} />
+          <Image
+            source={
+              dj.profileUrl
+                ? {uri: dj.profileUrl}
+                : theme.images['dj-images']['dj-1']
+            }
+            style={styles.imageContainer}
+          />
         </GradientBorderView>
         <Text
           pl={2}
           variant="body"
           fontSize={fontSz(14)}
           color={theme.colors.WHITE}>
-          {dj.title}
+          {dj.name}
         </Text>
       </Box>
       <Box
@@ -46,6 +54,7 @@ export const DjPromoItem = ({dj}: DjPromoItemProps) => {
         activeOpacity={0.8}
         bg={theme.colors.TEXT_INPUT_BG}
         p={hp(12)}
+        onPress={() => removePromoter(dj)}
         borderRadius={hp(24)}>
         <Icon name="trash" />
       </Box>

@@ -6,7 +6,6 @@ import theme from 'theme';
 import {BackHandler, FlatList, TouchableOpacity} from 'react-native';
 import {DjPromoItem, EmptyPromotionContainer} from './components';
 import {SelectDjs} from './modals';
-import {djs} from 'data';
 import {
   NavigationProp,
   useFocusEffect,
@@ -16,6 +15,7 @@ import {DashboardStackParamList} from 'types';
 
 export const AddDjs = () => {
   const [open, setOpen] = useState<'select-dj' | ''>('');
+  const [activePromoters, setActivePromoters] = useState<any[]>([]);
 
   const {navigate, goBack} =
     useNavigation<NavigationProp<DashboardStackParamList>>();
@@ -38,6 +38,22 @@ export const AddDjs = () => {
       return () => backHandler.remove();
     }, [open]),
   );
+
+  const onComplete = async (selectedDjs: any[]) => {
+    setOpen('');
+    setActivePromoters([...activePromoters, ...selectedDjs]);
+  };
+
+  const continueProcess = async () => {
+    navigate('PromotionBudget');
+  };
+
+  const removePromoter = async (selectedPromoted: any) => {
+    const removeExisting = activePromoters?.filter(
+      d => d?.userId !== selectedPromoted?.userId,
+    );
+    setActivePromoters(removeExisting);
+  };
 
   return (
     <Screen removeSafeaArea>
@@ -90,14 +106,18 @@ export const AddDjs = () => {
         </Text>
         <Box height={hp(500)}>
           <FlatList
-            data={djs?.slice(0, 4)}
+            data={activePromoters}
             renderItem={({item, index}) => (
-              <DjPromoItem dj={item} key={index} />
+              <DjPromoItem
+                dj={item}
+                key={index}
+                removePromoter={removePromoter}
+              />
             )}
             ListEmptyComponent={
               <EmptyPromotionContainer
                 icon="headphones"
-                containerStyles={{my: hp(40)}}
+                containerStyles={{my: hp(50)}}
                 title="No DJs added"
                 subTitle="DJs available for promotions will appear here as you add them to list"
               />
@@ -108,12 +128,17 @@ export const AddDjs = () => {
 
       <Button
         title="Continue"
-        onPress={() => navigate('PromotionBudget')}
+        onPress={continueProcess}
         hasBorder
+        disabled={activePromoters?.length > 0 ? false : true}
         bg={theme.colors.PRIMARY_100}
       />
 
-      <SelectDjs isVisible={open === 'select-dj'} onClose={() => setOpen('')} />
+      <SelectDjs
+        onComplete={onComplete}
+        isVisible={open === 'select-dj'}
+        onClose={() => setOpen('')}
+      />
     </Screen>
   );
 };

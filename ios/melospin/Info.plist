@@ -26,16 +26,18 @@
 	<true/>
 	<key>NSAppTransportSecurity</key>
 	<dict>
-			<key>NSExceptionDomains</key>
-			<dict>
-					<key>http://51.21.193.95:3300</key>
-					<dict>
-							<key>NSIncludesSubdomains</key>
-							<true/>
-							<key>NSAllowsArbitraryLoads</key>
-							<true/>
-					</dict>
-			</dict>
+     <key>NSExceptionDomains</key>
+     <dict>
+         <key>NSExceptionAllowsInsecureHTTPLoads</key>
+         <true/>
+     <key>localhost</key>
+     <dict>
+         <key>NSExceptionAllowsInsecureHTTPLoads</key>
+         <true/>
+     </dict>
+     </dict>
+     <key>NSAllowsArbitraryLoads</key>
+     <true/>
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
