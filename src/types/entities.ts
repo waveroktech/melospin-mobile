@@ -41,7 +41,17 @@ export type DashboardStackParamList = {
       externalLinks?: UploadFileLink[];
     };
   };
-  PromotionBudget: undefined;
+  PromotionBudget: {
+    payload: {
+      activePromoters: any[];
+      discographyId: string;
+      promotionLink?: string;
+      externalLinks?: UploadFileLink[];
+    };
+  };
+  PromotionCheckout: {
+    data: any;
+  };
 };
 
 interface UploadFileLink {

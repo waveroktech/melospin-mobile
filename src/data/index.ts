@@ -161,10 +161,6 @@ export const frequency = [
   },
   {
     id: 2,
-    title: 'Every weekend',
-  },
-  {
-    id: 3,
-    title: 'Every weekend',
+    title: 'Weekend',
   },
 ];

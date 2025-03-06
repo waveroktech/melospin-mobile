@@ -194,6 +194,19 @@ export const FormInput = forwardRef<RNTextInput, FormTextInputProps>(
                   </Box>
                 )}
 
+                {isDate && (
+                  <Box
+                    style={[styles.rightActionContainer, dropDownStyle]}
+                    as={TouchableOpacity}
+                    onPress={() => {
+                      onPressDropDown && onPressDropDown();
+                      onFocus();
+                    }}
+                    activeOpacity={0.8}>
+                    <Icon name="calendar" color={theme.colors.WHITE} />
+                  </Box>
+                )}
+
                 {isLoading && (
                   <Box>
                     <ActivityIndicator

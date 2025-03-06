@@ -8,14 +8,19 @@ import {DjPromoItem, EmptyPromotionContainer} from './components';
 import {SelectDjs} from './modals';
 import {
   NavigationProp,
+  RouteProp,
   useFocusEffect,
   useNavigation,
+  useRoute,
 } from '@react-navigation/native';
 import {DashboardStackParamList} from 'types';
 
 export const AddDjs = () => {
   const [open, setOpen] = useState<'select-dj' | ''>('');
   const [activePromoters, setActivePromoters] = useState<any[]>([]);
+
+  const {data} =
+    useRoute<RouteProp<DashboardStackParamList, 'AddDjs'>>()?.params;
 
   const {navigate, goBack} =
     useNavigation<NavigationProp<DashboardStackParamList>>();
@@ -41,11 +46,20 @@ export const AddDjs = () => {
 
   const onComplete = async (selectedDjs: any[]) => {
     setOpen('');
-    setActivePromoters([...activePromoters, ...selectedDjs]);
+    const mergeUnique = (currentArray: any[], incomingArray: any[]) => [
+      ...new Set([...currentArray, ...incomingArray]),
+    ];
+    let mergedArray = mergeUnique(activePromoters, selectedDjs);
+    setActivePromoters(mergedArray);
   };
 
   const continueProcess = async () => {
-    navigate('PromotionBudget');
+    navigate('PromotionBudget', {
+      payload: {
+        ...data,
+        activePromoters,
+      },
+    });
   };
 
   const removePromoter = async (selectedPromoted: any) => {
@@ -138,6 +152,7 @@ export const AddDjs = () => {
         onComplete={onComplete}
         isVisible={open === 'select-dj'}
         onClose={() => setOpen('')}
+        activePromoters={activePromoters}
       />
     </Screen>
   );

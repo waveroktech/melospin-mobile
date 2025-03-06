@@ -27,3 +27,24 @@ export function removeUUID(filename: string) {
     '',
   );
 }
+
+export function subtractYears(date: Date, years: number) {
+  // 👇 make copy with "Date" constructor
+  const dateCopy = new Date(date);
+  dateCopy.setFullYear(date.getFullYear() - years);
+  return dateCopy;
+}
+
+export const formatNumberWithCommas = (text: string) => {
+  // Remove all non-numeric characters except the decimal point
+  text = text.replace(/[^0-9.]/g, '');
+
+  // Split the number into the integer and decimal parts
+  const parts = text.split('.');
+
+  // Format the integer part with commas
+  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+  // Join the integer and decimal parts
+  return parts.join('.');
+};

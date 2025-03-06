@@ -13,10 +13,30 @@ interface SelectDjsProps {
   isVisible: boolean;
   onClose: () => void;
   onComplete: (selectedDjs: any[]) => void;
+  activePromoters?: any[];
 }
-export const SelectDjs = ({isVisible, onClose, onComplete}: SelectDjsProps) => {
+
+export function useForceUpdate() {
+  const [, setValue] = useState(0);
+  return () => setValue(value => value + 1);
+}
+
+export const SelectDjs = ({
+  isVisible,
+  onClose,
+  onComplete,
+  activePromoters,
+}: SelectDjsProps) => {
   const [selectedDjs, setSelectedDjs] = useState<any[]>([]);
   const {data, isPending, refetch} = useGetDjs();
+
+  useEffect(() => {
+    if (isVisible) {
+      setSelectedDjs(activePromoters || []);
+    }
+  }, [activePromoters, isVisible]);
+
+  const forceUpdate = useForceUpdate();
 
   useEffect(() => {
     if (isVisible) {
@@ -25,19 +45,29 @@ export const SelectDjs = ({isVisible, onClose, onComplete}: SelectDjsProps) => {
   }, [isVisible, refetch]);
 
   const onSelectDj = async (selectedDj: any) => {
-    const checkExisting = selectedDjs?.filter(
+    const checkExisting = selectedDjs?.find(
       d => d?.userId === selectedDj?.userId,
     );
 
-    if (checkExisting?.length > 0) {
-      const removeExisting = selectedDjs?.filter(
-        d => d?.userId !== selectedDj?.userId,
-      );
-      setSelectedDjs(removeExisting);
-    } else {
+    console.log(!checkExisting, 'selectedDj');
+
+    if (checkExisting === undefined) {
       setSelectedDjs([...selectedDjs, selectedDj]);
+      forceUpdate();
+      console.log('we are here');
     }
+
+    // if (checkExisting?.userId) {
+    //   const removeExisting = selectedDjs?.filter(
+    //     d => d?.userId !== selectedDj?.userId,
+    //   );
+    //   setSelectedDjs(removeExisting);
+    // } else {
+    //   setSelectedDjs([...selectedDjs, selectedDj]);
+    // }
   };
+
+  console.log(selectedDjs, 'selectedDjs');
 
   return (
     <BaseModal visible={isVisible} onClose={onClose}>
@@ -63,7 +93,7 @@ export const SelectDjs = ({isVisible, onClose, onComplete}: SelectDjsProps) => {
             data={data?.data}
             renderItem={({item}) => (
               <SelectDjItem
-                onPress={onSelectDj}
+                onPress={() => onSelectDj(item)}
                 selectedDjs={selectedDjs}
                 item={item}
               />

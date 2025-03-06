@@ -17,7 +17,7 @@ interface DiscographyItemProps {
     __v: number;
     _id: string;
   };
-  isPressable: boolean;
+  isPressable?: boolean;
   onPress?: () => void;
 }
 export const DiscographyItem = ({

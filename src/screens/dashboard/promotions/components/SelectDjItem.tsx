@@ -17,14 +17,13 @@ export const SelectDjItem = ({
   onPress,
   selectedDjs,
 }: SelectDjItemProps) => {
-  console.log(selectedDjs, 'selectedDjs ===');
   return (
     <Box
       borderBottomWidth={1}
       p={hp(20)}
       as={TouchableOpacity}
       activeOpacity={0.8}
-      onPress={() => onPress(item)}
+      onPress={onPress}
       flexDirection={'row'}
       alignItems={'center'}
       mb={hp(14)}

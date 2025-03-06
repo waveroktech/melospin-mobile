@@ -8,6 +8,7 @@ import {
   AddPromotion,
   Profile,
   PromotionBudget,
+  PromotionCheckout,
 } from 'screens/dashboard';
 
 const DashboardStack = createStackNavigator<DashboardStackParamList>();
@@ -27,6 +28,10 @@ const DashboardNavigation = () => {
       <DashboardStack.Screen
         name="PromotionBudget"
         component={PromotionBudget}
+      />
+      <DashboardStack.Screen
+        name="PromotionCheckout"
+        component={PromotionCheckout}
       />
     </DashboardStack.Navigator>
   );

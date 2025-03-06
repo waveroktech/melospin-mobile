@@ -23,9 +23,10 @@ export const SelectFrequency = ({
         <ModalHeader modalHeaderText="Frequency" onClose={onClose} />
 
         <Box mt={hp(20)} mx={wp(16)}>
-          {frequency?.map(item => {
+          {frequency?.map((item, index) => {
             return (
               <Box
+                key={index}
                 as={TouchableOpacity}
                 activeOpacity={0.8}
                 onPress={() => onComplete(item.title)}
