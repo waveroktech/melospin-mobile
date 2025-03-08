@@ -89,8 +89,11 @@ export const PromotionBudget = () => {
         navigate('PromotionCheckout', {
           data: {
             amount: form.amount,
+            frequency: form.frequency,
+            startDate: form.startDate,
+            endDate: form.endDate,
+            responseData: response?.data,
             ...payload,
-            ...response?.data,
           },
         });
       }

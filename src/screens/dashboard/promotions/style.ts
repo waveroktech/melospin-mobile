@@ -39,4 +39,19 @@ export const styles = StyleSheet.create({
     width: wp(270),
     marginBottom: 0,
   },
+  gradientContainer: {
+    borderWidth: 0.91,
+    borderRadius: 100,
+    height: 32,
+    width: 32,
+    overflow: 'hidden',
+  },
+  imageContainer: {
+    width: wp(30),
+    height: hp(30),
+    borderRadius: 100,
+  },
+  textDecoration: {
+    textDecorationLine: 'underline',
+  },
 });

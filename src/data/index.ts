@@ -164,3 +164,21 @@ export const frequency = [
     title: 'Weekend',
   },
 ];
+
+export const streamingLinks = [
+  {
+    id: 1,
+    title: 'spotify',
+    icon: 'spotify-icon',
+  },
+  {
+    id: 2,
+    title: 'appleMusic',
+    icon: 'apple-icon',
+  },
+  {
+    id: 3,
+    title: 'youtube',
+    icon: 'youtube-icon',
+  },
+];

@@ -14,3 +14,7 @@ export const setCalculateBiddingSplit = async (payload: any) => {
     data => data as any,
   );
 };
+
+export const setCreatePromotion = async (payload: any) => {
+  return post('promotions', payload).then(data => data as any);
+};

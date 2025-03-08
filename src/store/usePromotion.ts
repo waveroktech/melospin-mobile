@@ -3,6 +3,7 @@ import {
   getPromotions,
   setCalculateBiddingSplit,
   setCalculatePromotionCost,
+  setCreatePromotion,
 } from 'services/api/promotion.service';
 
 export const useUserPromotions = () => {
@@ -36,6 +37,20 @@ export const useCalculateBiddingSplit = ({
 }) => {
   return useMutation({
     mutationFn: setCalculateBiddingSplit,
+    onSuccess,
+    onError,
+  });
+};
+
+export const useCreatePromotion = ({
+  onError,
+  onSuccess,
+}: {
+  onError?: any;
+  onSuccess?: any;
+}) => {
+  return useMutation({
+    mutationFn: setCreatePromotion,
     onSuccess,
     onError,
   });
