@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 import {AvoidingView, Icon, Screen} from 'shared';
 import {DashboardHeader} from '../home/components';
 import {FlatList, ScrollView, TextInput} from 'react-native';
@@ -8,8 +8,22 @@ import {Box, Text} from 'design-system';
 import {fontSz, hp, wp} from 'utils';
 import {styles} from './style';
 import {djs} from 'data';
+import {useGetConnectionRequests, useGetConnections} from 'store';
+import {useFocusEffect} from '@react-navigation/native';
 
 export const Explore = () => {
+  const {data: connections, refetch: refetchConnections} = useGetConnections();
+
+  const {data: connectionRequests, refetch: refetchConnectionRequests} =
+    useGetConnectionRequests();
+
+  useFocusEffect(
+    useCallback(() => {
+      refetchConnections();
+      refetchConnectionRequests();
+    }, [refetchConnections, refetchConnectionRequests]),
+  );
+
   return (
     <Screen removeSafeaArea backgroundColor={theme.colors.BASE_PRIMARY}>
       <DashboardHeader title="Explore" />

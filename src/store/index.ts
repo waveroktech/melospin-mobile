@@ -1,4 +1,5 @@
 export * from './useAuth';
+export * from './useConnect';
 export * from './useDiscography';
 export * from './useGenre';
 export * from './usePromotion';

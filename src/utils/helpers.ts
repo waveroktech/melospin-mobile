@@ -56,11 +56,11 @@ export const queryToObject = (queryString: string) => {
     : queryString;
 
   // Split into key-value pairs
-  return query?.split('&')?.reduce((acc, pair) => {
+  return query?.split('&')?.reduce((acc: {[key: string]: string}, pair) => {
     const [key, value] = pair?.split('=');
     acc[decodeURIComponent(key)] = decodeURIComponent(value || ''); // Handle empty values
     return acc;
-  }, {});
+  }, {} as {[key: string]: string});
 };
 
 export function formatTitleUrl(str: string) {
