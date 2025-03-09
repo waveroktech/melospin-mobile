@@ -50,7 +50,7 @@ export const AddDjs = () => {
       ...new Set([...currentArray, ...incomingArray]),
     ];
     let mergedArray = mergeUnique(activePromoters, selectedDjs);
-    setActivePromoters(mergedArray);
+    setActivePromoters(selectedDjs);
   };
 
   const continueProcess = async () => {

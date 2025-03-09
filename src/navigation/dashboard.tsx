@@ -10,6 +10,7 @@ import {
   PromotionBudget,
   PromotionCheckout,
 } from 'screens/dashboard';
+import {MelospinWebView} from 'shared/MelospinWebview';
 
 const DashboardStack = createStackNavigator<DashboardStackParamList>();
 
@@ -32,6 +33,10 @@ const DashboardNavigation = () => {
       <DashboardStack.Screen
         name="PromotionCheckout"
         component={PromotionCheckout}
+      />
+      <DashboardStack.Screen
+        name="MelospinWebview"
+        component={MelospinWebView}
       />
     </DashboardStack.Navigator>
   );

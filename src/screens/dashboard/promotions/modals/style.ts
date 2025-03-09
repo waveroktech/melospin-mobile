@@ -24,4 +24,13 @@ export const styles = StyleSheet.create({
   contentContainerStyle: {
     marginTop: hp(24),
   },
+  loadingImage: {
+    width: 64,
+    height: 64,
+  },
+  profileImage: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+  },
 });

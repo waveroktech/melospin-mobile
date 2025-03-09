@@ -52,6 +52,7 @@ export type DashboardStackParamList = {
   PromotionCheckout: {
     data: any;
   };
+  MelospinWebview?: {url?: string};
 };
 
 interface UploadFileLink {

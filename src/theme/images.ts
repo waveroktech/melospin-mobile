@@ -27,6 +27,7 @@ export const images = {
   'cover-image': require('assets/images/cover-image.jpeg'),
   dj: require('assets/images/dj.png'),
   headphones: require('assets/images/headphones.png'),
+  loading: require('assets/images/loading.png'),
   spinner: require('assets/images/spinner.png'),
   upload: require('assets/images/upload.jpeg'),
   trending: require('assets/images/trending.png'),

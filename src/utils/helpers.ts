@@ -48,3 +48,27 @@ export const formatNumberWithCommas = (text: string) => {
   // Join the integer and decimal parts
   return parts.join('.');
 };
+
+export const queryToObject = (queryString: string) => {
+  // Remove the leading '?' if it exists
+  const query = queryString?.startsWith('?')
+    ? queryString?.slice(1)
+    : queryString;
+
+  // Split into key-value pairs
+  return query?.split('&')?.reduce((acc, pair) => {
+    const [key, value] = pair?.split('=');
+    acc[decodeURIComponent(key)] = decodeURIComponent(value || ''); // Handle empty values
+    return acc;
+  }, {});
+};
+
+export function formatTitleUrl(str: string) {
+  const firstPart = str?.split('//')[1];
+  const formattedUrl = getStringBeforeSubstring(firstPart, '/');
+  return formattedUrl;
+}
+
+function getStringBeforeSubstring(parentString: string, substring: string) {
+  return parentString?.substring(0, parentString?.indexOf(substring));
+}

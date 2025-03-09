@@ -1,8 +1,13 @@
 /* eslint-disable @typescript-eslint/no-shadow */
 import React, {useCallback, useEffect, useState} from 'react';
-import {Header, Icon, Loader, Screen} from 'shared';
+import {Header, Icon, Screen} from 'shared';
 import theme from 'theme';
-import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
+import {
+  NavigationProp,
+  RouteProp,
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native';
 import {Image, Linking, ScrollView, TouchableOpacity} from 'react-native';
 import {Box, Button, Text} from 'design-system';
 import {hp, wp} from 'utils';
@@ -14,13 +19,17 @@ import {GradientBorderView} from '@good-react-native/gradient-border';
 import {styles} from './style';
 import {useCreatePromotion} from 'store/usePromotion';
 import {showMessage} from 'react-native-flash-message';
+import {PaymentRedirection, WebviewModal} from './modals';
 
 export const PromotionCheckout = () => {
-  const {goBack} = useNavigation();
+  const {goBack, navigate} =
+    useNavigation<NavigationProp<DashboardStackParamList>>();
   const {data} =
     useRoute<RouteProp<DashboardStackParamList, 'PromotionCheckout'>>()?.params;
 
   const [accept, setAccept] = useState(false);
+  const [open, setOpen] = useState<'payment-info' | 'webview' | ''>('');
+  const [url, setUrl] = useState('');
 
   const {data: discographyList, refetch} = useGetDiscography();
 
@@ -55,6 +64,20 @@ export const PromotionCheckout = () => {
           duration: 2000,
         });
       }
+      if (data?.status === 'success') {
+        setOpen('');
+        setTimeout(() => {
+          if (data?.data?.hasPaymentLink) {
+            // navigate('MelospinWebview', {
+            //   url: data?.data?.paymentInfo?.authorization_url,
+            // });
+            setUrl(data?.data?.paymentInfo?.authorization_url);
+            setTimeout(() => {
+              setOpen('webview');
+            }, 300);
+          }
+        }, 400);
+      }
     },
   });
 
@@ -65,11 +88,12 @@ export const PromotionCheckout = () => {
     data?.activePromoters?.map((promoter: any) => {
       promoters.push({promoterId: promoter.userId});
     });
-    console.log(data?.responseData);
     const totalPrice = data?.responseData?.reduce(
       (acc: any, item: {amount: any}) => acc + item.amount,
       0,
     );
+
+    setOpen('payment-info');
 
     mutate({
       promotionId: data?.discographyId,
@@ -87,7 +111,9 @@ export const PromotionCheckout = () => {
     <Screen removeSafeaArea backgroundColor={theme.colors.BASE_PRIMARY}>
       <Header hasBackText="Checkout" onPressLeftIcon={goBack} />
 
-      <ScrollView contentContainerStyle={{paddingBottom: hp(160)}}>
+      <ScrollView
+        contentContainerStyle={{paddingBottom: hp(160)}}
+        showsVerticalScrollIndicator={false}>
         <Box mt={hp(20)}>
           <Text
             variant="bodyBold"
@@ -244,9 +270,10 @@ export const PromotionCheckout = () => {
                     alignItems={'center'}
                     justifyContent={'space-between'}>
                     <Box
-                      p={hp(2)}
+                      p={hp(10)}
                       borderRadius={hp(24)}
                       width={wp(151)}
+                      maxHeight={hp(50)}
                       flexDirection={'row'}
                       alignItems={'center'}
                       bg={theme.colors.TEXT_INPUT_BG}>
@@ -261,13 +288,18 @@ export const PromotionCheckout = () => {
                         />
                       </GradientBorderView>
 
-                      <Text pl={1} variant="body" color={theme.colors.WHITE}>
+                      <Text
+                        pl={1}
+                        numberOfLines={1}
+                        variant="body"
+                        width={wp(100)}
+                        color={theme.colors.WHITE}>
                         {item?.name}
                       </Text>
                     </Box>
 
                     <Box
-                      p={hp(2)}
+                      p={hp(10)}
                       width={wp(140)}
                       borderRadius={hp(24)}
                       height={hp(50)}
@@ -335,7 +367,17 @@ export const PromotionCheckout = () => {
         />
       </Box>
 
-      <Loader loading={isPending} />
+      <PaymentRedirection
+        isLoading={isPending}
+        isVisible={open === 'payment-info'}
+        onClose={() => setOpen('')}
+      />
+
+      <WebviewModal
+        isVisible={open === 'webview'}
+        onClose={() => setOpen('')}
+        url={url}
+      />
     </Screen>
   );
 };

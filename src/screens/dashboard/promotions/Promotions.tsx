@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Icon, Loader, Screen} from 'shared';
 import {DashboardHeader} from '../home/components';
 import {FlatList, TextInput} from 'react-native';
