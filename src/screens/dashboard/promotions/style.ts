@@ -23,6 +23,7 @@ export const styles = StyleSheet.create({
   },
   contentContainerStyle: {
     marginTop: hp(20),
+    paddingBottom: hp(100),
   },
   flatListContainer: {
     height: hp(500),

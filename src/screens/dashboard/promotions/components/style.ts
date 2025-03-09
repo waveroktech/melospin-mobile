@@ -9,6 +9,7 @@ export const styles = StyleSheet.create({
     paddingHorizontal: wp(16),
     borderRadius: hp(24),
     marginBottom: hp(16),
+    marginHorizontal: wp(16),
     flexDirection: 'row',
     alignItems: 'center',
   },

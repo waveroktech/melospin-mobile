@@ -25,12 +25,16 @@ export const Promotions = () => {
   return (
     <Screen removeSafeaArea>
       <DashboardHeader title="Promotions" />
-      <Box mt={hp(20)} mx={wp(16)}>
-        <Text variant="body" fontSize={fontSz(14)} color={theme.colors.WHITE}>
+      <Box mt={hp(20)}>
+        <Text
+          variant="body"
+          px={wp(16)}
+          fontSize={fontSz(14)}
+          color={theme.colors.WHITE}>
           Promo history
         </Text>
 
-        <Box mt={hp(20)} style={styles.searchInputContainer}>
+        <Box mt={hp(20)} mx={wp(16)} style={styles.searchInputContainer}>
           <Icon name="search-icon" />
           <TextInput
             style={styles.searchTextInput}
