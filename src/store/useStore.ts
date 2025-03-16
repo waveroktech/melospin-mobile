@@ -11,6 +11,8 @@ interface MelospinStore {
   logoutUser: () => void;
   userData?: LoginResponseData;
   setUserData: (userData: any) => void;
+  userType: 'dj' | 'artiste' | '';
+  setUserType: (userType: 'dj' | 'artiste') => void;
 }
 
 const melospinSlice: StateCreator<
@@ -20,6 +22,7 @@ const melospinSlice: StateCreator<
   authToken: '',
   isLoggedIn: false,
   userData: undefined,
+  userType: '',
 
   setAuthToken: (authToken: string) => set({authToken: authToken}),
   setIsLoggedIn: (isLoggedIn: boolean) => set({isLoggedIn: isLoggedIn}),
@@ -27,6 +30,7 @@ const melospinSlice: StateCreator<
     set({authToken: '', isLoggedIn: false});
   },
   setUserData: (userData: any) => set({userData: userData}),
+  setUserType: (userType: 'dj' | 'artiste') => set({userType: userType}),
 });
 
 export const useMelospinStore = create<MelospinStore>()(

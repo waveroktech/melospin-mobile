@@ -45,7 +45,6 @@ export const Header = ({
           position={'absolute'}
           left={0}
           borderWidth={1}
-          minWidth={wp(90)}
           px={wp(10)}
           height={hp(40)}
           borderRadius={hp(24)}
@@ -57,12 +56,14 @@ export const Header = ({
           onPress={() =>
             onPressLeftIcon ? onPressLeftIcon() : navigation.goBack()
           }>
-          <Text
-            variant="bodyMedium"
-            fontSize={fontSz(14)}
-            color={theme.colors.WHITE}>
-            {goBackText}
-          </Text>
+          {goBackText && (
+            <Text
+              variant="bodyMedium"
+              fontSize={fontSz(14)}
+              color={theme.colors.WHITE}>
+              {goBackText}
+            </Text>
+          )}
           <Icon name="back-arrow" />
         </Box>
       );

@@ -3,3 +3,4 @@ export * from './discography';
 export * from './home';
 export * from './profile';
 export * from './promotions';
+export * from './settings';

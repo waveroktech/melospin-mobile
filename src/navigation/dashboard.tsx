@@ -6,9 +6,11 @@ import {DashboardStackParamList} from 'types';
 import {
   AddDjs,
   AddPromotion,
+  ChangePassword,
   Profile,
   PromotionBudget,
   PromotionCheckout,
+  Settings,
 } from 'screens/dashboard';
 import {MelospinWebView} from 'shared/MelospinWebview';
 
@@ -38,6 +40,8 @@ const DashboardNavigation = () => {
         name="MelospinWebview"
         component={MelospinWebView}
       />
+      <DashboardStack.Screen name="Settings" component={Settings} />
+      <DashboardStack.Screen name="ChangePassword" component={ChangePassword} />
     </DashboardStack.Navigator>
   );
 };

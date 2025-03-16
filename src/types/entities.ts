@@ -53,6 +53,8 @@ export type DashboardStackParamList = {
     data: any;
   };
   MelospinWebview?: {url?: string};
+  Settings: undefined;
+  ChangePassword: undefined;
 };
 
 interface UploadFileLink {

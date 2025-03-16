@@ -18,7 +18,7 @@ export const DashboardHeader = ({title}: DashboardHeaderProps) => {
   const [open, setOpen] = useState<'profile-options' | ''>('');
   const {navigate} = useNavigation<NavigationProp<DashboardStackParamList>>();
 
-  const {logoutUser} = useMelospinStore();
+  const {logoutUser, userType} = useMelospinStore();
 
   const handleLogout = () => {
     setOpen('');
@@ -31,6 +31,13 @@ export const DashboardHeader = ({title}: DashboardHeaderProps) => {
     setOpen('');
     setTimeout(() => {
       navigate('Profile');
+    }, 400);
+  };
+
+  const goToSettings = async () => {
+    setOpen('');
+    setTimeout(() => {
+      navigate('Settings');
     }, 400);
   };
   return (
@@ -88,7 +95,6 @@ export const DashboardHeader = ({title}: DashboardHeaderProps) => {
           borderBottomLeftRadius={hp(16)}
           borderBottomRightRadius={hp(16)}
           width={wp(145)}
-          height={hp(112)}
           bg={theme.colors.BLACK_DEFAULT}>
           <Box
             height={hp(40)}
@@ -108,6 +114,26 @@ export const DashboardHeader = ({title}: DashboardHeaderProps) => {
               My Profile
             </Text>
           </Box>
+          {userType === 'dj' && (
+            <Box
+              height={hp(40)}
+              px={wp(12)}
+              as={TouchableOpacity}
+              activeOpacity={0.8}
+              onPress={goToSettings}
+              flexDirection={'row'}
+              alignItems={'center'}
+              mb={10}>
+              <Icon name="settings" />
+              <Text
+                pl={2}
+                variant="body"
+                fontSize={fontSz(14)}
+                color={theme.colors.WHITE}>
+                Settings
+              </Text>
+            </Box>
+          )}
           <Box
             height={hp(40)}
             px={wp(12)}
