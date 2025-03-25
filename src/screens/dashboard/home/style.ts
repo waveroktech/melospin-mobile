@@ -1,4 +1,5 @@
 import {StyleSheet} from 'react-native';
+import theme from 'theme';
 import {hp, wp} from 'utils';
 
 export const styles = StyleSheet.create({
@@ -9,5 +10,14 @@ export const styles = StyleSheet.create({
     width: wp(350),
     height: hp(140),
     marginTop: hp(10),
+  },
+  gradientContainer: {
+    borderWidth: 1,
+    borderRadius: hp(24),
+    marginTop: hp(20),
+    backgroundColor: theme.colors.OFF_BLACK_100,
+    height: hp(232),
+    width: wp(343),
+    overflow: 'hidden',
   },
 });

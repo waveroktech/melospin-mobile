@@ -7,6 +7,7 @@ import {
   AddDjs,
   AddPromotion,
   ChangePassword,
+  DJProfile,
   Profile,
   PromotionBudget,
   PromotionCheckout,
@@ -42,6 +43,7 @@ const DashboardNavigation = () => {
       />
       <DashboardStack.Screen name="Settings" component={Settings} />
       <DashboardStack.Screen name="ChangePassword" component={ChangePassword} />
+      <DashboardStack.Screen name="DJProfile" component={DJProfile} />
     </DashboardStack.Navigator>
   );
 };

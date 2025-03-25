@@ -30,7 +30,11 @@ export const DashboardHeader = ({title}: DashboardHeaderProps) => {
   const handleUserProfile = () => {
     setOpen('');
     setTimeout(() => {
-      navigate('Profile');
+      if (userType === 'dj') {
+        navigate('DJProfile');
+      } else {
+        navigate('Profile');
+      }
     }, 400);
   };
 

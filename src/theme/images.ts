@@ -31,4 +31,5 @@ export const images = {
   spinner: require('assets/images/spinner.png'),
   upload: require('assets/images/upload.jpeg'),
   trending: require('assets/images/trending.png'),
+  barcode: require('assets/images/barcode.png'),
 };
