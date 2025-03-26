@@ -9,12 +9,14 @@ interface ModalHeaderProps {
   hasBackIcon?: boolean;
   modalHeaderText?: string;
   onClose?: () => void;
+  iconName?: string;
 }
 
 export const ModalHeader = ({
   onClose,
   hasBackIcon,
   modalHeaderText,
+  iconName,
 }: ModalHeaderProps) => {
   if (hasBackIcon) {
     return (
@@ -25,19 +27,23 @@ export const ModalHeader = ({
         flexDirection={'row'}
         alignItems={'center'}
         borderBottomColor={theme.colors.BASE_SECONDARY}>
-        <Box
-          as={TouchableOpacity}
-          activeOpacity={0.8}
-          onPress={onClose}
-          width={wp(56)}
-          height={hp(40)}
-          borderWidth={1}
-          justifyContent={'center'}
-          alignItems={'center'}
-          borderRadius={hp(24)}
-          borderColor={theme.colors.WHITE}>
-          <Icon name="back-arrow" />
-        </Box>
+        {iconName ? (
+          <Icon name={iconName} />
+        ) : (
+          <Box
+            as={TouchableOpacity}
+            activeOpacity={0.8}
+            onPress={onClose}
+            width={wp(56)}
+            height={hp(40)}
+            borderWidth={1}
+            justifyContent={'center'}
+            alignItems={'center'}
+            borderRadius={hp(24)}
+            borderColor={theme.colors.WHITE}>
+            <Icon name={'back-arrow'} />
+          </Box>
+        )}
         <Text
           variant="bodyMedium"
           pl={wp(10)}

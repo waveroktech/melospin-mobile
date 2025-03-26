@@ -55,4 +55,7 @@ export const styles = StyleSheet.create({
   textDecoration: {
     textDecorationLine: 'underline',
   },
+  scrollViewContainer: {
+    paddingHorizontal: wp(16),
+  },
 });

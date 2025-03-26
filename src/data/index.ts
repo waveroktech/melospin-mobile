@@ -182,3 +182,18 @@ export const streamingLinks = [
     icon: 'youtube-icon',
   },
 ];
+
+export const promotionTabs = [
+  {
+    id: 1,
+    title: 'My Earnings',
+  },
+  {
+    id: 2,
+    title: 'Booking History',
+  },
+  {
+    id: 3,
+    title: 'Settings',
+  },
+];

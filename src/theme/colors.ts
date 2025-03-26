@@ -33,4 +33,6 @@ export const colors = {
   OFF_WHITE_300: '#FFFFFFCC',
   OFF_WHITE_400: '#FFFFFF1A',
   OFF_WHITE_500: '#FFFFFF29',
+  ACCENT_03: '#F9719E80',
+  OFF_PRIMARY_200: '#4F314B',
 };

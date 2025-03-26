@@ -135,6 +135,13 @@ export const EditProfile = ({isVisible, onClose}: EditProfileProps) => {
                 value={form.brandName}
               />
 
+              <FormInput
+                label="Brand name"
+                control={control}
+                name="brandName"
+                value={form.brandName}
+              />
+
               <Box
                 bg={theme.colors.TEXT_INPUT_BG}
                 pt={hp(12)}

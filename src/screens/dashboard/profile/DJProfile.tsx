@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import theme from 'theme';
 import {styles} from './style';
-import {ShareProfile} from './modals';
+import {EditProfile, ShareProfile} from './modals';
 
 export const DJProfile = () => {
   const [open, setOpen] = useState<'share-profile' | 'edit-profile' | ''>('');
@@ -115,7 +115,7 @@ export const DJProfile = () => {
                 px={wp(2)}
                 as={TouchableOpacity}
                 activeOpacity={0.8}
-                onPress={() => setOpen('share-profile')}
+                onPress={() => setOpen('edit-profile')}
                 justifyContent={'space-evenly'}
                 borderColor={theme.colors.WHITE}>
                 <Icon name="edit-profile" />
@@ -255,6 +255,10 @@ export const DJProfile = () => {
 
       <ShareProfile
         isVisible={open === 'share-profile'}
+        onClose={() => setOpen('')}
+      />
+      <EditProfile
+        isVisible={open === 'edit-profile'}
         onClose={() => setOpen('')}
       />
     </Screen>
