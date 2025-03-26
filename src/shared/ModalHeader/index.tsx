@@ -28,7 +28,9 @@ export const ModalHeader = ({
         alignItems={'center'}
         borderBottomColor={theme.colors.BASE_SECONDARY}>
         {iconName ? (
-          <Icon name={iconName} />
+          <Box as={TouchableOpacity} activeOpacity={0.8} onPress={onClose}>
+            <Icon name={iconName} />
+          </Box>
         ) : (
           <Box
             as={TouchableOpacity}

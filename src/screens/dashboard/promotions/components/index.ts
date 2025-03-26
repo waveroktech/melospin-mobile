@@ -1,3 +1,4 @@
+export * from './BankDetails';
 export * from './BookingHistory';
 export * from './DjEarnings';
 export * from './DjPromoItem';
