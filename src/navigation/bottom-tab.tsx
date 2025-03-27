@@ -39,13 +39,12 @@ const BottomTabBar = () => {
       screenOptions={{
         tabBarStyle: {
           height: hp(90),
-          backgroundColor: theme.colors.BASE_SECONDARY,
+          backgroundColor: theme.colors.BOTTOM_TAB_BG,
           borderTopWidth: 0,
           position: 'absolute',
           bottom: hp(20),
-          width: wp(351),
           borderRadius: hp(24),
-          marginLeft: wp(16),
+          marginHorizontal: wp(16),
         },
         tabBarShowLabel: false,
       }}>

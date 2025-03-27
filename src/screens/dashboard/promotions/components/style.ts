@@ -56,4 +56,13 @@ export const styles = StyleSheet.create({
     fontSize: fontSz(16),
     marginLeft: wp(12),
   },
+  transactionImage: {
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  transactionImageStyle: {
+    borderRadius: 8,
+  },
 });

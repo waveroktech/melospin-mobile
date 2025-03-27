@@ -1,12 +1,21 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Box, Text} from 'design-system';
 import {hp, wp} from 'utils';
-import {ScrollView, TextInput, TouchableOpacity} from 'react-native';
+import {FlatList, ScrollView, TextInput, TouchableOpacity} from 'react-native';
 import {Icon} from 'shared';
 import theme from 'theme';
 import {styles} from './style';
+import {PromotionItem} from './PromotionItem';
+import {useUserPromotions} from 'store';
+import {EmptyPromotionContainer} from './EmptyPromotionContainer';
 
 export const BookingHistory = () => {
+  const {data: djPromotions, refetch} = useUserPromotions();
+
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
+
   return (
     <Box mt={hp(20)}>
       <ScrollView>
@@ -43,6 +52,21 @@ export const BookingHistory = () => {
               placeholderTextColor={theme.colors.TEXT_INPUT_PLACEHOLDER}
             />
           </Box>
+
+          <FlatList
+            data={djPromotions?.data}
+            renderItem={({item}) => {
+              return <PromotionItem promotion={item} />;
+            }}
+            ListEmptyComponent={
+              <EmptyPromotionContainer
+                icon="empty-folder"
+                containerStyles={{my: hp(100)}}
+                title="No Promotions"
+                subTitle="You do not have any available promotions"
+              />
+            }
+          />
         </Box>
       </ScrollView>
     </Box>

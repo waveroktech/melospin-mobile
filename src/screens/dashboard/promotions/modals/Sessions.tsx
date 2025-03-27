@@ -88,7 +88,14 @@ export const Sessions = ({isVisible, onClose}: SessionsProps) => {
             </Box>
           </Box>
         </Box>
-        <Button title="Save" isNotBottom mx={wp(16)} hasBorder my={hp(20)} />
+        <Button
+          title="Save"
+          isNotBottom
+          mx={wp(16)}
+          hasBorder
+          onPress={onClose}
+          my={hp(20)}
+        />
       </Box>
     </BaseModal>
   );
