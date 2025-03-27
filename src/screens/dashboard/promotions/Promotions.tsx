@@ -93,9 +93,10 @@ export const Promotions = () => {
             horizontal
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.scrollViewContainer}>
-            {promotionTabs?.map(tab => {
+            {promotionTabs?.map((tab, index) => {
               return (
                 <PromotionButton
+                  key={index}
                   tab={tab}
                   setActiveIndex={setActiveIndex}
                   activeIndex={activeIndex}

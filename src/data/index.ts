@@ -197,3 +197,34 @@ export const promotionTabs = [
     title: 'Settings',
   },
 ];
+
+export const sessions = [
+  {
+    id: 1,
+    title: 'Mondays',
+  },
+  {
+    id: 2,
+    title: 'Tuesdays',
+  },
+  {
+    id: 3,
+    title: 'Wednesdays',
+  },
+  {
+    id: 4,
+    title: 'Thursdays',
+  },
+  {
+    id: 5,
+    title: 'Fridays',
+  },
+  {
+    id: 6,
+    title: 'Saturdays',
+  },
+  {
+    id: 7,
+    title: 'Sundays',
+  },
+];

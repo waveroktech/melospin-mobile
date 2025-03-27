@@ -5,7 +5,11 @@ import {fontSz, hp, wp} from 'utils';
 import {TouchableOpacity} from 'react-native';
 import {Icon} from 'shared';
 
-export const BankDetails = () => {
+interface BankDetailsProps {
+  onPress?: () => void;
+}
+
+export const BankDetails = ({onPress}: BankDetailsProps) => {
   return (
     <Box
       bg={theme.colors.OFF_PRIMARY_200}
@@ -22,7 +26,7 @@ export const BankDetails = () => {
         <Text variant="bodyMedium" color={theme.colors.TEXT_INPUT_PLACEHOLDER}>
           Beneficiary Bank
         </Text>
-        <Box as={TouchableOpacity} activeOpacity={0.8}>
+        <Box as={TouchableOpacity} onPress={onPress} activeOpacity={0.8}>
           <Icon name="edit-bank-icon" />
         </Box>
       </Box>

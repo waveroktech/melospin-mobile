@@ -256,7 +256,7 @@ const styles = StyleSheet.create({
     fontFamily: theme.font.AvenirNextMedium,
   },
   rightActionContainer: {
-    top: hp(5),
+    top: hp(0),
     position: 'absolute',
     right: 0,
     alignSelf: 'center',

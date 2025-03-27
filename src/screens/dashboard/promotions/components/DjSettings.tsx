@@ -1,17 +1,21 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Box, Text} from 'design-system';
 import {fontSz, hp, wp} from 'utils';
 import {ScrollView, TouchableOpacity} from 'react-native';
 import {BankDetails} from './BankDetails';
 import {Icon} from 'shared';
 import theme from 'theme';
+import {AddBank, BookingRate, Sessions} from '../modals';
 
 export const DjSettings = () => {
+  const [open, setOpen] = useState<
+    'add-bank' | 'booking-rate' | 'sessions' | ''
+  >('');
   return (
     <Box mt={hp(20)} height={hp(800)}>
       <ScrollView>
         <Box mx={wp(16)}>
-          <BankDetails />
+          <BankDetails onPress={() => setOpen('add-bank')} />
 
           <Box
             mt={hp(20)}
@@ -30,7 +34,10 @@ export const DjSettings = () => {
                 color={theme.colors.TEXT_INPUT_PLACEHOLDER}>
                 Booking rate
               </Text>
-              <Box as={TouchableOpacity} activeOpacity={0.8}>
+              <Box
+                as={TouchableOpacity}
+                onPress={() => setOpen('booking-rate')}
+                activeOpacity={0.8}>
                 <Icon name="edit-bank-icon" />
               </Box>
             </Box>
@@ -62,7 +69,10 @@ export const DjSettings = () => {
                 color={theme.colors.TEXT_INPUT_PLACEHOLDER}>
                 Sessions
               </Text>
-              <Box as={TouchableOpacity} activeOpacity={0.8}>
+              <Box
+                as={TouchableOpacity}
+                onPress={() => setOpen('sessions')}
+                activeOpacity={0.8}>
                 <Icon name="edit-bank-icon" />
               </Box>
             </Box>
@@ -102,6 +112,13 @@ export const DjSettings = () => {
           </Box>
         </Box>
       </ScrollView>
+
+      <AddBank isVisible={open === 'add-bank'} onClose={() => setOpen('')} />
+      <BookingRate
+        isVisible={open === 'booking-rate'}
+        onClose={() => setOpen('')}
+      />
+      <Sessions isVisible={open === 'sessions'} onClose={() => setOpen('')} />
     </Box>
   );
 };
