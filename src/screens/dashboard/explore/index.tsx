@@ -15,6 +15,7 @@ import {djs} from 'data';
 import {
   useGetConnectionRequests,
   useGetConnections,
+  useGetDjs,
   useMelospinStore,
 } from 'store';
 import {useFocusEffect} from '@react-navigation/native';
@@ -23,6 +24,7 @@ import {ConnectionRequests} from './modals';
 export const Explore = () => {
   const [open, setOpen] = useState<'dj-connects' | ''>('');
   const {data: connections, refetch: refetchConnections} = useGetConnections();
+  const {data, isPending, refetch} = useGetDjs();
 
   const {data: connectionRequests, refetch: refetchConnectionRequests} =
     useGetConnectionRequests();
@@ -32,8 +34,9 @@ export const Explore = () => {
   useFocusEffect(
     useCallback(() => {
       refetchConnections();
+      refetch();
       refetchConnectionRequests();
-    }, [refetchConnections, refetchConnectionRequests]),
+    }, [refetchConnections, refetchConnectionRequests, refetch]),
   );
 
   return (
@@ -80,7 +83,29 @@ export const Explore = () => {
         </AvoidingView>
       ) : (
         <ScrollView>
-          <DjConnectHeader onPress={() => setOpen('dj-connects')} />
+          <DjConnectHeader
+            onPress={() => setOpen('dj-connects')}
+            requestCount={connectionRequests?.data?.connectionRequests}
+            connectCount={connections?.data?.length}
+          />
+
+          <Box
+            borderTopWidth={1}
+            pt={hp(20)}
+            flexDirection={'row'}
+            alignItems={'center'}
+            borderColor={theme.colors.BASE_SECONDARY}
+            mx={wp(20)}
+            mt={hp(30)}>
+            <Icon name="explore-dj" />
+            <Text
+              pl={wp(10)}
+              variant="bodyMedium"
+              fontSize={fontSz(14)}
+              color={theme.colors.WHITE}>
+              Explore DJs
+            </Text>
+          </Box>
         </ScrollView>
       )}
 

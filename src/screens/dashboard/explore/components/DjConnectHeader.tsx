@@ -6,12 +6,21 @@ import {Image} from 'react-native';
 import {styles} from './style';
 import {Icon} from 'shared';
 import {GradientBorderView} from '@good-react-native/gradient-border';
+import {useMelospinStore} from 'store';
+import moment from 'moment';
 
 interface DjConnectHeaderProps {
   onPress: () => void;
+  requestCount: number;
+  connectCount?: number;
 }
 
-export const DjConnectHeader = ({onPress}: DjConnectHeaderProps) => {
+export const DjConnectHeader = ({
+  onPress,
+  connectCount,
+  requestCount,
+}: DjConnectHeaderProps) => {
+  const {userData} = useMelospinStore();
   return (
     <Box
       bg={theme.colors.BASE_SECONDARY}
@@ -34,7 +43,7 @@ export const DjConnectHeader = ({onPress}: DjConnectHeaderProps) => {
                 fontSize={fontSz(16)}
                 fontFamily={theme.font.AvenirNextSemiBold}
                 color={theme.colors.WHITE}>
-                DJ Zenzee
+                {userData?.brandName}
               </Text>
               <Box top={0.5} ml={1}>
                 <Icon name="verified" />
@@ -45,7 +54,8 @@ export const DjConnectHeader = ({onPress}: DjConnectHeaderProps) => {
               variant="body"
               fontSize={fontSz(16)}
               color={theme.colors.TEXT_INPUT_PLACEHOLDER}>
-              @djzenzee
+              {userData?.currentUserType}_{userData?.firstName}_
+              {userData?.lastName}
             </Text>
           </Box>
         </Box>
@@ -81,7 +91,7 @@ export const DjConnectHeader = ({onPress}: DjConnectHeaderProps) => {
             fontSize={fontSz(14)}
             color={theme.colors.WHITE}
             px={1}>
-            100 Connects
+            {connectCount} Connects
           </Text>
         </Box>
         <Box
@@ -99,7 +109,7 @@ export const DjConnectHeader = ({onPress}: DjConnectHeaderProps) => {
             fontSize={fontSz(13)}
             color={theme.colors.WHITE}
             px={1}>
-            Joined Oct 2024
+            Joined {moment(userData?.dateJoined).format('MMM YYYY')}
           </Text>
         </Box>
       </Box>
@@ -110,7 +120,7 @@ export const DjConnectHeader = ({onPress}: DjConnectHeaderProps) => {
         width={wp(320)}
         icon="connection-count"
         onPress={onPress}
-        title={'Connection Requests (10+)'}
+        title={`Connection Requests (${requestCount}+)`}
         fontStyle={{
           paddingLeft: wp(10),
           fontSize: fontSz(14),
