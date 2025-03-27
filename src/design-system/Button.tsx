@@ -29,6 +29,7 @@ interface Props extends BoxProps {
   borderColor?: string;
   iconName?: string;
   isLoading?: boolean;
+  icon?: string;
 }
 
 export const Button = ({
@@ -48,6 +49,7 @@ export const Button = ({
   hasIcon,
   iconName,
   isLoading,
+  icon,
   ...props
 }: Props) => {
   return (
@@ -85,13 +87,16 @@ export const Button = ({
               flexDirection={'row'}
               alignItems={'center'}
               justifyContent={hasIcon ? 'center' : 'space-between'}>
-              <Text
-                color={disabled ? theme.colors.WHITE : textColor || 'white'}
-                variant={textVariant || 'bodyMedium'}
-                fontSize={fontSz(14)}
-                style={fontStyle}>
-                {title}
-              </Text>
+              <Box flexDirection={'row'} alignItems={'center'}>
+                {icon && <Icon name={icon} />}
+                <Text
+                  color={disabled ? theme.colors.WHITE : textColor || 'white'}
+                  variant={textVariant || 'bodyMedium'}
+                  fontSize={fontSz(14)}
+                  style={fontStyle}>
+                  {title}
+                </Text>
+              </Box>
               {isLoading ? (
                 <ActivityIndicator
                   size={'small'}

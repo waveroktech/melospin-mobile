@@ -50,4 +50,20 @@ export const styles = StyleSheet.create({
     top: -28,
     alignSelf: 'center',
   },
+  djProfileImage: {
+    width: 64,
+    height: 64,
+    borderRadius: 100,
+    borderWidth: 2,
+    borderColor: theme.colors.OFF_WHITE_300,
+  },
+  djProfileContainer: {
+    width: wp(51),
+    height: hp(34),
+    borderWidth: 1,
+    flexDirection: 'row',
+    borderRadius: hp(24),
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });

@@ -710,5 +710,48 @@ export const getMarkup: any = (color?: string) => {
 <path fill-rule="evenodd" clip-rule="evenodd" d="M11.0757 6.2414C10.876 6.05073 10.5595 6.05809 10.3688 6.25784L8.0638 8.67259L5.75881 6.25784C5.56814 6.05809 5.25165 6.05073 5.0519 6.2414C4.85215 6.43207 4.84479 6.74857 5.03546 6.94832L7.70212 9.74197C7.79647 9.84081 7.92716 9.89673 8.0638 9.89673C8.20044 9.89673 8.33113 9.84081 8.42548 9.74197L11.0921 6.94832C11.2828 6.74857 11.2755 6.43207 11.0757 6.2414Z" fill="#F2EEFF"/>
 </svg>
 `,
+
+    'dj-icon': `<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M2.25 10L1 4.25L3.5 5.5L6 2L8.5 5.5L11 4.25L9.75 10H2.25Z" stroke="white" stroke-linejoin="round"/>
+<path d="M6 8.25C6.55228 8.25 7 7.80228 7 7.25C7 6.69772 6.55228 6.25 6 6.25C5.44772 6.25 5 6.69772 5 7.25C5 7.80228 5.44772 8.25 6 8.25Z" stroke="white" stroke-linejoin="round"/>
+</svg>
+`,
+
+    'dj-connects': `<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect x="0.5" y="0.5" width="31" height="31" rx="15.5" stroke="white"/>
+<rect x="4" y="4" width="24" height="24" rx="12" fill="#6D9D43"/>
+<path d="M16.0013 14.6667C17.29 14.6667 18.3346 13.622 18.3346 12.3333C18.3346 11.0447 17.29 10 16.0013 10C14.7126 10 13.668 11.0447 13.668 12.3333C13.668 13.622 14.7126 14.6667 16.0013 14.6667Z" stroke="white" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M12 10.4185C11.3955 10.8401 11 11.5406 11 12.3336C11 13.1823 11.4532 13.9253 12.1308 14.3336" stroke="white" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M20 10.4185C20.6045 10.8401 21 11.5406 21 12.3336C21 13.1265 20.6045 13.827 20 14.2487" stroke="white" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M12 21.3335V22.0002H20V21.3335C20 20.091 20 19.4697 19.797 18.9797C19.5264 18.3263 19.0072 17.8071 18.3538 17.5365C17.8638 17.3335 17.2425 17.3335 16 17.3335C14.7575 17.3335 14.1362 17.3335 13.6462 17.5365C12.9928 17.8071 12.4736 18.3263 12.203 18.9797C12 19.4697 12 20.091 12 21.3335Z" stroke="white" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M22.667 22V21.6C22.667 20.1066 22.667 19.3598 22.3763 18.7894C22.1207 18.2876 21.7127 17.8797 21.2109 17.624" stroke="white" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M9.33203 22V21.6C9.33203 20.1066 9.33203 19.3598 9.62268 18.7894C9.87834 18.2876 10.2863 17.8797 10.7881 17.624" stroke="white" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+`,
+
+    'dj-join-date': `<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect x="0.5" y="0.5" width="31" height="31" rx="15.5" stroke="white"/>
+<rect x="4" y="4" width="24" height="24" rx="12" fill="#AF52DE"/>
+<g clip-path="url(#clip0_2063_22505)">
+<path d="M22.6654 10.6665H9.33203V22.6665H22.6654V10.6665Z" stroke="white" stroke-linejoin="round"/>
+<path d="M13.668 9.3335V12.0002" stroke="white" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M18.332 9.3335V12.0002" stroke="white" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_2063_22505">
+<rect width="16" height="16" fill="white" transform="translate(8 8)"/>
+</clipPath>
+</defs>
+</svg>
+`,
+
+    'connection-count': `<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect x="0.5" y="0.5" width="31" height="31" rx="15.5" stroke="white"/>
+<rect x="4" y="4" width="24" height="24" rx="12" fill="#1A1E1F"/>
+<path d="M14.8333 14.6667C16.122 14.6667 17.1667 13.622 17.1667 12.3333C17.1667 11.0447 16.122 10 14.8333 10C13.5447 10 12.5 11.0447 12.5 12.3333C12.5 13.622 13.5447 14.6667 14.8333 14.6667Z" stroke="white" stroke-linejoin="round"/>
+<path d="M20.5 17.6665V21.6665M18.5 19.6665H22.5" stroke="white" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M17.5 17.3335H14.7667C13.2732 17.3335 12.5265 17.3335 11.956 17.6241C11.4543 17.8798 11.0463 18.2878 10.7907 18.7895C10.5 19.36 10.5 20.1067 10.5 21.6002V22.0002H17.5" stroke="white" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+`,
   };
 };
