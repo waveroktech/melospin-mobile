@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unstable-nested-components */
 import React, {useCallback, useEffect, useState} from 'react';
-import {AvoidingView, Icon, Screen} from 'shared';
+import {AvoidingView, Icon, Loader, Screen} from 'shared';
 import {DashboardHeader} from '../home/components';
 import {FlatList, ScrollView, TextInput} from 'react-native';
 import {
@@ -12,7 +12,6 @@ import theme from 'theme';
 import {Box, Text} from 'design-system';
 import {fontSz, hp, wp} from 'utils';
 import {styles} from './style';
-import {djs} from 'data';
 import {
   useGetConnectionRequests,
   useGetConnections,
@@ -146,13 +145,46 @@ export const Explore = () => {
               Explore DJs
             </Text>
           </Box>
+
+          <FlatList
+            contentContainerStyle={styles.contentContainerStyle}
+            data={filteredData}
+            numColumns={2}
+            renderItem={({item}) => <ConnectDjItem item={item} />}
+            ListEmptyComponent={() => {
+              if (search) {
+                return (
+                  <EmptyPromotionContainer
+                    icon="empty-folder"
+                    title="No DJs found"
+                    containerStyles={{my: hp(20)}}
+                    subTitle="Please try again with a different search"
+                  />
+                );
+              }
+              return (
+                <EmptyPromotionContainer
+                  icon="empty-folder"
+                  title="No DJs found"
+                  containerStyles={{my: hp(20)}}
+                  subTitle="There are no DJs available at the moment"
+                />
+              );
+            }}
+          />
         </ScrollView>
       )}
 
       <ConnectionRequests
         isVisible={open === 'dj-connects'}
         onClose={() => setOpen('')}
+        connectionRequests={connectionRequests?.data?.connections}
+        onComplete={() => {
+          refetchConnectionRequests();
+        }}
       />
+
+      <Loader loading={isPending} />
     </Screen>
   );
 };
