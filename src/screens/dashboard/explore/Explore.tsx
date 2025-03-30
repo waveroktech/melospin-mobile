@@ -1,4 +1,5 @@
-import React, {useCallback, useState} from 'react';
+/* eslint-disable react/no-unstable-nested-components */
+import React, {useCallback, useEffect, useState} from 'react';
 import {AvoidingView, Icon, Screen} from 'shared';
 import {DashboardHeader} from '../home/components';
 import {FlatList, ScrollView, TextInput} from 'react-native';
@@ -20,11 +21,29 @@ import {
 } from 'store';
 import {useFocusEffect} from '@react-navigation/native';
 import {ConnectionRequests} from './modals';
+import {EmptyPromotionContainer} from '../promotions/components';
 
 export const Explore = () => {
   const [open, setOpen] = useState<'dj-connects' | ''>('');
+  const [search, setSearch] = useState('');
   const {data: connections, refetch: refetchConnections} = useGetConnections();
   const {data, isPending, refetch} = useGetDjs();
+
+  const [filteredData, setFilteredData] = useState([]);
+
+  useEffect(() => {
+    setFilteredData(data?.data);
+  }, [data?.data]);
+
+  useEffect(() => {
+    if (search) {
+      setFilteredData(
+        data?.data?.filter((item: {name: string}) =>
+          item.name.toLowerCase().includes(search.toLowerCase()),
+        ),
+      );
+    }
+  }, [data?.data, search]);
 
   const {data: connectionRequests, refetch: refetchConnectionRequests} =
     useGetConnectionRequests();
@@ -67,6 +86,7 @@ export const Explore = () => {
               <Icon name="search-icon" />
               <TextInput
                 style={styles.searchTextInput}
+                onChangeText={setSearch}
                 placeholder="Search by name e.g djzenzee"
                 selectionColor={theme.colors.WHITE}
                 placeholderTextColor={theme.colors.TEXT_INPUT_PLACEHOLDER}
@@ -75,9 +95,29 @@ export const Explore = () => {
 
             <FlatList
               contentContainerStyle={styles.contentContainerStyle}
-              data={djs}
+              data={filteredData}
               numColumns={2}
               renderItem={({item}) => <ConnectDjItem item={item} />}
+              ListEmptyComponent={() => {
+                if (search) {
+                  return (
+                    <EmptyPromotionContainer
+                      icon="empty-folder"
+                      title="No DJs found"
+                      containerStyles={{my: hp(20)}}
+                      subTitle="Please try again with a different search"
+                    />
+                  );
+                }
+                return (
+                  <EmptyPromotionContainer
+                    icon="empty-folder"
+                    title="No DJs found"
+                    containerStyles={{my: hp(20)}}
+                    subTitle="There are no DJs available at the moment"
+                  />
+                );
+              }}
             />
           </ScrollView>
         </AvoidingView>

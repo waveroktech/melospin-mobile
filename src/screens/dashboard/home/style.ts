@@ -20,4 +20,11 @@ export const styles = StyleSheet.create({
     width: wp(343),
     overflow: 'hidden',
   },
+  djProfile: {
+    width: 56,
+    height: 56,
+    borderRadius: 100,
+    borderWidth: 2,
+    borderColor: theme.colors.OFF_BLACK_100,
+  },
 });

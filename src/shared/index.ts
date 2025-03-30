@@ -7,3 +7,4 @@ export * from './Icon';
 export * from './Loader';
 export * from './ModalHeader';
 export * from './Screen';
+export * from './StarRating';

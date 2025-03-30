@@ -1,13 +1,13 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Box, Text} from 'design-system';
-import {Icon, Screen} from 'shared';
+import {Icon, Loader, Screen} from 'shared';
 import theme from 'theme';
 import {Image, ScrollView, TouchableOpacity} from 'react-native';
 import {DashboardHeader, ReleaseItem} from './components';
 import {fontSz, hp, wp} from 'utils';
 import {newReleases} from 'data';
 import {styles} from './style';
-import {useMelospinStore} from 'store';
+import {useGetDjs, useMelospinStore} from 'store';
 import {GradientBorderView} from '@good-react-native/gradient-border';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {BottomTabStackParamList, DashboardStackParamList} from 'types';
@@ -18,6 +18,14 @@ export const Home = () => {
     useNavigation<
       NavigationProp<DashboardStackParamList & BottomTabStackParamList>
     >();
+  const {data, isPending, refetch} = useGetDjs();
+
+  useEffect(() => {
+    if (userType === 'artiste') {
+      refetch();
+    }
+  }, [refetch, userType]);
+
   return (
     <Screen removeSafeaArea backgroundColor={theme.colors.PRIMARY}>
       <ScrollView>
@@ -73,7 +81,44 @@ export const Home = () => {
               />
 
               <Box mt={hp(20)}>
-                <Text>DJs on deck</Text>
+                <Text
+                  variant="bodyMedium"
+                  fontSize={fontSz(16)}
+                  color={theme.colors.WHITE}>
+                  DJs on deck
+                </Text>
+
+                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                  {data?.data?.length &&
+                    data?.data?.slice(0, 4)?.map((dj: any, index: number) => {
+                      return (
+                        <Box
+                          key={index}
+                          mt={hp(10)}
+                          width={wp(86)}
+                          mr={wp(10)}
+                          justifyContent={'center'}
+                          alignItems={'center'}
+                          height={hp(84)}>
+                          <Image
+                            source={theme.images['dj-images']['dj-1']}
+                            style={styles.djProfile}
+                          />
+                          <Text
+                            variant="bodyMedium"
+                            pt={1}
+                            fontFamily={theme.font.AvenirNextSemiBold}
+                            fontSize={fontSz(12)}
+                            numberOfLines={1}
+                            // eslint-disable-next-line react-native/no-inline-styles
+                            style={{textTransform: 'capitalize'}}
+                            color={theme.colors.WHITE}>
+                            {dj?.name}
+                          </Text>
+                        </Box>
+                      );
+                    })}
+                </ScrollView>
               </Box>
             </Box>
           </Box>
@@ -247,6 +292,8 @@ export const Home = () => {
           </Box>
         ) : null}
       </ScrollView>
+
+      <Loader loading={isPending} />
     </Screen>
   );
 };

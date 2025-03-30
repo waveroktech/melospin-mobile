@@ -56,6 +56,9 @@ export type DashboardStackParamList = {
   MelospinWebview?: {url?: string};
   Settings: undefined;
   ChangePassword: undefined;
+  ConnectDJ: {
+    dj?: any;
+  };
 };
 
 interface UploadFileLink {

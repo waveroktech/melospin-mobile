@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
     borderWidth: hp(1),
   },
   tabContainer: {
-    width: wp(80),
+    width: wp(85),
     height: hp(95),
     justifyContent: 'center',
     alignItems: 'center',
