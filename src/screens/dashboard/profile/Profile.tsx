@@ -13,6 +13,7 @@ import {deviceWidth, fontSz, formatNumber, hp, wp} from 'utils';
 import {EmptyPromotionContainer} from '../promotions/components';
 import {EditProfile} from './modals';
 import {useMelospinStore} from 'store';
+import {DiscographyItem} from '../discography/component';
 
 export const Profile = () => {
   const [open, setOpen] = useState<'edit-profile' | ''>('');
@@ -169,20 +170,29 @@ export const Profile = () => {
           </Box>
         </Box>
 
-        <Box mt={hp(20)} mx={wp(16)}>
+        <Box mt={hp(20)}>
           <Text
+            px={wp(16)}
             variant="bodyMedium"
             fontFamily={theme.font.AvenirNextSemiBold}
             color={theme.colors.WHITE}>
             Latest Releases
           </Text>
 
-          <EmptyPromotionContainer
-            icon="empty-folder"
-            containerStyles={{my: hp(40)}}
-            title="No Releases Uploaded"
-            subTitle="You can view all audio files as soon as they are uploaded your library"
-          />
+          {userData?.recentUploads?.length === 0 ? (
+            <EmptyPromotionContainer
+              icon="empty-folder"
+              containerStyles={{my: hp(40)}}
+              title="No Releases Uploaded"
+              subTitle="You can view all audio files as soon as they are uploaded your library"
+            />
+          ) : (
+            <Box mt={hp(20)}>
+              {userData?.recentUploads?.slice(0, 5)?.map(item => (
+                <DiscographyItem item={item} />
+              ))}
+            </Box>
+          )}
         </Box>
       </ScrollView>
 

@@ -44,7 +44,7 @@ const BottomTabBar = () => {
           position: 'absolute',
           bottom: hp(20),
           borderRadius: hp(24),
-          marginHorizontal: wp(16),
+          marginHorizontal: wp(10),
         },
         tabBarShowLabel: false,
       }}>

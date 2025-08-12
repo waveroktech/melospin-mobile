@@ -24,6 +24,8 @@ export const ConnectionRequests = ({
 }: ConnectionRequestsProps) => {
   const flashMessageRef = useRef<FlashMessage>(null);
 
+  console.log(connectionRequests, 'connectionRequests');
+
   const {mutate, isPending} = useSetHandleConnection({
     onSuccess: (data: any) => {
       if (data?.status === 'success') {

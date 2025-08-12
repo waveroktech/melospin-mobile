@@ -21,11 +21,17 @@ interface FormData {
 }
 
 const schema = yup.object().shape({
-  firstName: yup.string().required(),
-  lastName: yup.string().required(),
-  email: yup.string().email().required(),
-  password: yup.string().required(),
-  confirmPassword: yup.string().required(),
+  firstName: yup.string().required('First name is required'),
+  lastName: yup.string().required('Last name is required'),
+  email: yup.string().email().required('Email is required'),
+  password: yup
+    .string()
+    .required('Password is required')
+    .min(8, 'Password must be at least 8 characters long'),
+  confirmPassword: yup
+    .string()
+    .required('Confirm password is required')
+    .oneOf([yup.ref('password')], 'Passwords must match'),
 });
 
 export const Signup = () => {
@@ -34,11 +40,18 @@ export const Signup = () => {
   const [showPassword, setShowPassword] = useState(true);
   const [showConfirmPassword, setShowConfirmPassword] = useState(true);
 
-  const {control, watch} = useForm<FormData>({
+  const {
+    control,
+    watch,
+    formState: {errors},
+  } = useForm<FormData>({
     resolver: yupResolver(schema),
     defaultValues: {
+      firstName: '',
+      lastName: '',
       email: '',
       password: '',
+      confirmPassword: '',
     },
     mode: 'all',
   });
@@ -100,6 +113,7 @@ export const Signup = () => {
               autoCapitalize="none"
               control={control}
               name="firstName"
+              errorText={errors.firstName?.message}
               value={form.firstName}
             />
             <FormInput
@@ -108,6 +122,7 @@ export const Signup = () => {
               autoCapitalize="none"
               control={control}
               name="lastName"
+              errorText={errors.lastName?.message}
               value={form.lastName}
             />
             <FormInput
@@ -116,6 +131,7 @@ export const Signup = () => {
               autoCapitalize="none"
               control={control}
               name="email"
+              errorText={errors.email?.message}
               value={form.email}
             />
             <FormInput
@@ -124,6 +140,7 @@ export const Signup = () => {
               control={control}
               name="password"
               isPassword
+              errorText={errors.password?.message}
               value={form.password}
               secureTextEntry={showPassword}
               onPressPasswordIcon={() => setShowPassword(!showPassword)}
@@ -134,6 +151,7 @@ export const Signup = () => {
               control={control}
               name="confirmPassword"
               isPassword
+              errorText={errors.confirmPassword?.message}
               value={form.password}
               secureTextEntry={showConfirmPassword}
               onPressPasswordIcon={() =>
@@ -175,7 +193,8 @@ export const Signup = () => {
             form?.email &&
             form?.lastName &&
             form?.firstName &&
-            form?.password
+            form?.password &&
+            Object.keys(errors).length === 0
               ? false
               : true
           }

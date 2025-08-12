@@ -7,7 +7,8 @@ import {
 } from '../global.service';
 import Config from 'react-native-config';
 
-const MELOSPIN_ENDPOINT = Config.BASE_URL;
+// const MELOSPIN_ENDPOINT = Config.BASE_URL;
+const MELOSPIN_ENDPOINT = 'http://13.48.183.216:3600';
 
 const defaultHeaders = {};
 

@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import theme from 'theme';
 import {fontSz, hp, wp} from 'utils';
+import {isIos} from 'utils/platform';
 import {Icon} from 'shared';
 import {useController} from 'react-hook-form';
 
@@ -60,12 +61,17 @@ export const FormInput = forwardRef<RNTextInput, FormTextInputProps>(
     },
     ref,
   ) => {
-    const animatedValue = useRef(new Animated.Value(0));
     const {field} = useController({control, defaultValue: '', name});
+    const animatedValue = useRef(new Animated.Value(0));
+
+    console.log(errorText, 'errorText');
 
     useEffect(() => {
+      // Set initial animation state based on field value
       if (field.value) {
-        onFocus();
+        animatedValue.current.setValue(1);
+      } else {
+        animatedValue.current.setValue(0);
       }
     }, [field.value]);
 
@@ -74,7 +80,7 @@ export const FormInput = forwardRef<RNTextInput, FormTextInputProps>(
         {
           translateY: animatedValue?.current?.interpolate({
             inputRange: [0, 1],
-            outputRange: [hp(20), hp(10)],
+            outputRange: [isIos ? hp(18) : hp(20), hp(8)],
             extrapolate: 'clamp',
           }),
         },
@@ -95,7 +101,7 @@ export const FormInput = forwardRef<RNTextInput, FormTextInputProps>(
         inputRange: [0, 1],
         outputRange: [
           theme.colors.ACCENT_04,
-          errorText ? theme.colors.ACCENT_04 : theme.colors.ACCENT_04,
+          errorText ? theme.colors.ERROR_TONE : theme.colors.ACCENT_04,
         ],
       }),
       borderWidth: animatedValue?.current?.interpolate({
@@ -221,7 +227,7 @@ export const FormInput = forwardRef<RNTextInput, FormTextInputProps>(
         </Box>
         <Box flexDirection={'row'}>
           {errorText && (
-            <Text variant="body" bottom={10} color="red">
+            <Text variant="body" bottom={hp(16)} color="red">
               {errorText}
             </Text>
           )}
@@ -241,7 +247,8 @@ const styles = StyleSheet.create({
     marginBottom: hp(24),
   },
   errorContainer: {
-    borderColor: theme.colors.ACCENT_04,
+    borderWidth: 1,
+    borderColor: theme.colors.ERROR_TONE,
     zIndex: 1,
   },
   textStyle: {

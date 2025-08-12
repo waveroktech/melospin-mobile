@@ -18,8 +18,8 @@ interface FormData {
 }
 
 const schema = yup.object().shape({
-  email: yup.string().email().required(),
-  password: yup.string().required(),
+  email: yup.string().email().required('Email is required'),
+  password: yup.string().required('Password is required'),
 });
 
 export const Login = () => {
@@ -29,7 +29,11 @@ export const Login = () => {
   const {setIsLoggedIn, setAuthToken, setUserType, setUserData} =
     useMelospinStore();
 
-  const {control, watch} = useForm<FormData>({
+  const {
+    control,
+    watch,
+    formState: {errors},
+  } = useForm<FormData>({
     resolver: yupResolver(schema),
     defaultValues: {
       email: __DEV__ ? 'great4u@gmail.com' : '',
@@ -101,6 +105,7 @@ export const Login = () => {
           control={control}
           name="email"
           value={form.email}
+          errorText={errors.email?.message}
         />
         <FormInput
           label="Password"
@@ -111,6 +116,7 @@ export const Login = () => {
           value={form.password}
           secureTextEntry={showPassword}
           onPressPasswordIcon={() => setShowPassword(!showPassword)}
+          errorText={errors.password?.message}
         />
       </Box>
 
