@@ -25,6 +25,13 @@ export const styles = StyleSheet.create({
     overflow: 'hidden',
     position: 'absolute',
   },
+  djProfileImage2: {
+    width: wp(100),
+    height: hp(102),
+    alignSelf: 'center',
+    top: 0.5,
+    borderRadius: 100,
+  },
   djProfileImage: {
     width: 100,
     height: 100,

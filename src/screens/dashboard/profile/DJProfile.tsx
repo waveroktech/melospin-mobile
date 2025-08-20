@@ -65,7 +65,8 @@ export const DJProfile = () => {
                 <Box>
                   <Image
                     source={theme.images['dj-images']['dj-1']}
-                    style={styles.djProfileImage}
+                    style={styles.djProfileImage2}
+                    resizeMode="contain"
                   />
                 </Box>
               </GradientBorderView>
