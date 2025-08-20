@@ -6,6 +6,7 @@ import {
   setInitPasswordReset,
   setLoginAccount,
   setNewPassword,
+  setResendOtp,
   setVerifyAccount,
   setVerifyPasswordReset,
 } from 'services/api/auth.service';
@@ -61,6 +62,20 @@ export const useSetVerifyAccount = ({
 }) => {
   return useMutation({
     mutationFn: setVerifyAccount,
+    onSuccess,
+    onError,
+  });
+};
+
+export const useResendOtp = ({
+  onError,
+  onSuccess,
+}: {
+  onError?: any;
+  onSuccess?: any;
+}) => {
+  return useMutation({
+    mutationFn: setResendOtp,
     onSuccess,
     onError,
   });

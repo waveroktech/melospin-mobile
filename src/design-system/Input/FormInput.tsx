@@ -64,8 +64,6 @@ export const FormInput = forwardRef<RNTextInput, FormTextInputProps>(
     const {field} = useController({control, defaultValue: '', name});
     const animatedValue = useRef(new Animated.Value(0));
 
-    console.log(errorText, 'errorText');
-
     useEffect(() => {
       // Set initial animation state based on field value
       if (field.value) {

@@ -22,7 +22,11 @@ const schema = yup.object().shape({
 export const ForgotPassword = () => {
   const {navigate} = useNavigation<NavigationProp<AuthStackParamList>>();
 
-  const {control, watch} = useForm<FormData>({
+  const {
+    control,
+    watch,
+    formState: {errors},
+  } = useForm<FormData>({
     resolver: yupResolver(schema),
     defaultValues: {
       email: '',
@@ -76,6 +80,7 @@ export const ForgotPassword = () => {
           label="Email Address"
           autoCapitalize="none"
           control={control}
+          errorText={errors.email?.message}
           name="email"
           value={form.email}
         />
@@ -85,8 +90,9 @@ export const ForgotPassword = () => {
         bg={theme.colors.PRIMARY_100}
         title="Send reset code"
         hasBorder
-        disabled={form?.email ? false : true}
-        // onPress={() => navigate('VerifyPasswordReset')}
+        disabled={
+          form?.email && Object.keys(errors).length === 0 ? false : true
+        }
         onPress={handlePasswordReset}
       />
 

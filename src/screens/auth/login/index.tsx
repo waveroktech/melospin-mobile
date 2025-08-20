@@ -55,7 +55,6 @@ export const Login = () => {
       });
     },
     onSuccess: (data: any) => {
-      console.log(data);
       if (data?.status === 'failed') {
         return showMessage({
           message: data?.message,
@@ -64,7 +63,7 @@ export const Login = () => {
         });
       } else if (data?.status === 'success') {
         showMessage({
-          message: data.message,
+          message: data?.message,
           type: 'success',
           duration: 2000,
         });
@@ -140,11 +139,14 @@ export const Login = () => {
         <Button
           title="Log in"
           hasBorder
-          // onPress={() => setIsLoggedIn(true)}
           onPress={loginAccount}
           backgroundColor={theme.colors.PRIMARY_100}
           isNotBottom
-          disabled={form.email && form.password ? false : true}
+          disabled={
+            form.email && form.password && Object.keys(errors).length === 0
+              ? false
+              : true
+          }
           width={wp(160)}
         />
       </Box>

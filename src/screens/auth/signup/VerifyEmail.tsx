@@ -19,7 +19,7 @@ import {
 } from '@react-navigation/native';
 import {AuthStackParamList} from 'types';
 import {showMessage} from 'react-native-flash-message';
-import {useMelospinStore, useSetVerifyAccount} from 'store';
+import {useMelospinStore, useResendOtp, useSetVerifyAccount} from 'store';
 
 const CELL_COUNT = 6;
 
@@ -36,8 +36,8 @@ export const VerifyEmail = () => {
   const {email} =
     useRoute<RouteProp<AuthStackParamList, 'VerifyEmail'>>()?.params;
 
-  const [minutes, setMinutes] = useState<number>(2);
-  const [seconds, setSeconds] = useState<number>(0);
+  const [minutes, setMinutes] = useState<number>(0);
+  const [seconds, setSeconds] = useState<number>(5);
 
   useEffect(() => {
     const myInterval = setInterval(() => {
@@ -56,6 +56,31 @@ export const VerifyEmail = () => {
     return () => {
       clearInterval(myInterval);
     };
+  });
+
+  const {mutate: resendOtp, isPending: isResendOtpPending} = useResendOtp({
+    onSuccess: (data: any) => {
+      console.log(data);
+      if (data?.status === 'failed') {
+        return showMessage({
+          message: data?.message,
+          type: 'danger',
+          duration: 2000,
+        });
+      } else if (data?.status === 'pending') {
+        return showMessage({
+          message: data?.message,
+          type: 'info',
+          duration: 2000,
+        });
+      }
+      resend();
+      showMessage({
+        message: data.message,
+        type: 'success',
+        duration: 2000,
+      });
+    },
   });
 
   const resend = async () => {
@@ -97,6 +122,13 @@ export const VerifyEmail = () => {
     });
   }, [email, otp, verifyAccount]);
 
+  const handleResendOtp = useCallback(() => {
+    resendOtp({
+      email: email,
+      useCase: 'verify_account',
+    });
+  }, [email, resendOtp]);
+
   return (
     <Screen removeSafeaArea backgroundColor={theme.colors.PRIMARY}>
       <Header hasBackButton goBackText={'Back'} />
@@ -135,7 +167,7 @@ export const VerifyEmail = () => {
             <Box
               as={TouchableOpacity}
               activeOpacity={0.8}
-              onPress={() => resend()}>
+              onPress={() => handleResendOtp()}>
               <Icon name="arrow-right" />
             </Box>
           ) : (
@@ -156,7 +188,7 @@ export const VerifyEmail = () => {
         hasBorder
       />
 
-      <Loader loading={isPending} />
+      <Loader loading={isPending || isResendOtpPending} />
     </Screen>
   );
 };

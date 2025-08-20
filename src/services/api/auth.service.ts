@@ -4,6 +4,7 @@ import {
   CreateAccountRequest,
   LoginRequest,
   LoginResponse,
+  ResendOtpRequest,
   SetPasswordResetRequest,
   VerifyAccountRequest,
 } from 'interfaces';
@@ -29,6 +30,11 @@ export const setAccount = async (
 
 export const setVerifyAccount = async (payload: VerifyAccountRequest) => {
   return post('auth/verify-account', payload).then(data => data as any);
+};
+
+export const setResendOtp = async (payload: ResendOtpRequest) => {
+  console.log(payload, 'payload');
+  return post('auth/resend-otp', payload).then(data => data as any);
 };
 
 export const setAccountProfile = async (payload: AccountProfileRequest) => {

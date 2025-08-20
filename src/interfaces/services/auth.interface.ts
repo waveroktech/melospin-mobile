@@ -26,6 +26,11 @@ export interface VerifyAccountRequest {
   otp: string;
 }
 
+export interface ResendOtpRequest {
+  email?: string;
+  useCase: 'verify_account' | 'reset_password';
+}
+
 export interface AccountProfileRequest {
   userType: string;
   instagram: string;

@@ -23,8 +23,14 @@ interface FormData {
 }
 
 const schema = yup.object().shape({
-  confirmPassword: yup.string().required(),
-  password: yup.string().required(),
+  password: yup
+    .string()
+    .required()
+    .min(8, 'Password must be at least 8 characters long'),
+  confirmPassword: yup
+    .string()
+    .oneOf([yup.ref('password')], 'Passwords must match')
+    .required('Confirm password is required'),
 });
 
 export const ResetPassword = () => {
@@ -36,7 +42,11 @@ export const ResetPassword = () => {
     useRoute<RouteProp<AuthStackParamList, 'ResetPassword'>>()?.params;
   const {navigate} = useNavigation<NavigationProp<AuthStackParamList>>();
 
-  const {control, watch} = useForm<FormData>({
+  const {
+    control,
+    watch,
+    formState: {errors},
+  } = useForm<FormData>({
     resolver: yupResolver(schema),
     defaultValues: {
       confirmPassword: '',
@@ -103,6 +113,7 @@ export const ResetPassword = () => {
           isPassword
           value={form.password}
           secureTextEntry={showPassword}
+          errorText={errors.password?.message}
           onPressPasswordIcon={() => setShowPassword(!showPassword)}
         />
         <FormInput
@@ -113,6 +124,7 @@ export const ResetPassword = () => {
           isPassword
           value={form.confirmPassword}
           secureTextEntry={showConfirmPassword}
+          errorText={errors.confirmPassword?.message}
           onPressPasswordIcon={() =>
             setShowConfirmPassword(!showConfirmPassword)
           }
