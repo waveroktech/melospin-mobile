@@ -28,7 +28,8 @@ const schema = yup.object().shape({
 export const SetupProfile = () => {
   const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
 
-  const {setIsLoggedIn} = useMelospinStore();
+  const {setIsLoggedIn, setAuthToken, setUserData, setUserType} =
+    useMelospinStore();
   const {accountType} =
     useRoute<RouteProp<AuthStackParamList, 'SetupProfile'>>()?.params;
 
@@ -62,12 +63,16 @@ export const SetupProfile = () => {
 
   const {mutate: setAccountProfile, isPending} = useSetAccountProfile({
     onSuccess: (data: any) => {
+      console.log('data', data);
       if (data?.status === 'success') {
         showMessage({
           message: 'Account profile created successfully',
           type: 'success',
           duration: 2000,
         });
+        setAuthToken(data?.data?.token);
+        setUserData(data?.data);
+        setUserType(data?.data?.currentUserType);
         setIsLoggedIn(true);
       }
     },

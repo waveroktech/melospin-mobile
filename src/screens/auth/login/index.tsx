@@ -11,6 +11,7 @@ import {ErrorInfo, hp, wp} from 'utils';
 import {TouchableOpacity} from 'react-native';
 import {useLogin, useMelospinStore} from 'store';
 import {showMessage} from 'react-native-flash-message';
+import {UpdateUserAccount} from './modals';
 
 interface FormData {
   email: string;
@@ -25,6 +26,7 @@ const schema = yup.object().shape({
 export const Login = () => {
   const {navigate} = useNavigation<NavigationProp<AuthStackParamList>>();
   const [showPassword, setShowPassword] = useState(true);
+  const [open, setOpen] = useState<string | null>(null);
 
   const {setIsLoggedIn, setAuthToken, setUserType, setUserData} =
     useMelospinStore();
@@ -62,18 +64,32 @@ export const Login = () => {
           duration: 2000,
         });
       } else if (data?.status === 'success') {
-        showMessage({
-          message: data?.message,
-          type: 'success',
-          duration: 2000,
-        });
-        setAuthToken(data?.data?.token);
-        setUserData(data?.data);
-        setUserType(data?.data?.currentUserType);
-        setIsLoggedIn(true);
+        if (data?.data?.currentUserType) {
+          showMessage({
+            message: data?.message,
+            type: 'success',
+            duration: 2000,
+          });
+          setAuthToken(data?.data?.token);
+          setUserData(data?.data);
+          setUserType(data?.data?.currentUserType);
+          setIsLoggedIn(true);
+        } else {
+          setAuthToken(data?.data?.token);
+          setUserData(data?.data);
+          setUserType(data?.data?.currentUserType);
+          setOpen('update-user-account');
+        }
       }
     },
   });
+
+  const onComplete = useCallback(() => {
+    setOpen(null);
+    setTimeout(() => {
+      navigate('SelectProfile');
+    }, 1000);
+  }, [navigate]);
 
   const loginAccount = useCallback(() => {
     const data = {
@@ -152,6 +168,12 @@ export const Login = () => {
       </Box>
 
       <Loader loading={isPending} />
+
+      <UpdateUserAccount
+        isVisible={open === 'update-user-account'}
+        onClose={() => setOpen(null)}
+        onComplete={onComplete}
+      />
     </Screen>
   );
 };
