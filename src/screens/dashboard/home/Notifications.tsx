@@ -12,7 +12,7 @@ export const Notifications = () => {
     <Screen removeSafeaArea backgroundColor={theme.colors.BASE_PRIMARY}>
       <Header hasBackText="Notifications" />
 
-      <Box mt={hp(20)} mx={wp(16)}>
+      <Box mt={hp(20)}>
         <Box style={styles.searchInputContainer}>
           <Icon name="search-icon" />
           <TextInput
@@ -24,13 +24,14 @@ export const Notifications = () => {
         </Box>
 
         <SectionList
-          contentContainerStyle={{marginTop: hp(20), paddingBottom: hp(100)}}
+          contentContainerStyle={{marginTop: hp(20), paddingBottom: hp(200)}}
           sections={notifications}
           stickySectionHeadersEnabled={false}
           renderItem={({item}) => (
             <Box
               bg={theme.colors.OFF_BLACK_100}
               mt={hp(16)}
+              mx={wp(16)}
               p={hp(12)}
               borderRadius={hp(24)}>
               <Box flexDirection={'row'} alignItems={'center'}>
@@ -58,6 +59,7 @@ export const Notifications = () => {
           renderSectionHeader={({section: {title}}) => (
             <Box
               mt={hp(16)}
+              mx={wp(16)}
               borderBottomWidth={1}
               borderBottomColor={theme.colors.BASE_SECONDARY}
               pb={hp(16)}>

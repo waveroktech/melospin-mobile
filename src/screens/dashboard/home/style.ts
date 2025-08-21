@@ -37,6 +37,7 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: hp(16),
+    marginHorizontal: wp(16),
   },
   searchTextInput: {
     height: hp(56),

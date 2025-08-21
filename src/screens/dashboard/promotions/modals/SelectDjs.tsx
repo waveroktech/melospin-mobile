@@ -6,6 +6,7 @@ import theme from 'theme';
 import {FlatList, Image, TextInput, TouchableOpacity} from 'react-native';
 import {styles} from './style';
 import {useGetDjs} from 'store';
+import {EmptyPromotionContainer} from '../components';
 
 interface SelectDjsProps {
   isVisible: boolean;
@@ -26,11 +27,13 @@ export const SelectDjs = ({
   activePromoters,
 }: SelectDjsProps) => {
   const [selectedDjs, setSelectedDjs] = useState<any[]>([]);
+  const [searchQuery, setSearchQuery] = useState<string>('');
   const {data, isPending, refetch} = useGetDjs();
 
   useEffect(() => {
     if (isVisible) {
       setSelectedDjs(activePromoters || []);
+      setSearchQuery(''); // Reset search when modal opens
     }
   }, [activePromoters, isVisible]);
 
@@ -41,6 +44,19 @@ export const SelectDjs = ({
       refetch();
     }
   }, [isVisible, refetch]);
+
+  // Filter DJs based on search query
+  const filteredDjs =
+    data?.data?.filter((dj: any) => {
+      if (!searchQuery.trim()) {
+        return true;
+      }
+
+      const query = searchQuery.toLowerCase().trim();
+      const djName = dj?.name?.toLowerCase() || '';
+
+      return djName.includes(query);
+    }) || [];
 
   const onSelectDj = async (selectedDj: any) => {
     const checkExisting = selectedDjs?.find(
@@ -76,13 +92,16 @@ export const SelectDjs = ({
             placeholder="Search DJ"
             selectionColor={theme.colors.WHITE}
             placeholderTextColor={theme.colors.TEXT_INPUT_PLACEHOLDER}
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+            autoCapitalize="none"
+            autoCorrect={false}
           />
         </Box>
         <Box height={'100%'}>
           <FlatList
             extraData={selectedDjs}
-            // estimatedItemSize={200}
-            data={data?.data}
+            data={filteredDjs}
             renderItem={({item, index}: any) => (
               <Box
                 key={index}
@@ -148,6 +167,14 @@ export const SelectDjs = ({
               </Box>
             )}
             ListFooterComponent={<Box pb={hp(200)} />}
+            ListEmptyComponent={
+              <EmptyPromotionContainer
+                icon="empty-folder"
+                containerStyles={{my: hp(40)}}
+                title="No DJs Found"
+                subTitle="You can view all available DJs here"
+              />
+            }
           />
         </Box>
       </Box>
