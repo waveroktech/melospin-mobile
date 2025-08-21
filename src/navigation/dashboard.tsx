@@ -13,6 +13,7 @@ import {
   PromotionBudget,
   PromotionCheckout,
   Settings,
+  Notifications,
 } from 'screens/dashboard';
 import {MelospinWebView} from 'shared/MelospinWebview';
 
@@ -46,6 +47,7 @@ const DashboardNavigation = () => {
       <DashboardStack.Screen name="ChangePassword" component={ChangePassword} />
       <DashboardStack.Screen name="DJProfile" component={DJProfile} />
       <DashboardStack.Screen name="ConnectDJ" component={ConnectDj} />
+      <DashboardStack.Screen name="Notifications" component={Notifications} />
     </DashboardStack.Navigator>
   );
 };

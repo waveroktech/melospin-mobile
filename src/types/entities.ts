@@ -59,6 +59,7 @@ export type DashboardStackParamList = {
   ConnectDJ: {
     dj?: any;
   };
+  Notifications: undefined;
 };
 
 interface UploadFileLink {

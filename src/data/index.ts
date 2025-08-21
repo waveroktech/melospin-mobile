@@ -228,3 +228,46 @@ export const sessions = [
     title: 'Sundays',
   },
 ];
+
+export const notifications = [
+  {
+    title: 'Today',
+    data: [
+      {
+        id: 1,
+        title: 'Promo Request Sent',
+        message: 'Your promotion request to [DJ Name] has been delivered.',
+      },
+    ],
+  },
+  {
+    title: 'Yesterday',
+    data: [
+      {
+        id: 1,
+        title: 'Request Declined',
+        message: '[DJ Name] has rejected your promo request.',
+      },
+      {
+        id: 2,
+        title: 'Promo In Progress',
+        message: '[DJ Name] has started promoting your track “[Song Title].”',
+      },
+    ],
+  },
+  {
+    title: 'July 22, 2025',
+    data: [
+      {
+        id: 1,
+        title: 'Your Track is Live',
+        message: '“[Song Title]” is now live for DJs to view.',
+      },
+      {
+        id: 2,
+        title: 'New Fan Alert',
+        message: '[DJ Name] just followed you. Tap to connect.',
+      },
+    ],
+  },
+];

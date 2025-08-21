@@ -82,7 +82,12 @@ export const DashboardHeader = ({title}: DashboardHeaderProps) => {
               />
             </GradientBorderView>
           </Box>
-          <Icon name="notification" />
+          <Box
+            as={TouchableOpacity}
+            activeOpacity={0.8}
+            onPress={() => navigate('Notifications')}>
+            <Icon name="notification" />
+          </Box>
         </Box>
       </Box>
 
