@@ -276,7 +276,7 @@ export const Home = () => {
               <Image
                 source={theme.images.trending}
                 style={styles.trendingImage}
-                resizeMode="contain"
+                resizeMode="cover"
               />
 
               <Box
@@ -293,7 +293,7 @@ export const Home = () => {
         ) : null}
       </ScrollView>
 
-      <Loader loading={isPending} />
+      {userType === 'artiste' && <Loader loading={isPending} />}
     </Screen>
   );
 };

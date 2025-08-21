@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {useCallback, useRef} from 'react';
 import {Box, Text} from 'design-system';
 import {BaseModal, FlashMessageToast, Loader, ModalHeader} from 'shared';
@@ -8,6 +9,7 @@ import {styles} from './style';
 import {GradientBorderView} from '@good-react-native/gradient-border';
 import {useSetHandleConnection} from 'store';
 import FlashMessage, {showMessage} from 'react-native-flash-message';
+import {EmptyPromotionContainer} from 'screens/dashboard/promotions/components';
 
 interface ConnectionRequestsProps {
   isVisible: boolean;
@@ -153,13 +155,15 @@ export const ConnectionRequests = ({
               </Box>
             </Box>
           )}
+          ListEmptyComponent={
+            <EmptyPromotionContainer
+              containerStyles={{my: hp(220)}}
+              icon="connection-count"
+              title="No Connection Requests"
+              subTitle="You can view all connection requests as soon as they are accepted"
+            />
+          }
         />
-
-        {/* <Box>
-          {connectionRequests?.map(request => {
-            return <Text>{request.name}</Text>;
-          })}
-        </Box> */}
       </Box>
 
       <Loader loading={isPending} />

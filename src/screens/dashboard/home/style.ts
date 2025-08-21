@@ -10,6 +10,7 @@ export const styles = StyleSheet.create({
     width: wp(350),
     height: hp(140),
     marginTop: hp(10),
+    borderRadius: hp(16),
   },
   gradientContainer: {
     borderWidth: 1,
