@@ -66,6 +66,7 @@ export interface LoginResponseData {
   totalConnections: number;
   totalPromotions: number;
   userId: string;
+  snapchat: string;
 }
 
 export interface LoginResponse extends ApiResponseSingular<LoginResponseData> {}

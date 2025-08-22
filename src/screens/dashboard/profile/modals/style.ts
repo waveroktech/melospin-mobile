@@ -31,10 +31,9 @@ export const styles = StyleSheet.create({
     position: 'absolute',
   },
   djProfileImage: {
-    width: 100,
-    height: 100,
+    width: wp(100),
+    height: hp(102),
     alignSelf: 'center',
-    top: 0.5,
     borderRadius: 100,
   },
   barcode: {

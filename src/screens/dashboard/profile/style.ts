@@ -29,7 +29,6 @@ export const styles = StyleSheet.create({
     width: wp(100),
     height: hp(102),
     alignSelf: 'center',
-    top: 0.5,
     borderRadius: 100,
   },
   djProfileImage: {

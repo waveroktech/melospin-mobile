@@ -10,7 +10,7 @@ import {
 } from '@react-navigation/native';
 import {Image, Linking, ScrollView, TouchableOpacity} from 'react-native';
 import {Box, Button, Text} from 'design-system';
-import {hp, wp} from 'utils';
+import {formatNumberWithCommas, hp, wp} from 'utils';
 import {DiscographyItem} from '../discography/component';
 import {DashboardStackParamList} from 'types';
 import {useGetDiscography} from 'store';
@@ -81,7 +81,7 @@ export const PromotionCheckout = () => {
     },
   });
 
-  console.log(data);
+  console.log(data?.responseData, 'responseData');
 
   const handlePayment = useCallback(() => {
     const promoters: any[] = [];
@@ -94,6 +94,8 @@ export const PromotionCheckout = () => {
     );
 
     setOpen('payment-info');
+
+    console.log(totalPrice);
 
     mutate({
       promotionId: data?.discographyId,
@@ -310,7 +312,7 @@ export const PromotionCheckout = () => {
                         variant="bodyMedium"
                         pl={2}
                         color={theme.colors.WHITE}>
-                        {item?.formattedBidAmount}
+                        {formatNumberWithCommas(item?.formattedBidAmount)}
                       </Text>
                     </Box>
                   </Box>

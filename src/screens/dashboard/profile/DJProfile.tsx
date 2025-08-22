@@ -12,9 +12,13 @@ import {
 import theme from 'theme';
 import {styles} from './style';
 import {EditProfile, ShareProfile} from './modals';
+import {useMelospinStore} from 'store';
 
 export const DJProfile = () => {
   const [open, setOpen] = useState<'share-profile' | 'edit-profile' | ''>('');
+  const {userData} = useMelospinStore();
+  console.log(userData);
+
   return (
     <Screen removeSafeaArea>
       <Header hasBackText="Profile" />
@@ -91,7 +95,7 @@ export const DJProfile = () => {
                 fontSize={fontSz(16)}
                 pr={2}
                 color={theme.colors.WHITE}>
-                DJ Zenzee
+                {userData?.brandName}
               </Text>
               <Box top={0.5}>
                 <Icon name="verified-icon" />
@@ -213,7 +217,7 @@ export const DJProfile = () => {
                     pl={wp(10)}
                     variant="bodyMedium"
                     color={theme.colors.WHITE}>
-                    1.1k Connects
+                    {userData?.connectCount} Connects
                   </Text>
                 </Box>
 

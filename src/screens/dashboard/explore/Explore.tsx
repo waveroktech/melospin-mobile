@@ -28,6 +28,8 @@ export const Explore = () => {
   const {data: connections, refetch: refetchConnections} = useGetConnections();
   const {data, isPending, refetch} = useGetDjs();
 
+  console.log(data?.data);
+
   const [filteredData, setFilteredData] = useState([]);
 
   useEffect(() => {

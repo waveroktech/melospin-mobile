@@ -13,5 +13,5 @@ export const getUserProfile = async (payload: {userId?: string}) => {
 };
 
 export const getDJs = async () => {
-  return get('users?userType=dj').then(data => data as any);
+  return get('users?userType=dj&limit=100').then(data => data as any);
 };

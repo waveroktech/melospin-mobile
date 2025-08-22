@@ -16,6 +16,7 @@ export const Discography = () => {
   const [open, setOpen] = useState<
     'add-discography' | 'added-discography' | ''
   >('');
+  const [searchQuery, setSearchQuery] = useState<string>('');
 
   const {data, refetch, isPending} = useGetDiscography();
 
@@ -24,6 +25,17 @@ export const Discography = () => {
       refetch();
     }, [refetch]),
   );
+
+  // Filter discography items based on search query
+  const filteredDiscography =
+    data?.data?.filter((item: any) => {
+      if (!searchQuery.trim()) return true;
+
+      const query = searchQuery.toLowerCase().trim();
+      const fileName = item?.name?.toLowerCase() || '';
+
+      return fileName.includes(query);
+    }) || [];
 
   const onComplete = async () => {
     setOpen('');
@@ -49,19 +61,27 @@ export const Discography = () => {
           placeholder="Search by audio file name"
           selectionColor={theme.colors.WHITE}
           placeholderTextColor={theme.colors.TEXT_INPUT_PLACEHOLDER}
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+          autoCapitalize="none"
+          autoCorrect={false}
         />
       </Box>
 
       <FlatList
-        data={data?.data}
+        data={filteredDiscography}
         contentContainerStyle={styles.contentContainerStyle}
         renderItem={({item}) => <DiscographyItem item={item} />}
         ListEmptyComponent={
           <EmptyPromotionContainer
             containerStyles={{my: hp(220)}}
             icon="empty-folder"
-            title="No Files Uploaded"
-            subTitle="You can view all audio files as soon as they are uploaded your library"
+            title={searchQuery.trim() ? 'No Files Found' : 'No Files Uploaded'}
+            subTitle={
+              searchQuery.trim()
+                ? "Try adjusting your search terms to find what you're looking for"
+                : 'You can view all audio files as soon as they are uploaded your library'
+            }
           />
         }
       />

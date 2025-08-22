@@ -7,6 +7,7 @@ import {GradientBorderView} from '@good-react-native/gradient-border';
 import {Image, ImageBackground} from 'react-native';
 import {styles} from './style';
 import {Icon} from 'shared';
+import {useMelospinStore} from 'store';
 
 interface ShareProfileProps {
   isVisible: boolean;
@@ -14,6 +15,7 @@ interface ShareProfileProps {
 }
 
 export const ShareProfile = ({isVisible, onClose}: ShareProfileProps) => {
+  const {userData} = useMelospinStore();
   return (
     <Modal
       isVisible={isVisible}
@@ -81,7 +83,7 @@ export const ShareProfile = ({isVisible, onClose}: ShareProfileProps) => {
             fontSize={fontSz(16)}
             pr={2}
             color={theme.colors.BLACK_DEFAULT}>
-            DJ Zenzee
+            {userData?.brandName}
           </Text>
           <Box top={0.5}>
             <Icon name="verified-icon" />
