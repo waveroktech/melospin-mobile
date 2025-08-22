@@ -4,10 +4,11 @@ import Modal from 'react-native-modal';
 import {hp, wp} from 'utils';
 import theme from 'theme';
 import {Icon} from 'shared';
-import {TouchableOpacity} from 'react-native';
+import {ActivityIndicator, Alert, TouchableOpacity} from 'react-native';
 import {yupResolver} from '@hookform/resolvers/yup';
 import {useForm} from 'react-hook-form';
 import * as yup from 'yup';
+import {useAddDiscography} from 'store';
 interface AddDiscographyProps {
   isVisible: boolean;
   onClose: () => void;
@@ -54,9 +55,26 @@ export const AddDiscography = ({
 
   const form = watch();
 
+  const {mutate: addDiscography, isPending} = useAddDiscography({
+    onSuccess: (data: any) => {
+      console.log(data, 'data');
+      if (data?.status === 'failed') {
+        Alert.alert('Error', data?.message);
+      } else {
+        onComplete();
+      }
+    },
+  });
+
   const handleUpload = useCallback(() => {
-    onComplete();
-  }, [onComplete]);
+    const data = {
+      url: form.link,
+      title: form.title,
+      primaryArtiste: form.artist,
+      otherArtistes: form.collabo || '',
+    };
+    addDiscography(data);
+  }, [addDiscography, form]);
 
   return (
     <Box>
@@ -94,24 +112,27 @@ export const AddDiscography = ({
               containerStyle={{width: wp(290)}}
               label="Audio file title"
               placeholderTextColor={theme.colors.TEXT_INPUT_PLACEHOLDER}
-              value={form.link}
+              value={form.title}
+              errorText={errors?.title?.message}
             />
             <FormInput
               control={control}
-              name="link"
+              name="artist"
               containerStyle={{width: wp(290)}}
               label="Primary artiste"
+              errorText={errors?.artist?.message}
               placeholderTextColor={theme.colors.TEXT_INPUT_PLACEHOLDER}
               value={form.link}
             />
 
             <FormInput
               control={control}
-              name="link"
+              name="collabo"
               containerStyle={{width: wp(290)}}
               label="Other collaborators"
+              errorText={errors?.collabo?.message}
               placeholderTextColor={theme.colors.TEXT_INPUT_PLACEHOLDER}
-              value={form.link}
+              value={form.collabo}
             />
           </Box>
           <Box
@@ -125,13 +146,20 @@ export const AddDiscography = ({
             borderRadius={hp(24)}
             as={TouchableOpacity}
             activeOpacity={0.8}
+            disabled={Object.entries(errors).length > 0}
             onPress={handleUpload}
             alignSelf={'center'}
             borderColor={theme.colors.WHITE}>
-            <Text variant="body" color={theme.colors.WHITE}>
-              Upload
-            </Text>
-            <Icon name="upload-icon" />
+            {isPending ? (
+              <ActivityIndicator size={'small'} />
+            ) : (
+              <>
+                <Text variant="body" color={theme.colors.WHITE}>
+                  Upload
+                </Text>
+                <Icon name="upload-icon" />
+              </>
+            )}
           </Box>
         </Box>
 

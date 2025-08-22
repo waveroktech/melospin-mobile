@@ -1,3 +1,4 @@
+import {useMelospinStore} from 'store';
 import {get, post} from './melospin.service';
 
 export const getDiscography = async () => {
@@ -9,8 +10,8 @@ export const getSingleDiscography = async (payload: {discoId: string}) => {
 };
 
 export const setAddDiscography = async (payload: any) => {
+  const token = useMelospinStore.getState().authToken;
+  console.log(token, 'token');
   console.log(payload, 'payload');
-  return post('discographs', payload, {
-    'Content-Type': 'multipart/form-data;',
-  }).then(data => data as any);
+  return post('discographs', payload).then(data => data as any);
 };

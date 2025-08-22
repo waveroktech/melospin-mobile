@@ -1,7 +1,7 @@
 import React, {useCallback, useState} from 'react';
 import {Icon, Loader, Screen} from 'shared';
 import {DashboardHeader} from '../home/components';
-import {FlatList, TextInput} from 'react-native';
+import {FlatList, Linking, TextInput} from 'react-native';
 import {EmptyPromotionContainer} from '../promotions/components';
 import theme from 'theme';
 import {DiscographyItem} from './component';
@@ -29,7 +29,9 @@ export const Discography = () => {
   // Filter discography items based on search query
   const filteredDiscography =
     data?.data?.filter((item: any) => {
-      if (!searchQuery.trim()) return true;
+      if (!searchQuery.trim()) {
+        return true;
+      }
 
       const query = searchQuery.toLowerCase().trim();
       const fileName = item?.name?.toLowerCase() || '';
@@ -71,7 +73,15 @@ export const Discography = () => {
       <FlatList
         data={filteredDiscography}
         contentContainerStyle={styles.contentContainerStyle}
-        renderItem={({item}) => <DiscographyItem item={item} />}
+        renderItem={({item}) => (
+          <DiscographyItem
+            item={item}
+            isPressable
+            onPress={() => {
+              Linking.openURL(item?.url);
+            }}
+          />
+        )}
         ListEmptyComponent={
           <EmptyPromotionContainer
             containerStyles={{my: hp(220)}}
