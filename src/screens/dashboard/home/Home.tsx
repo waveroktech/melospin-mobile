@@ -7,7 +7,12 @@ import {DashboardHeader, ReleaseItem} from './components';
 import {fontSz, hp, wp} from 'utils';
 import {newReleases} from 'data';
 import {styles} from './style';
-import {useGetDjs, useGetUserProfile, useMelospinStore} from 'store';
+import {
+  useGetBankList,
+  useGetDjs,
+  useGetUserProfile,
+  useMelospinStore,
+} from 'store';
 import {GradientBorderView} from '@good-react-native/gradient-border';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {BottomTabStackParamList, DashboardStackParamList} from 'types';
@@ -20,6 +25,7 @@ export const Home = () => {
     >();
   const {data, isPending, refetch} = useGetDjs();
   const {userData, userInfo} = useMelospinStore();
+  useGetBankList();
 
   useGetUserProfile({
     userId: userData?.userId,
@@ -228,7 +234,7 @@ export const Home = () => {
                     fontSize={fontSz(14)}
                     pt={hp(2)}
                     color={theme.colors.WHITE}>
-                    {userInfo?.requests}
+                    {userInfo?.requests ?? 0}
                   </Text>
                 </Box>
                 <Box pl={wp(10)}>
@@ -247,7 +253,7 @@ export const Home = () => {
                     fontSize={fontSz(14)}
                     pt={hp(2)}
                     color={theme.colors.WHITE}>
-                    1.1k
+                    {userInfo?.playsCount ?? 0}
                   </Text>
                 </Box>
               </Box>

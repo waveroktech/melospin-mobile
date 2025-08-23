@@ -6,7 +6,9 @@ import theme from 'theme';
 import {yupResolver} from '@hookform/resolvers/yup';
 import {useForm} from 'react-hook-form';
 import * as yup from 'yup';
-import {useMelospinStore} from 'store';
+import {useMelospinStore, useUpdateBookingRate} from 'store';
+import {showMessage} from 'react-native-flash-message';
+import {queryClient} from 'services/api';
 
 interface BookingRateProps {
   isVisible: boolean;
@@ -25,20 +27,48 @@ const schema = yup.object().shape({
 
 export const BookingRate = ({isVisible, onClose}: BookingRateProps) => {
   const [showPassword, setShowPassword] = useState(true);
-  const {bookingRate, setBookingRate} = useMelospinStore();
+  const {userData, userInfo} = useMelospinStore();
+
+  const {mutate: updateBookingRate, isPending} = useUpdateBookingRate({
+    onSuccess: (data: any) => {
+      console.log(data, 'data');
+      if (data?.status === 'success') {
+        handleClose();
+        queryClient.invalidateQueries({queryKey: ['get-user-profile']});
+        showMessage({
+          message: 'Booking rate updated successfully',
+          type: 'success',
+        });
+      } else {
+        showMessage({
+          message: data?.message,
+          type: 'danger',
+        });
+      }
+    },
+    onError: () => {
+      showMessage({
+        message: 'Failed to update booking rate',
+        type: 'danger',
+      });
+    },
+  });
 
   const {control, setValue, watch, reset} = useForm<FormData>({
     resolver: yupResolver(schema),
     defaultValues: {
       password: '',
-      amount: '',
+      amount: userInfo?.chargePerPlay?.toString(),
     },
     mode: 'all',
   });
 
   useEffect(() => {
-    setValue('amount', formatNumberWithCommas(bookingRate?.toString()));
-  }, [bookingRate, setValue, isVisible]);
+    setValue(
+      'amount',
+      formatNumberWithCommas(userInfo?.chargePerPlay?.toString()),
+    );
+  }, [userInfo?.chargePerPlay, setValue, isVisible]);
 
   const form = watch();
 
@@ -52,8 +82,10 @@ export const BookingRate = ({isVisible, onClose}: BookingRateProps) => {
   };
 
   const handleSave = () => {
-    setBookingRate(Number(form.amount.replace(/,/g, '')));
-    handleClose();
+    updateBookingRate({
+      userId: userData?.userId,
+      chargePerPlay: Number(form.amount.replace(/,/g, '')),
+    });
   };
 
   return (
@@ -126,6 +158,7 @@ export const BookingRate = ({isVisible, onClose}: BookingRateProps) => {
           title="Save"
           hasBorder
           mx={wp(16)}
+          isLoading={isPending}
           disabled={form.amount && form.password.length > 7 ? false : true}
           onPress={handleSave}
         />

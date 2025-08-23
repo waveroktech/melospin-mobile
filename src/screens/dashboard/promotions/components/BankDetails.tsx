@@ -11,7 +11,9 @@ interface BankDetailsProps {
 }
 
 export const BankDetails = ({onPress}: BankDetailsProps) => {
-  const {bankInfo} = useMelospinStore();
+  const {userInfo} = useMelospinStore();
+
+  const bankInfo = userInfo?.banks?.[0];
 
   return (
     <Box
@@ -42,6 +44,8 @@ export const BankDetails = ({onPress}: BankDetailsProps) => {
               <Text
                 variant="bodyMedium"
                 fontSize={fontSz(14)}
+                numberOfLines={1}
+                width={wp(200)}
                 color={theme.colors.WHITE}>
                 {bankInfo.accountNumber} - {bankInfo.bankName}
               </Text>

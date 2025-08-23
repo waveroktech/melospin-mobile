@@ -7,8 +7,9 @@ import {yupResolver} from '@hookform/resolvers/yup';
 import {useForm} from 'react-hook-form';
 import * as yup from 'yup';
 import {BankList} from './BankList';
-import {useMelospinStore} from 'store';
+import {useMelospinStore, useUpdateUserBankDetails} from 'store';
 import {showMessage} from 'react-native-flash-message';
+import {queryClient} from 'services/api';
 
 interface AddBankProps {
   isVisible: boolean;
@@ -20,6 +21,7 @@ interface FormData {
   accountNumber: string;
   bankCode: string;
   password: string;
+  bvn: string;
 }
 
 const schema = yup.object().shape({
@@ -30,11 +32,11 @@ const schema = yup.object().shape({
     .min(10, 'Account number must be 10 digits'),
   bankCode: yup.string().required(),
   password: yup.string().required('Password is required'),
+  bvn: yup.string().required('BVN is required'),
 });
 
 export const AddBank = ({isVisible, onClose}: AddBankProps) => {
-  const {userData, setBankInfo} = useMelospinStore();
-  const [isLoading, setIsLoading] = useState(false);
+  const {userData} = useMelospinStore();
   const [showPassword, setShowPassword] = useState(true);
   const [isBankListVisible, setIsBankListVisible] = useState(false);
   const {
@@ -50,36 +52,51 @@ export const AddBank = ({isVisible, onClose}: AddBankProps) => {
       bankCode: '',
       password: '',
       accountNumber: '',
+      bvn: '',
     },
     mode: 'all',
+  });
+
+  const {mutate: updateUserBankDetails, isPending} = useUpdateUserBankDetails({
+    onSuccess: (data: any) => {
+      console.log(data, 'data');
+      if (data?.status === 'success') {
+        queryClient.invalidateQueries({queryKey: ['get-user-profile']});
+        onClose();
+        showMessage({
+          message: 'Bank details saved successfully',
+          type: 'success',
+        });
+        reset();
+      }
+      if (data?.status === 'failed') {
+        showMessage({
+          message: 'Bank details not saved',
+          type: 'danger',
+        });
+      }
+    },
   });
 
   const form = watch();
 
   const onSelectBank = (bank: any) => {
-    setValue('bankName', bank.bankName);
+    setValue('bankName', bank.name);
     setValue('bankCode', bank.bankCode);
     setIsBankListVisible(false);
   };
 
   const handleSave = () => {
-    setIsLoading(true);
-    setTimeout(() => {
-      setBankInfo({
-        bankName: form.bankName,
-        accountNumber: form.accountNumber,
+    updateUserBankDetails({
+      userId: userData?.userId,
+      data: {
         bankCode: form.bankCode,
-        accountName: userData?.firstName + ' ' + userData?.lastName,
-      });
-      setIsLoading(false);
-      onClose();
-      showMessage({
-        message: 'Bank details saved successfully',
-        type: 'success',
-        duration: 3000,
-      });
-      reset();
-    }, 1000);
+        processor: 'paystack',
+        accountNumber: form.accountNumber,
+        password: form.password,
+        bvn: form.bvn,
+      },
+    });
   };
 
   return (
@@ -128,6 +145,16 @@ export const AddBank = ({isVisible, onClose}: AddBankProps) => {
 
             <FormInput
               control={control}
+              value={form.bvn}
+              name="bvn"
+              errorText={errors.bvn?.message}
+              label="Enter BVN here"
+              keyboardType="number-pad"
+              returnKeyType="done"
+            />
+
+            <FormInput
+              control={control}
               value={form.password}
               name="password"
               isPassword
@@ -144,15 +171,16 @@ export const AddBank = ({isVisible, onClose}: AddBankProps) => {
           my={hp(20)}
           disabled={
             form.bankCode &&
-            form.accountNumber &&
+            form.accountNumber?.length === 10 &&
             form.bankName &&
+            form.bvn &&
             form.password.length > 7
               ? false
               : true
           }
           title="Save"
           hasBorder
-          isLoading={isLoading}
+          isLoading={isPending}
           onPress={handleSave}
           mx={wp(16)}
         />

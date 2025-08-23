@@ -6,7 +6,7 @@ import theme from 'theme';
 import {BaseModal, Icon, ModalHeader} from 'shared';
 import {FlatList, TextInput, TouchableOpacity, Keyboard} from 'react-native';
 import {styles} from './style';
-import {bankList} from 'data';
+import {useMelospinStore} from 'store';
 
 interface BankListProps {
   isVisible: boolean;
@@ -40,6 +40,7 @@ const highlightText = (text: string, searchTerm: string) => {
 };
 
 export const BankList = ({isVisible, onClose, onSelectBank}: BankListProps) => {
+  const {bankList} = useMelospinStore();
   const [searchQuery, setSearchQuery] = useState('');
   const searchInputRef = useRef<TextInput>(null);
 
@@ -53,13 +54,13 @@ export const BankList = ({isVisible, onClose, onSelectBank}: BankListProps) => {
 
     const lowerQuery = query.toLowerCase();
     return bankList.filter(bank => {
-      const bankName = bank.bankName?.toLowerCase() || '';
+      const bankName = bank.name?.toLowerCase() || '';
       const bankCode = bank.bankCode?.toLowerCase() || '';
 
       // Search in both bank name and code
       return bankName.includes(lowerQuery) || bankCode.includes(lowerQuery);
     });
-  }, [searchQuery]);
+  }, [bankList, searchQuery]);
 
   // Clear search function
   const clearSearch = useCallback(() => {
@@ -170,11 +171,8 @@ export const BankList = ({isVisible, onClose, onSelectBank}: BankListProps) => {
                         fontSize={fontSz(14)}
                         color={theme.colors.WHITE}>
                         {searchQuery.trim()
-                          ? highlightText(
-                              item?.bankName || '',
-                              searchQuery.trim(),
-                            )
-                          : item?.bankName}
+                          ? highlightText(item?.name || '', searchQuery.trim())
+                          : item?.name}
                       </Text>
                     </Box>
                   </Box>

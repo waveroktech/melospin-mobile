@@ -13,7 +13,7 @@ export const DjSettings = () => {
     'add-bank' | 'booking-rate' | 'sessions' | ''
   >('');
 
-  const {bookingRate, playSessions} = useMelospinStore();
+  const {playSessions, userInfo} = useMelospinStore();
 
   return (
     <Box mt={hp(20)} height={hp(800)}>
@@ -52,8 +52,8 @@ export const DjSettings = () => {
               variant="bodyMedium"
               fontSize={fontSz(14)}
               color={theme.colors.WHITE}>
-              N {formatNumberWithCommas(bookingRate?.toString())} (per audio
-              promotion)
+              N {formatNumberWithCommas(userInfo?.chargePerPlay?.toString())}{' '}
+              (per audio promotion)
             </Text>
           </Box>
 
@@ -87,17 +87,21 @@ export const DjSettings = () => {
               alignItems={'center'}
               flexWrap={'wrap'}
               mt={hp(16)}>
-              {playSessions?.map((session, index) => {
+              {userInfo?.playingDays?.map((session: any, index: number) => {
                 return (
                   <Box
                     key={index}
-                    px={wp(12)}
                     mb={hp(12)}
+                    px={wp(2)}
                     py={hp(2)}
                     borderRadius={hp(24)}
                     bg={theme.colors.OFF_WHITE_600}
-                    mr={wp(10)}>
-                    <Text variant="body" color={theme.colors.WHITE}>
+                    mr={wp(12)}>
+                    <Text
+                      variant="body"
+                      // eslint-disable-next-line react-native/no-inline-styles
+                      style={{textTransform: 'capitalize'}}
+                      color={theme.colors.WHITE}>
                       {session}
                     </Text>
                   </Box>

@@ -33,3 +33,43 @@ export const updateUserPreferences = async (payload: {
 }) => {
   return put('users/dj/preferences', payload).then(data => data as any);
 };
+
+export const updateBookingRate = async (payload: {
+  userId?: string;
+  chargePerPlay: number;
+}) => {
+  return put(`users/${payload?.userId}/booking-rate`, payload).then(
+    data => data as any,
+  );
+};
+
+export const getBankList = async () => {
+  return get('payments/banks').then(data => data as any);
+};
+
+export const updateUserBankDetails = async (payload: {
+  userId?: string;
+  data: {
+    bankCode: string;
+    processor: string;
+    accountNumber: string;
+    password: string;
+    bvn: string;
+  };
+}) => {
+  return put(`users/${payload?.userId}/banks`, payload?.data).then(
+    data => data as any,
+  );
+};
+
+export const updateUserPlaySessions = async (payload: {
+  userId?: string;
+  data: {
+    playingDays: string[];
+  };
+}) => {
+  console.log(payload, 'payload');
+  return put(`users/${payload?.userId}/playing-days`, payload?.data).then(
+    data => data as any,
+  );
+};

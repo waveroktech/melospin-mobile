@@ -22,7 +22,7 @@ async function handleResponse<T>(response: Response): Promise<T> {
     // if (isJson && data.errors !== null) {
     //   throw new Error(JSON.stringify(data.errors));
     // }
-    console.log(response);
+    console.log(response?.message);
     if (response.status === 401) {
       // toast(data.message, {type: 'error'});
       // Cookies.remove('token');

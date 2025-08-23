@@ -201,31 +201,31 @@ export const promotionTabs = [
 export const sessions = [
   {
     id: 1,
-    title: 'Mondays',
+    title: 'Monday',
   },
   {
     id: 2,
-    title: 'Tuesdays',
+    title: 'Tuesday',
   },
   {
     id: 3,
-    title: 'Wednesdays',
+    title: 'Wednesday',
   },
   {
     id: 4,
-    title: 'Thursdays',
+    title: 'Thursday',
   },
   {
     id: 5,
-    title: 'Fridays',
+    title: 'Friday',
   },
   {
     id: 6,
-    title: 'Saturdays',
+    title: 'Saturday',
   },
   {
     id: 7,
-    title: 'Sundays',
+    title: 'Sunday',
   },
 ];
 

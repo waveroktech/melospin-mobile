@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {LoginResponseData} from 'interfaces';
+import {BankListResponse} from 'interfaces/services/user.interface';
 import {StateCreator, create} from 'zustand';
 import {createJSONStorage, persist} from 'zustand/middleware';
 
@@ -33,6 +34,9 @@ interface MelospinStore {
     bankCode: string;
     accountName: string;
   }) => void;
+
+  bankList: BankListResponse[];
+  setBankList: (bankList: BankListResponse[]) => void;
 }
 
 const melospinSlice: StateCreator<
@@ -52,6 +56,7 @@ const melospinSlice: StateCreator<
     bankCode: '',
     accountName: '',
   },
+  bankList: [],
 
   setAuthToken: (authToken: string) => set({authToken: authToken}),
   setIsLoggedIn: (isLoggedIn: boolean) => set({isLoggedIn: isLoggedIn}),
@@ -70,6 +75,7 @@ const melospinSlice: StateCreator<
     bankCode: string;
     accountName: string;
   }) => set({bankInfo: bankInfo}),
+  setBankList: (bankList: any) => set({bankList: bankList}),
 });
 
 export const useMelospinStore = create<MelospinStore>()(

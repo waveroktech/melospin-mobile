@@ -2,8 +2,10 @@ import {sessions} from 'data';
 import {Box, Button, Text} from 'design-system';
 import React, {useEffect, useState} from 'react';
 import {TouchableOpacity} from 'react-native';
+import {showMessage} from 'react-native-flash-message';
+import {queryClient} from 'services/api';
 import {BaseModal, Icon, ModalHeader} from 'shared';
-import {useMelospinStore} from 'store';
+import {useMelospinStore, useUpdateUserPlaySessions} from 'store';
 import theme from 'theme';
 import {hp, wp} from 'utils';
 
@@ -15,15 +17,40 @@ interface SessionsProps {
 export const Sessions = ({isVisible, onClose}: SessionsProps) => {
   const [selectedSessions, setSelectedSessions] = useState<string[]>([]);
 
-  const {playSessions, setPlaySessions} = useMelospinStore();
+  const {userInfo} = useMelospinStore();
+
+  const {mutate: updateUserPlaySessions, isPending} = useUpdateUserPlaySessions(
+    {
+      onSuccess: (data: any) => {
+        if (data?.status === 'success') {
+          queryClient.invalidateQueries({queryKey: ['get-user-profile']});
+          onClose();
+          showMessage({
+            message: 'Play sessions saved successfully',
+            type: 'success',
+          });
+        }
+        if (data?.status === 'failed') {
+          showMessage({
+            message: 'Play sessions not saved',
+            type: 'danger',
+          });
+        }
+      },
+    },
+  );
 
   useEffect(() => {
-    setSelectedSessions(playSessions);
-  }, [playSessions]);
+    setSelectedSessions(userInfo?.playingDays);
+  }, [userInfo?.playingDays]);
 
   const handleSave = () => {
-    setPlaySessions(selectedSessions);
-    onClose();
+    updateUserPlaySessions({
+      userId: userInfo?.userId,
+      data: {
+        playingDays: selectedSessions?.map(session => session?.toLowerCase()),
+      },
+    });
   };
 
   return (
@@ -76,7 +103,7 @@ export const Sessions = ({isVisible, onClose}: SessionsProps) => {
                       } else {
                         setSelectedSessions([
                           ...selectedSessions,
-                          session?.title,
+                          session?.title?.toLowerCase(),
                         ]);
                       }
                     }}
@@ -87,7 +114,9 @@ export const Sessions = ({isVisible, onClose}: SessionsProps) => {
                     alignItems={'center'}>
                     <Icon
                       name={
-                        selectedSessions?.includes(session?.title)
+                        selectedSessions?.includes(
+                          session?.title?.toLowerCase(),
+                        )
                           ? 'active-checkbox'
                           : 'checkbox'
                       }
@@ -108,6 +137,7 @@ export const Sessions = ({isVisible, onClose}: SessionsProps) => {
           hasBorder
           disabled={selectedSessions?.length === 0}
           onPress={handleSave}
+          isLoading={isPending}
           my={hp(20)}
         />
       </Box>

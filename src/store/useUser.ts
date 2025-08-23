@@ -1,9 +1,13 @@
 import {useMutation, useQuery} from '@tanstack/react-query';
 import {
   changeUserPassword,
+  getBankList,
   getDJs,
   getUserProfile,
   setUserProfileUpdate,
+  updateBookingRate,
+  updateUserBankDetails,
+  updateUserPlaySessions,
   updateUserPreferences,
 } from 'services/api/user.service';
 import {useMelospinStore} from './useStore';
@@ -71,6 +75,62 @@ export const useUpdateUserPreferences = ({
 }) => {
   return useMutation({
     mutationFn: updateUserPreferences,
+    onSuccess,
+    onError,
+  });
+};
+
+export const useUpdateBookingRate = ({
+  onError,
+  onSuccess,
+}: {
+  onError?: any;
+  onSuccess?: any;
+}) => {
+  return useMutation({
+    mutationFn: updateBookingRate,
+    onSuccess,
+    onError,
+  });
+};
+
+export const useGetBankList = () => {
+  const {setBankList} = useMelospinStore();
+  const {data} = useQuery({
+    queryKey: ['get-bank-list'],
+    queryFn: () => getBankList(),
+  });
+
+  useEffect(() => {
+    if (data?.data) {
+      setBankList(data?.data);
+    }
+  }, [data?.data, setBankList]);
+};
+
+export const useUpdateUserBankDetails = ({
+  onError,
+  onSuccess,
+}: {
+  onError?: any;
+  onSuccess?: any;
+}) => {
+  return useMutation({
+    mutationFn: updateUserBankDetails,
+    onSuccess,
+    onError,
+  });
+};
+
+export const useUpdateUserPlaySessions = ({
+  onError,
+  onSuccess,
+}: {
+  onError?: any;
+  onSuccess?: any;
+}) => {
+  return useMutation({
+    mutationFn: updateUserPlaySessions,
     onSuccess,
     onError,
   });
