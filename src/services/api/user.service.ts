@@ -17,21 +17,29 @@ export const getDJs = async () => {
 };
 
 export const changeUserPassword = async (payload: {
-  userId: string;
-  oldPassword: string;
-  newPassword: string;
+  userId?: string;
+  data: {
+    password: string;
+    confirmPassword: string;
+    currentPassword: string;
+  };
 }) => {
-  return put(`users/${payload?.userId}/change-password`, payload).then(
+  return put(`users/${payload?.userId}/change-password`, payload?.data).then(
     data => data as any,
   );
 };
 
 export const updateUserPreferences = async (payload: {
-  hideAccountBalance: boolean;
-  allowPushNotification: boolean;
-  enableBioLogin: boolean;
+  userId?: string;
+  data: {
+    hideAccountBalance: boolean;
+    allowPushNotification: boolean;
+    enableBioLogin: boolean;
+  };
 }) => {
-  return put('users/dj/preferences', payload).then(data => data as any);
+  return put(`users/${payload?.userId}/preference`, payload?.data).then(
+    data => data as any,
+  );
 };
 
 export const updateBookingRate = async (payload: {

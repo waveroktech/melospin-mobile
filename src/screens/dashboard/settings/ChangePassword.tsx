@@ -8,6 +8,8 @@ import {yupResolver} from '@hookform/resolvers/yup';
 import theme from 'theme';
 import {PasswordResetSuccess} from 'screens/auth/modals';
 import {useNavigation} from '@react-navigation/native';
+import {useChangeUserPassword, useMelospinStore} from 'store';
+import {showMessage} from 'react-native-flash-message';
 
 interface FormData {
   confirmPassword: string;
@@ -16,9 +18,15 @@ interface FormData {
 }
 
 const schema = yup.object().shape({
-  confirmPassword: yup.string().required(),
-  password: yup.string().required(),
-  oldPassword: yup.string().required(),
+  oldPassword: yup.string().required('Old password is required'),
+  password: yup
+    .string()
+    .required('Password is required')
+    .min(8, 'Password must be at least 8 characters long'),
+  confirmPassword: yup
+    .string()
+    .required('Confirm password is required')
+    .oneOf([yup.ref('password')], 'Passwords must match'),
 });
 
 export const ChangePassword = () => {
@@ -28,12 +36,31 @@ export const ChangePassword = () => {
   const [open, setOpen] = useState<'password-reset' | ''>('');
 
   const {goBack} = useNavigation();
+  const {userData} = useMelospinStore();
 
-  const {control, watch} = useForm<FormData>({
+  const {mutate: changeUserPassword, isPending} = useChangeUserPassword({
+    onSuccess: (data: any) => {
+      if (data?.status === 'success') {
+        setOpen('password-reset');
+      } else {
+        showMessage({
+          message: data?.message,
+          type: 'danger',
+        });
+      }
+    },
+  });
+
+  const {
+    control,
+    watch,
+    formState: {errors},
+  } = useForm<FormData>({
     resolver: yupResolver(schema),
     defaultValues: {
       confirmPassword: '',
       password: '',
+      oldPassword: '',
     },
     mode: 'all',
   });
@@ -45,6 +72,17 @@ export const ChangePassword = () => {
     setTimeout(() => {
       goBack();
     }, 400);
+  };
+
+  const handleChangeUserPassword = () => {
+    changeUserPassword({
+      userId: userData?.userId,
+      data: {
+        password: form.password,
+        confirmPassword: form.confirmPassword,
+        currentPassword: form.oldPassword,
+      },
+    });
   };
 
   return (
@@ -61,11 +99,12 @@ export const ChangePassword = () => {
           label="Enter old password here"
           autoCapitalize="none"
           control={control}
-          name="password"
+          name="oldPassword"
           isPassword
           value={form.oldPassword}
           secureTextEntry={showOldPassword}
           onPressPasswordIcon={() => setShowOldPassword(!showOldPassword)}
+          errorText={errors.oldPassword?.message}
         />
         <FormInput
           label="Create new password here"
@@ -76,6 +115,7 @@ export const ChangePassword = () => {
           value={form.password}
           secureTextEntry={showPassword}
           onPressPasswordIcon={() => setShowPassword(!showPassword)}
+          errorText={errors.password?.message}
         />
         <FormInput
           label="Re-enter password here"
@@ -84,6 +124,7 @@ export const ChangePassword = () => {
           name="confirmPassword"
           isPassword
           value={form.confirmPassword}
+          errorText={errors.confirmPassword?.message}
           secureTextEntry={showConfirmPassword}
           onPressPasswordIcon={() =>
             setShowConfirmPassword(!showConfirmPassword)
@@ -91,7 +132,21 @@ export const ChangePassword = () => {
         />
       </Box>
 
-      <Button hasBorder title="Confirm" bg={theme.colors.PRIMARY_100} />
+      <Button
+        hasBorder
+        title="Confirm"
+        isLoading={isPending}
+        bg={theme.colors.PRIMARY_100}
+        disabled={
+          form.password &&
+          form.confirmPassword &&
+          form.oldPassword &&
+          Object.keys(errors).length === 0
+            ? false
+            : true
+        }
+        onPress={handleChangeUserPassword}
+      />
 
       <PasswordResetSuccess
         isVisible={open === 'password-reset'}

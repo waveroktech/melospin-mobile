@@ -44,7 +44,7 @@ export const PasswordResetSuccess = ({
         </Box>
 
         <Button
-          title="Continue to Login"
+          title="Continue"
           hasBorder
           hasIcon
           width={wp(320)}

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Box, Text} from 'design-system';
 import {Header, Loader, Screen} from 'shared';
 import {fontSz, hp, wp} from 'utils';
@@ -6,7 +6,9 @@ import {SettingItem} from './components';
 import theme from 'theme';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {DashboardStackParamList} from 'types';
-import {useUpdateUserPreferences} from 'store';
+import {useMelospinStore, useUpdateUserPreferences} from 'store';
+import {queryClient} from 'services/api';
+import {showMessage} from 'react-native-flash-message';
 
 export const Settings = () => {
   const {navigate} = useNavigation<NavigationProp<DashboardStackParamList>>();
@@ -14,17 +16,38 @@ export const Settings = () => {
   const [pushNotifications, setPushNotifications] = useState(false);
   const [hideAccount, setHideAccount] = useState(false);
 
+  const {userData, userInfo} = useMelospinStore();
+
+  console.log(userInfo?.accountPreference, 'userInfo');
+
+  useEffect(() => {
+    if (userInfo?.accountPreference) {
+      setFaceId(userInfo?.accountPreference?.enableBioLogin);
+      setPushNotifications(userInfo?.accountPreference?.allowPushNotification);
+      setHideAccount(userInfo?.accountPreference?.hideAccountBalance);
+    }
+  }, [userInfo?.accountPreference]);
+
   const {mutate: updateUserPreferences, isPending} = useUpdateUserPreferences({
     onSuccess: (data: any) => {
-      console.log(data);
+      if (data?.status === 'success') {
+        queryClient.invalidateQueries({queryKey: ['get-user-profile']});
+        showMessage({
+          message: 'Preferences updated successfully',
+          type: 'success',
+        });
+      }
     },
   });
 
   const handleUpdateUserPreferences = () => {
     updateUserPreferences({
-      hideAccountBalance: hideAccount,
-      allowPushNotification: pushNotifications,
-      enableBioLogin: faceId,
+      userId: userData?.userId,
+      data: {
+        hideAccountBalance: hideAccount,
+        allowPushNotification: pushNotifications,
+        enableBioLogin: faceId,
+      },
     });
   };
 
