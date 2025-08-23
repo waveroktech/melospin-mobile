@@ -71,7 +71,12 @@ export const AddDiscography = ({
       url: form.link,
       title: form.title,
       primaryArtiste: form.artist,
-      otherArtistes: form.collabo || '',
+      otherArtistes: form.collabo
+        ? form.collabo
+            .split(',')
+            .map(item => item.trim())
+            .filter(item => item.length > 0)
+        : [],
     };
     addDiscography(data);
   }, [addDiscography, form]);

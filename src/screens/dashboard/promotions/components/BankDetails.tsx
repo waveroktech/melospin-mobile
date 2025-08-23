@@ -48,6 +48,7 @@ export const BankDetails = ({onPress}: BankDetailsProps) => {
               <Text
                 variant="body"
                 color={theme.colors.OFF_WHITE_100}
+                // eslint-disable-next-line react-native/no-inline-styles
                 style={{textTransform: 'capitalize'}}
                 fontSize={fontSz(12)}>
                 {bankInfo.accountName}

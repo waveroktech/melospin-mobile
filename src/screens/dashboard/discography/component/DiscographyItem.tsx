@@ -5,6 +5,7 @@ import {fontSz, hp, wp} from 'utils';
 import {ImageBackground, TouchableOpacity, View} from 'react-native';
 import {styles} from './style';
 import {Icon} from 'shared';
+import {useDeleteDiscography} from 'store';
 
 interface DiscographyItemProps {
   item: {
@@ -16,6 +17,8 @@ interface DiscographyItemProps {
     updatedAt: string;
     url: string;
     userId: string;
+    name: string;
+    _id: string;
   };
   isPressable?: boolean;
   onPress?: () => void;
@@ -26,6 +29,21 @@ export const DiscographyItem = ({
   onPress,
 }: DiscographyItemProps) => {
   console.log(item, 'item');
+
+  const {mutate: deleteDiscography, isPending} = useDeleteDiscography({
+    onSuccess: (data: any) => {
+      console.log(data, 'data');
+    },
+  });
+
+  const handleDelete = () => {
+    deleteDiscography({discoId: [item?._id]});
+  };
+
+  if (item?.name) {
+    return null;
+  }
+
   return (
     <Box
       bg={theme.colors.OFF_BLACK_100}
@@ -53,6 +71,8 @@ export const DiscographyItem = ({
             variant="bodyMedium"
             fontFamily={theme.font.AvenirNextMedium}
             fontSize={fontSz(14)}
+            // eslint-disable-next-line react-native/no-inline-styles
+            style={{textTransform: 'capitalize'}}
             color={theme.colors.WHITE}>
             {item?.title}
           </Text>
@@ -64,12 +84,12 @@ export const DiscographyItem = ({
             color={theme.colors.OFF_WHITE_100}>
             {item?.primaryArtiste}
             {item?.otherArtistes?.length > 0 &&
-              `,feat ${item?.otherArtistes?.join(', ')}`}
+              ` feat ${item?.otherArtistes?.join(', ')}`}
           </Text>
         </Box>
       </Box>
 
-      <Box>
+      <Box activeOpacity={0.8} onPress={handleDelete} disabled={isPending}>
         <Icon name="like-song" />
       </Box>
     </Box>

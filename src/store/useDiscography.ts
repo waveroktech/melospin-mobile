@@ -3,6 +3,7 @@ import {
   getDiscography,
   getSingleDiscography,
   setAddDiscography,
+  setDeleteDiscography,
 } from 'services/api/discography.service';
 
 export const useGetDiscography = () => {
@@ -30,6 +31,20 @@ export const useAddDiscography = ({
 }) => {
   return useMutation({
     mutationFn: setAddDiscography,
+    onSuccess,
+    onError,
+  });
+};
+
+export const useDeleteDiscography = ({
+  onError,
+  onSuccess,
+}: {
+  onError?: any;
+  onSuccess?: any;
+}) => {
+  return useMutation({
+    mutationFn: setDeleteDiscography,
     onSuccess,
     onError,
   });

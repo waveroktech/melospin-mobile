@@ -1,5 +1,5 @@
 import {useMelospinStore} from 'store';
-import {get, post} from './melospin.service';
+import {del, get, post} from './melospin.service';
 
 export const getDiscography = async () => {
   return get('discographs').then(data => data as any);
@@ -14,4 +14,8 @@ export const setAddDiscography = async (payload: any) => {
   console.log(token, 'token');
   console.log(payload, 'payload');
   return post('discographs', payload).then(data => data as any);
+};
+
+export const setDeleteDiscography = async (payload: {discoId: string[]}) => {
+  return del('discographs', payload).then(data => data as any);
 };
