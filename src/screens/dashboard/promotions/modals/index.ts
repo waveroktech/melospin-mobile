@@ -3,6 +3,7 @@ export * from './BankList';
 export * from './BookingRate';
 export * from './Cashout';
 export * from './PaymentRedirection';
+export * from './PromotionDetails';
 export * from './SelectDiscography';
 export * from './SelectDjs';
 export * from './SelectFrequency';

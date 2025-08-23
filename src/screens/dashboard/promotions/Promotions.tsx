@@ -24,6 +24,8 @@ export const Promotions = () => {
   const {navigate} = useNavigation<NavigationProp<DashboardStackParamList>>();
   const [activeIndex, setActiveIndex] = useState(1);
 
+  console.log(activeIndex);
+
   const {data, refetch, isPending} = useUserPromotions();
   const {userType} = useMelospinStore();
 
@@ -87,7 +89,7 @@ export const Promotions = () => {
             bottom={20}
           />
         </>
-      ) : (
+      ) : userType === 'dj' ? (
         <Box mt={hp(20)}>
           <ScrollView
             horizontal
@@ -109,7 +111,7 @@ export const Promotions = () => {
           {activeIndex === 2 && <BookingHistory />}
           {activeIndex === 3 && <DjSettings />}
         </Box>
-      )}
+      ) : null}
 
       <Loader loading={isPending} />
     </Screen>

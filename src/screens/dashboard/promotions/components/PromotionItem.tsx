@@ -2,14 +2,15 @@ import React from 'react';
 import {Box, Text} from 'design-system';
 import theme from 'theme';
 import {styles} from './style';
-import {Image} from 'react-native';
-import {fontSz, removeUUID, wp} from 'utils';
+import {Image, TouchableOpacity} from 'react-native';
+import {fontSz, wp} from 'utils';
 
 interface PromotionItemProps {
   promotion: any;
+  onPress?: () => void;
 }
 
-export const PromotionItem = ({promotion}: PromotionItemProps) => {
+export const PromotionItem = ({promotion, onPress}: PromotionItemProps) => {
   const statusBg =
     promotion?.status === 'pending'
       ? theme.colors.LIGHT_YELLOW
@@ -22,7 +23,11 @@ export const PromotionItem = ({promotion}: PromotionItemProps) => {
 
   const promotionName = promotion?.promotionLink?.split('/');
   return (
-    <Box style={styles.promotionContainer}>
+    <Box
+      style={styles.promotionContainer}
+      onPress={onPress}
+      as={TouchableOpacity}
+      activeOpacity={0.8}>
       <Image source={theme.images.upload} style={styles.promotionImage} />
       <Box ml={10}>
         <Box flexDirection={'row'} alignItems={'center'}>
@@ -30,9 +35,9 @@ export const PromotionItem = ({promotion}: PromotionItemProps) => {
             variant="bodyMedium"
             fontSize={fontSz(14)}
             numberOfLines={1}
-            width={wp(150)}
+            maxWidth={wp(150)}
             color={theme.colors.WHITE}>
-            {removeUUID(promotionName?.[promotionName?.length - 1])}
+            {promotionName?.[promotionName?.length - 1] ?? promotion?.title}
           </Text>
           <Box ml={10} bg={statusBg} p={1} borderRadius={24}>
             <Text style={{fontSize: fontSz(10)}} color={statusColor}>

@@ -170,16 +170,19 @@ export const streamingLinks = [
     id: 1,
     title: 'spotify',
     icon: 'spotify-icon',
+    icon2: 'spotify-1',
   },
   {
     id: 2,
     title: 'appleMusic',
     icon: 'apple-icon',
+    icon2: 'apple-1',
   },
   {
     id: 3,
     title: 'youtube',
     icon: 'youtube-icon',
+    icon2: 'youtube-1',
   },
 ];
 
