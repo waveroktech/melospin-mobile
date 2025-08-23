@@ -28,8 +28,6 @@ export const Explore = () => {
   const {data: connections, refetch: refetchConnections} = useGetConnections();
   const {data, isPending, refetch} = useGetDjs();
 
-  console.log(data?.data);
-
   const [filteredData, setFilteredData] = useState([]);
 
   useEffect(() => {
@@ -126,7 +124,7 @@ export const Explore = () => {
         <ScrollView>
           <DjConnectHeader
             onPress={() => setOpen('dj-connects')}
-            requestCount={connectionRequests?.data?.connectionRequests}
+            requestCount={connectionRequests?.data?.connections?.length}
             connectCount={connections?.data?.length}
           />
 

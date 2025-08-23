@@ -28,8 +28,6 @@ export const DiscographyItem = ({
   isPressable,
   onPress,
 }: DiscographyItemProps) => {
-  console.log(item, 'item');
-
   const {mutate: deleteDiscography, isPending} = useDeleteDiscography({
     onSuccess: (data: any) => {
       console.log(data, 'data');

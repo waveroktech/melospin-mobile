@@ -30,6 +30,8 @@ export const SelectDjs = ({
   const [searchQuery, setSearchQuery] = useState<string>('');
   const {data, isPending, refetch} = useGetDjs();
 
+  console.log(data, 'data');
+
   useEffect(() => {
     if (isVisible) {
       setSelectedDjs(activePromoters || []);

@@ -11,7 +11,6 @@ import {yupResolver} from '@hookform/resolvers/yup';
 import {styles} from './style';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {DashboardStackParamList} from 'types';
-import {DocumentPickerResponse} from '@react-native-documents/picker';
 import {SelectDiscography} from './modals';
 
 interface FormData {
@@ -29,9 +28,7 @@ const schema = yup.object().shape({
 export const AddPromotion = () => {
   const {navigate} = useNavigation<NavigationProp<DashboardStackParamList>>();
   const [open, setOpen] = useState<'select-audio' | ''>('');
-  const [selectedFile, setSelectedFile] = useState<
-    DocumentPickerResponse | any | undefined
-  >(undefined);
+  const [selectedFile, setSelectedFile] = useState<any | undefined>(undefined);
 
   const {control, watch} = useForm<FormData>({
     resolver: yupResolver(schema),
@@ -153,7 +150,7 @@ export const AddPromotion = () => {
         title="Continue"
         bg={theme.colors.PRIMARY_100}
         hasBorder
-        disabled={selectedFile?.name ? false : true}
+        disabled={selectedFile?.title ? false : true}
         onPress={continueProcess}
         iconName="arrow-right-white"
       />

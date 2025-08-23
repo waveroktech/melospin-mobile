@@ -36,6 +36,8 @@ export const EditProfile = ({isVisible, onClose}: EditProfileProps) => {
 
   const {userData} = useMelospinStore();
 
+  console.log(userData, 'userData');
+
   const {refetch: refetchUserProfile} = useGetUserProfile({
     userId: userData?.userId,
   });

@@ -1,18 +1,14 @@
 import React from 'react';
 import {Box, Text} from 'design-system';
 import theme from 'theme';
-import {fontSz, hp, removeUUID, wp} from 'utils';
+import {fontSz, hp, wp} from 'utils';
 import {Icon} from 'shared';
 import {TouchableOpacity} from 'react-native';
-import {
-  DocumentPickerResponse,
-  pick,
-  types,
-} from '@react-native-documents/picker';
+import {pick, types} from '@react-native-documents/picker';
 
 interface FileUploadProps {
   onSelectFile?: (file: any) => void;
-  selectedFile: DocumentPickerResponse | undefined;
+  selectedFile: any | undefined;
   clearSelectedFile: () => void;
   onPress: () => void;
 }
@@ -44,7 +40,7 @@ export const FileUpload = ({
       borderRadius={hp(24)}
       borderWidth={1}
       borderColor={theme.colors.OFF_BLACK_100}>
-      {selectedFile?.name ? (
+      {selectedFile?.title ? (
         <Box
           flexDirection={'row'}
           borderWidth={1}
@@ -58,14 +54,29 @@ export const FileUpload = ({
           alignItems={'center'}>
           <Box flexDirection={'row'} alignItems={'center'}>
             <Icon name="file-upload" />
-            <Text
-              pl={wp(16)}
-              width={wp(160)}
-              numberOfLines={1}
-              variant="body"
-              color={theme.colors.WHITE}>
-              {removeUUID(selectedFile?.name)}
-            </Text>
+            <Box>
+              <Text
+                pl={wp(16)}
+                width={wp(160)}
+                numberOfLines={1}
+                variant="body"
+                // eslint-disable-next-line react-native/no-inline-styles
+                style={{textTransform: 'capitalize'}}
+                color={theme.colors.WHITE}>
+                {selectedFile?.title}
+              </Text>
+              <Text
+                pl={wp(16)}
+                pt={hp(2)}
+                width={wp(160)}
+                numberOfLines={1}
+                variant="body"
+                color={theme.colors.WHITE}>
+                {selectedFile?.primaryArtiste}
+                {selectedFile?.otherArtistes?.length > 0 &&
+                  ` feat ${selectedFile?.otherArtistes?.join(', ')}`}
+              </Text>
+            </Box>
           </Box>
           <Box
             as={TouchableOpacity}
