@@ -15,3 +15,21 @@ export const getUserProfile = async (payload: {userId?: string}) => {
 export const getDJs = async () => {
   return get('users?userType=dj&limit=100').then(data => data as any);
 };
+
+export const changeUserPassword = async (payload: {
+  userId: string;
+  oldPassword: string;
+  newPassword: string;
+}) => {
+  return put(`users/${payload?.userId}/change-password`, payload).then(
+    data => data as any,
+  );
+};
+
+export const updateUserPreferences = async (payload: {
+  hideAccountBalance: boolean;
+  allowPushNotification: boolean;
+  enableBioLogin: boolean;
+}) => {
+  return put('users/dj/preferences', payload).then(data => data as any);
+};

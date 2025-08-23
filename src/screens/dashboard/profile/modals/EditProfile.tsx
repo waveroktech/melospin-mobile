@@ -36,10 +36,9 @@ export const EditProfile = ({isVisible, onClose}: EditProfileProps) => {
 
   const {userData} = useMelospinStore();
 
-  const {data: userProfile, refetch: refetchUserProfile} = useGetUserProfile({
+  const {refetch: refetchUserProfile} = useGetUserProfile({
     userId: userData?.userId,
   });
-  console.log(userProfile);
   const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
 
   useEffect(() => {

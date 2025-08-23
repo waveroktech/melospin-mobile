@@ -1,8 +1,9 @@
 import {sessions} from 'data';
 import {Box, Button, Text} from 'design-system';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {TouchableOpacity} from 'react-native';
 import {BaseModal, Icon, ModalHeader} from 'shared';
+import {useMelospinStore} from 'store';
 import theme from 'theme';
 import {hp, wp} from 'utils';
 
@@ -13,6 +14,18 @@ interface SessionsProps {
 
 export const Sessions = ({isVisible, onClose}: SessionsProps) => {
   const [selectedSessions, setSelectedSessions] = useState<string[]>([]);
+
+  const {playSessions, setPlaySessions} = useMelospinStore();
+
+  useEffect(() => {
+    setSelectedSessions(playSessions);
+  }, [playSessions]);
+
+  const handleSave = () => {
+    setPlaySessions(selectedSessions);
+    onClose();
+  };
+
   return (
     <BaseModal
       visible={isVisible}
@@ -93,7 +106,8 @@ export const Sessions = ({isVisible, onClose}: SessionsProps) => {
           isNotBottom
           mx={wp(16)}
           hasBorder
-          onPress={onClose}
+          disabled={selectedSessions?.length === 0}
+          onPress={handleSave}
           my={hp(20)}
         />
       </Box>

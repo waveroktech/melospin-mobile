@@ -1,16 +1,20 @@
 import React, {useState} from 'react';
 import {Box, Text} from 'design-system';
-import {fontSz, hp, wp} from 'utils';
+import {fontSz, formatNumberWithCommas, hp, wp} from 'utils';
 import {ScrollView, TouchableOpacity} from 'react-native';
 import {BankDetails} from './BankDetails';
 import {Icon} from 'shared';
 import theme from 'theme';
 import {AddBank, BookingRate, Sessions} from '../modals';
+import {useMelospinStore} from 'store';
 
 export const DjSettings = () => {
   const [open, setOpen] = useState<
     'add-bank' | 'booking-rate' | 'sessions' | ''
   >('');
+
+  const {bookingRate, playSessions} = useMelospinStore();
+
   return (
     <Box mt={hp(20)} height={hp(800)}>
       <ScrollView>
@@ -48,7 +52,8 @@ export const DjSettings = () => {
               variant="bodyMedium"
               fontSize={fontSz(14)}
               color={theme.colors.WHITE}>
-              N 150,000 (per audio promotion)
+              N {formatNumberWithCommas(bookingRate?.toString())} (per audio
+              promotion)
             </Text>
           </Box>
 
@@ -77,37 +82,36 @@ export const DjSettings = () => {
               </Box>
             </Box>
 
-            <Box flexDirection={'row'} alignItems={'center'} mt={hp(16)}>
-              <Box
-                px={wp(10)}
-                py={hp(2)}
-                borderRadius={hp(24)}
-                bg={theme.colors.OFF_WHITE_600}
-                mr={wp(10)}>
-                <Text variant="body" color={theme.colors.WHITE}>
-                  Fridays
+            <Box
+              flexDirection={'row'}
+              alignItems={'center'}
+              flexWrap={'wrap'}
+              mt={hp(16)}>
+              {playSessions?.map((session, index) => {
+                return (
+                  <Box
+                    key={index}
+                    px={wp(12)}
+                    mb={hp(12)}
+                    py={hp(2)}
+                    borderRadius={hp(24)}
+                    bg={theme.colors.OFF_WHITE_600}
+                    mr={wp(10)}>
+                    <Text variant="body" color={theme.colors.WHITE}>
+                      {session}
+                    </Text>
+                  </Box>
+                );
+              })}
+              {playSessions?.length === 0 && (
+                <Text
+                  variant="bodyMedium"
+                  fontSize={fontSz(14)}
+                  fontFamily={theme.font.AvenirNextMedium}
+                  color={theme.colors.WHITE}>
+                  No sessions selected
                 </Text>
-              </Box>
-              <Box
-                px={wp(10)}
-                py={hp(2)}
-                borderRadius={hp(24)}
-                bg={theme.colors.OFF_WHITE_600}
-                mr={wp(10)}>
-                <Text variant="body" color={theme.colors.WHITE}>
-                  Saturdays
-                </Text>
-              </Box>
-              <Box
-                px={wp(10)}
-                py={hp(2)}
-                borderRadius={hp(24)}
-                bg={theme.colors.OFF_WHITE_600}
-                mr={wp(10)}>
-                <Text variant="body" color={theme.colors.WHITE}>
-                  Sundays
-                </Text>
-              </Box>
+              )}
             </Box>
           </Box>
         </Box>

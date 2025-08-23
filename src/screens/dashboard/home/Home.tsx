@@ -7,7 +7,7 @@ import {DashboardHeader, ReleaseItem} from './components';
 import {fontSz, hp, wp} from 'utils';
 import {newReleases} from 'data';
 import {styles} from './style';
-import {useGetDjs, useMelospinStore} from 'store';
+import {useGetDjs, useGetUserProfile, useMelospinStore} from 'store';
 import {GradientBorderView} from '@good-react-native/gradient-border';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {BottomTabStackParamList, DashboardStackParamList} from 'types';
@@ -19,6 +19,11 @@ export const Home = () => {
       NavigationProp<DashboardStackParamList & BottomTabStackParamList>
     >();
   const {data, isPending, refetch} = useGetDjs();
+  const {userData, userInfo} = useMelospinStore();
+
+  useGetUserProfile({
+    userId: userData?.userId,
+  });
 
   useEffect(() => {
     if (userType === 'artiste') {
@@ -201,7 +206,7 @@ export const Home = () => {
                     fontSize={fontSz(14)}
                     pt={hp(2)}
                     color={theme.colors.WHITE}>
-                    4.8
+                    {userInfo?.ratings}
                   </Text>
                 </Box>
                 <Box
@@ -223,7 +228,7 @@ export const Home = () => {
                     fontSize={fontSz(14)}
                     pt={hp(2)}
                     color={theme.colors.WHITE}>
-                    1.1k
+                    {userInfo?.requests}
                   </Text>
                 </Box>
                 <Box pl={wp(10)}>

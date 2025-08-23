@@ -13,6 +13,12 @@ interface MelospinStore {
   setUserData: (userData: any) => void;
   userType: 'dj' | 'artiste' | '';
   setUserType: (userType: 'dj' | 'artiste') => void;
+  userInfo: any;
+  setUserInfo: (userInfo: any) => void;
+  bookingRate: number;
+  setBookingRate: (bookingRate: number) => void;
+  playSessions: string[];
+  setPlaySessions: (playSessions: string[]) => void;
 }
 
 const melospinSlice: StateCreator<
@@ -23,6 +29,9 @@ const melospinSlice: StateCreator<
   isLoggedIn: false,
   userData: undefined,
   userType: '',
+  userInfo: undefined,
+  bookingRate: 0,
+  playSessions: [],
 
   setAuthToken: (authToken: string) => set({authToken: authToken}),
   setIsLoggedIn: (isLoggedIn: boolean) => set({isLoggedIn: isLoggedIn}),
@@ -31,6 +40,10 @@ const melospinSlice: StateCreator<
   },
   setUserData: (userData: any) => set({userData: userData}),
   setUserType: (userType: 'dj' | 'artiste') => set({userType: userType}),
+  setUserInfo: (userInfo: any) => set({userInfo: userInfo}),
+  setBookingRate: (bookingRate: number) => set({bookingRate: bookingRate}),
+  setPlaySessions: (playSessions: string[]) =>
+    set({playSessions: playSessions}),
 });
 
 export const useMelospinStore = create<MelospinStore>()(

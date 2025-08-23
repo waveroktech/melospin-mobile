@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Box, Button, FormInput, Text} from 'design-system';
 import {BaseModal, Icon, ModalHeader} from 'shared';
 import {formatNumberWithCommas, hp, wp} from 'utils';
@@ -6,6 +6,7 @@ import theme from 'theme';
 import {yupResolver} from '@hookform/resolvers/yup';
 import {useForm} from 'react-hook-form';
 import * as yup from 'yup';
+import {useMelospinStore} from 'store';
 
 interface BookingRateProps {
   isVisible: boolean;
@@ -24,7 +25,9 @@ const schema = yup.object().shape({
 
 export const BookingRate = ({isVisible, onClose}: BookingRateProps) => {
   const [showPassword, setShowPassword] = useState(true);
-  const {control, setValue, watch} = useForm<FormData>({
+  const {bookingRate, setBookingRate} = useMelospinStore();
+
+  const {control, setValue, watch, reset} = useForm<FormData>({
     resolver: yupResolver(schema),
     defaultValues: {
       password: '',
@@ -33,11 +36,26 @@ export const BookingRate = ({isVisible, onClose}: BookingRateProps) => {
     mode: 'all',
   });
 
+  useEffect(() => {
+    setValue('amount', formatNumberWithCommas(bookingRate?.toString()));
+  }, [bookingRate, setValue, isVisible]);
+
   const form = watch();
 
   const handleAmountChange = (value: string) => {
     setValue('amount', formatNumberWithCommas(value));
   };
+
+  const handleClose = () => {
+    reset();
+    onClose();
+  };
+
+  const handleSave = () => {
+    setBookingRate(Number(form.amount.replace(/,/g, '')));
+    handleClose();
+  };
+
   return (
     <BaseModal
       visible={isVisible}
@@ -102,7 +120,15 @@ export const BookingRate = ({isVisible, onClose}: BookingRateProps) => {
             />
           </Box>
         </Box>
-        <Button isNotBottom my={hp(20)} title="Save" hasBorder mx={wp(16)} />
+        <Button
+          isNotBottom
+          my={hp(20)}
+          title="Save"
+          hasBorder
+          mx={wp(16)}
+          disabled={form.amount && form.password.length > 7 ? false : true}
+          onPress={handleSave}
+        />
       </Box>
     </BaseModal>
   );

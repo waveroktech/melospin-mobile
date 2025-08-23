@@ -1,17 +1,32 @@
 import React, {useState} from 'react';
 import {Box, Text} from 'design-system';
-import {Header, Screen} from 'shared';
+import {Header, Loader, Screen} from 'shared';
 import {fontSz, hp, wp} from 'utils';
 import {SettingItem} from './components';
 import theme from 'theme';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {DashboardStackParamList} from 'types';
+import {useUpdateUserPreferences} from 'store';
 
 export const Settings = () => {
   const {navigate} = useNavigation<NavigationProp<DashboardStackParamList>>();
   const [faceId, setFaceId] = useState(false);
   const [pushNotifications, setPushNotifications] = useState(false);
   const [hideAccount, setHideAccount] = useState(false);
+
+  const {mutate: updateUserPreferences, isPending} = useUpdateUserPreferences({
+    onSuccess: (data: any) => {
+      console.log(data);
+    },
+  });
+
+  const handleUpdateUserPreferences = () => {
+    updateUserPreferences({
+      hideAccountBalance: hideAccount,
+      allowPushNotification: pushNotifications,
+      enableBioLogin: faceId,
+    });
+  };
 
   return (
     <Screen removeSafeaArea>
@@ -30,7 +45,10 @@ export const Settings = () => {
             title="Push notifications"
             hasSwitch
             value={pushNotifications}
-            setValue={() => setPushNotifications(!pushNotifications)}
+            setValue={() => {
+              setPushNotifications(!pushNotifications);
+              handleUpdateUserPreferences();
+            }}
           />
         </Box>
 
@@ -46,13 +64,19 @@ export const Settings = () => {
             title="Enable Face ID/ FingerPrint Login"
             hasSwitch
             value={faceId}
-            setValue={() => setFaceId(!faceId)}
+            setValue={() => {
+              setFaceId(!faceId);
+              handleUpdateUserPreferences();
+            }}
           />
           <SettingItem
             title="Hide account balance"
             hasSwitch
             value={hideAccount}
-            setValue={() => setHideAccount(!hideAccount)}
+            setValue={() => {
+              setHideAccount(!hideAccount);
+              handleUpdateUserPreferences();
+            }}
           />
           <SettingItem
             title="Change password"
@@ -60,6 +84,8 @@ export const Settings = () => {
           />
         </Box>
       </Box>
+
+      <Loader loading={isPending} />
     </Screen>
   );
 };
