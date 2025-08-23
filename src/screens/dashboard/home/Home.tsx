@@ -259,8 +259,8 @@ export const Home = () => {
               </Box>
             </GradientBorderView>
 
-            <Box mt={20}>
-              <Box flexDirection={'row'} alignItems={'center'}>
+            <Box mt={hp(30)}>
+              <Box flexDirection={'row'} alignItems={'center'} mb={hp(12)}>
                 <Text
                   variant="bodyMedium"
                   fontFamily={theme.font.AvenirNextSemiBold}
