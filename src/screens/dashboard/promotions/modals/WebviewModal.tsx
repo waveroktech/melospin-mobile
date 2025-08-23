@@ -24,6 +24,7 @@ export const WebviewModal = ({isVisible, onClose, url}: WebviewModalProps) => {
     url: any;
   }) => {
     const {url} = navState;
+    console.log(url, 'url');
     if (url?.includes('http://localhost:3300')) {
       onClose();
       setTimeout(() => {

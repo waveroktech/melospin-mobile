@@ -16,6 +16,8 @@ export const BookingHistory = () => {
     refetch();
   }, [refetch]);
 
+  console.log(djPromotions, 'djPromotions');
+
   return (
     <Box mt={hp(20)}>
       <ScrollView>

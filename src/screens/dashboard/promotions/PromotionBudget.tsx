@@ -29,11 +29,11 @@ interface FormData {
 }
 
 const schema = yup.object().shape({
-  frequency: yup.string().required(),
-  password: yup.string().required(),
-  startDate: yup.string().required(),
-  endDate: yup.string().required(),
-  amount: yup.string().required(),
+  frequency: yup.string().required('Frequency is required'),
+  password: yup.string().required('Password is required'),
+  startDate: yup.string().required('Start date is required'),
+  endDate: yup.string().required('End date is required'),
+  amount: yup.string().required('Amount is required'),
 });
 
 export const PromotionBudget = () => {
@@ -47,7 +47,12 @@ export const PromotionBudget = () => {
   >('');
   const forceUpdate = useForceUpdate();
 
-  const {control, setValue, watch} = useForm<FormData>({
+  const {
+    control,
+    setValue,
+    watch,
+    formState: {errors},
+  } = useForm<FormData>({
     resolver: yupResolver(schema),
     defaultValues: {
       frequency: '',
@@ -134,6 +139,7 @@ export const PromotionBudget = () => {
               label="Frequency"
               editable={false}
               isDropDown
+              errorText={errors.frequency?.message}
               onPressDropDown={() => setOpen('frequency')}
             />
 
@@ -148,6 +154,7 @@ export const PromotionBudget = () => {
                   : ''
               }
               editable={false}
+              errorText={errors.startDate?.message}
               onPressDropDown={() => setOpen('start-date')}
             />
             <FormInput
@@ -159,6 +166,7 @@ export const PromotionBudget = () => {
                 form.endDate ? moment(form.endDate).format('YYYY-MM-DD') : ''
               }
               editable={false}
+              errorText={errors.endDate?.message}
               onPressDropDown={() => setOpen('end-date')}
             />
 
@@ -201,6 +209,9 @@ export const PromotionBudget = () => {
                 name="amount"
                 onChangeText={(text: string) => handleAmountChange(text)}
                 label="Enter budget amount"
+                errorText={errors.amount?.message}
+                keyboardType="number-pad"
+                returnKeyType="done"
               />
             </Box>
           </Box>

@@ -23,8 +23,10 @@ import {ConnectionRequests} from './modals';
 import {EmptyPromotionContainer} from '../promotions/components';
 
 export const Explore = () => {
-  const [open, setOpen] = useState<'dj-connects' | ''>('');
+  const [open, setOpen] = useState<string | null>(null);
   const [search, setSearch] = useState('');
+  const [refreshTrigger, setRefreshTrigger] = useState(0); // Add refresh trigger state
+
   const {data: connections, refetch: refetchConnections} = useGetConnections();
   const {data, isPending, refetch} = useGetDjs();
 
@@ -55,6 +57,18 @@ export const Explore = () => {
       refetch();
       refetchConnectionRequests();
     }, [refetchConnections, refetchConnectionRequests, refetch]),
+  );
+
+  // Trigger rerender when modal closes
+  useEffect(() => {
+    if (open === null) {
+      // Modal was closed, trigger any additional updates
+      console.log('Modal closed, triggering updates...');
+    }
+  }, [open]);
+
+  const connectionRequestsData = connectionRequests?.data?.connections?.filter(
+    (item: any) => item?.role === 'recipient',
   );
 
   return (
@@ -123,8 +137,9 @@ export const Explore = () => {
       ) : (
         <ScrollView>
           <DjConnectHeader
+            key={refreshTrigger} // Force rerender when refreshTrigger changes
             onPress={() => setOpen('dj-connects')}
-            requestCount={connectionRequests?.data?.connections?.length}
+            requestCount={connectionRequestsData?.length}
             connectCount={connections?.data?.length}
           />
 
@@ -181,6 +196,17 @@ export const Explore = () => {
         connectionRequests={connectionRequests?.data?.connections}
         onComplete={() => {
           refetchConnectionRequests();
+          refetchConnections();
+          setOpen('');
+          setRefreshTrigger(prev => prev + 1); // Trigger rerender
+        }}
+        onModalHide={() => {
+          // Only requery if the modal was actually open
+          if (open === 'dj-connects') {
+            refetchConnectionRequests();
+            refetchConnections();
+            setRefreshTrigger(prev => prev + 1); // Trigger rerender
+          }
         }}
       />
 

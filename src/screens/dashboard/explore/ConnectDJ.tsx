@@ -17,13 +17,11 @@ export const ConnectDj = () => {
     useRoute<RouteProp<DashboardStackParamList, 'ConnectDJ'>>()?.params;
   const {goBack} = useNavigation();
 
-  const {data: djs, refetch} = useGetDjs();
+  const {refetch} = useGetDjs();
 
   useEffect(() => {
     refetch();
   }, [refetch]);
-
-  console.log(djs);
 
   const {mutate: sendConnection, isPending} = useSetSendConnection({
     onSuccess: (data: any) => {

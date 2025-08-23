@@ -16,6 +16,7 @@ interface ConnectionRequestsProps {
   onClose: () => void;
   connectionRequests?: any[];
   onComplete: () => void;
+  onModalHide?: () => void;
 }
 
 export const ConnectionRequests = ({
@@ -23,11 +24,13 @@ export const ConnectionRequests = ({
   onClose,
   onComplete,
   connectionRequests,
+  onModalHide,
 }: ConnectionRequestsProps) => {
   const flashMessageRef = useRef<FlashMessage>(null);
 
   const {mutate, isPending} = useSetHandleConnection({
     onSuccess: (data: any) => {
+      console.log(data, 'data');
       if (data?.status === 'success') {
         onComplete();
         showMessage({
@@ -55,10 +58,15 @@ export const ConnectionRequests = ({
     [mutate],
   );
 
+  const connectionRequestsData = connectionRequests?.filter(
+    (item: any) => item?.role === 'recipient',
+  );
+
   return (
     <BaseModal
       visible={isVisible}
       onClose={onClose}
+      onModalHide={onModalHide}
       dialogContainerStyle={{
         backgroundColor: theme.colors.BLACK_DEFAULT,
         borderTopWidth: hp(0),
@@ -72,7 +80,7 @@ export const ConnectionRequests = ({
         />
 
         <FlatList
-          data={connectionRequests}
+          data={connectionRequestsData}
           renderItem={({item}) => (
             <Box
               mt={hp(10)}
@@ -98,7 +106,7 @@ export const ConnectionRequests = ({
                     <Box
                       width={10}
                       height={10}
-                      mx={wp(2)}
+                      style={{marginHorizontal: wp(8)}}
                       bg={theme.colors.OFF_WHITE_200}
                       borderRadius={100}
                     />
@@ -114,30 +122,32 @@ export const ConnectionRequests = ({
                   </Box>
                 </Box>
                 <Box mt={hp(20)} flexDirection={'row'} alignItems={'center'}>
-                  <GradientBorderView
-                    gradientProps={{
-                      colors: ['#FFFFFF', '#D73C3C', '#8932F7'],
-                    }}
-                    style={styles.gradientContainer}>
-                    <Box
-                      as={TouchableOpacity}
-                      activeOpacity={0.8}
-                      onPress={() =>
-                        handleConnection('accept', item.connectionId)
-                      }>
+                  <Box
+                    as={TouchableOpacity}
+                    activeOpacity={0.8}
+                    onPress={() =>
+                      handleConnection('accept', item.connectionId)
+                    }>
+                    <GradientBorderView
+                      gradientProps={{
+                        colors: ['#FFFFFF', '#D73C3C', '#8932F7'],
+                      }}
+                      style={styles.gradientContainer}>
                       <Text
                         variant="bodyMedium"
                         fontSize={fontSz(14)}
                         color={theme.colors.WHITE}>
                         Accept
                       </Text>
-                    </Box>
-                  </GradientBorderView>
+                    </GradientBorderView>
+                  </Box>
 
                   <Box
                     width={wp(94)}
                     height={hp(37)}
                     ml={wp(20)}
+                    as={TouchableOpacity}
+                    activeOpacity={0.8}
                     onPress={() =>
                       handleConnection('decline', item.connectionId)
                     }

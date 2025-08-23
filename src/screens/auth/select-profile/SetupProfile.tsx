@@ -17,12 +17,14 @@ interface FormData {
   brandName: string;
   instagram: string;
   tictok: string;
+  snapchat: string;
 }
 
 const schema = yup.object().shape({
-  brandName: yup.string().required(),
-  instagram: yup.string().required(),
-  tictok: yup.string().required(),
+  brandName: yup.string().required('Brand name is required'),
+  instagram: yup.string().required('Instagram handle is required'),
+  tictok: yup.string().required('TikTok handle is required'),
+  snapchat: yup.string().required('Snapchat handle is required'),
 });
 
 export const SetupProfile = () => {
@@ -39,12 +41,17 @@ export const SetupProfile = () => {
     refetch();
   }, [refetch]);
 
-  const {control, watch} = useForm<FormData>({
+  const {
+    control,
+    watch,
+    formState: {errors},
+  } = useForm<FormData>({
     resolver: yupResolver(schema),
     defaultValues: {
       brandName: '',
       instagram: '',
       tictok: '',
+      snapchat: '',
     },
     mode: 'all',
   });
@@ -106,6 +113,7 @@ export const SetupProfile = () => {
               control={control}
               name="brandName"
               value={form.brandName}
+              errorText={errors.brandName?.message}
             />
             <FormInput
               label="Enter Instagram handle (ex @dj_zee)"
@@ -113,6 +121,7 @@ export const SetupProfile = () => {
               control={control}
               name="instagram"
               value={form.instagram}
+              errorText={errors.instagram?.message}
             />
             <FormInput
               label="Enter TikTok handle (ex @dj_zee)"
@@ -120,6 +129,15 @@ export const SetupProfile = () => {
               control={control}
               name="tictok"
               value={form.tictok}
+              errorText={errors.tictok?.message}
+            />
+            <FormInput
+              label="Enter Snapchat handle (ex @dj_zee)"
+              autoCapitalize="none"
+              control={control}
+              name="snapchat"
+              value={form.snapchat}
+              errorText={errors.snapchat?.message}
             />
 
             <Box
@@ -184,6 +202,7 @@ export const SetupProfile = () => {
           form.brandName &&
           form.instagram &&
           form.tictok &&
+          form.snapchat &&
           selectedGenres?.length > 0
             ? false
             : true

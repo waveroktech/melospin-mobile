@@ -10,7 +10,7 @@ import {
 } from '@react-navigation/native';
 import {Image, Linking, ScrollView, TouchableOpacity} from 'react-native';
 import {Box, Button, Text} from 'design-system';
-import {formatNumberWithCommas, hp, wp} from 'utils';
+import {hp, wp} from 'utils';
 import {DiscographyItem} from '../discography/component';
 import {DashboardStackParamList} from 'types';
 import {useGetDiscography} from 'store';
@@ -20,6 +20,7 @@ import {styles} from './style';
 import {useCreatePromotion} from 'store/usePromotion';
 import {showMessage} from 'react-native-flash-message';
 import {PaymentRedirection, WebviewModal} from './modals';
+import {useExternalLinks} from 'hooks';
 
 export const PromotionCheckout = () => {
   const {goBack, navigate} =
@@ -68,9 +69,6 @@ export const PromotionCheckout = () => {
         setOpen('');
         setTimeout(() => {
           if (data?.data?.hasPaymentLink) {
-            // navigate('MelospinWebview', {
-            //   url: data?.data?.paymentInfo?.authorization_url,
-            // });
             setUrl(data?.data?.paymentInfo?.authorization_url);
             setTimeout(() => {
               setOpen('webview');
@@ -109,6 +107,8 @@ export const PromotionCheckout = () => {
     });
   }, [data, mutate, findDiscography]);
 
+  const {validLinks} = useExternalLinks(data);
+
   return (
     <Screen removeSafeaArea backgroundColor={theme.colors.BASE_PRIMARY}>
       <Header hasBackText="Checkout" onPressLeftIcon={goBack} />
@@ -128,40 +128,44 @@ export const PromotionCheckout = () => {
 
           <DiscographyItem item={findDiscography} />
 
-          <Box mt={hp(20)} mx={wp(16)}>
-            <Text
-              variant="bodyBold"
-              fontFamily={theme.font.AvenirNextSemiBold}
-              color={theme.colors.WHITE}>
-              Audio Streaming Links
-            </Text>
+          {validLinks?.length > 0 && (
+            <Box mt={hp(20)} mx={wp(16)}>
+              <Text
+                variant="bodyBold"
+                fontFamily={theme.font.AvenirNextSemiBold}
+                color={theme.colors.WHITE}>
+                Audio Streaming Links
+              </Text>
 
-            <ScrollView horizontal>
-              <Box mt={hp(16)} flexDirection={'row'} alignItems={'center'}>
-                {data?.externalLinks
-                  ?.filter((song: {link: string}) => song?.link !== '')
-                  ?.map((song: any, index: number) => {
-                    return (
-                      <Box
-                        as={TouchableOpacity}
-                        activeOpacity={0.8}
-                        onPress={() => Linking.openURL(song.link)}
-                        key={index}
-                        mr={wp(10)}
-                        borderRadius={hp(24)}
-                        p={hp(12)}
-                        bg={theme.colors.OFF_WHITE_500}>
-                        <Icon
-                          name={
-                            song.name === 'spotify' ? 'spotify-icon' : song.name
-                          }
-                        />
-                      </Box>
-                    );
-                  })}
-              </Box>
-            </ScrollView>
-          </Box>
+              <ScrollView horizontal>
+                <Box mt={hp(16)} flexDirection={'row'} alignItems={'center'}>
+                  {data?.externalLinks
+                    ?.filter((song: {link: string}) => song?.link !== '')
+                    ?.map((song: any, index: number) => {
+                      return (
+                        <Box
+                          as={TouchableOpacity}
+                          activeOpacity={0.8}
+                          onPress={() => Linking.openURL(song.link)}
+                          key={index}
+                          mr={wp(10)}
+                          borderRadius={hp(24)}
+                          p={hp(12)}
+                          bg={theme.colors.OFF_WHITE_500}>
+                          <Icon
+                            name={
+                              song.name === 'spotify'
+                                ? 'spotify-icon'
+                                : song.name
+                            }
+                          />
+                        </Box>
+                      );
+                    })}
+                </Box>
+              </ScrollView>
+            </Box>
+          )}
 
           <Box mt={hp(30)} mx={wp(16)}>
             <Text
@@ -312,7 +316,7 @@ export const PromotionCheckout = () => {
                         variant="bodyMedium"
                         pl={2}
                         color={theme.colors.WHITE}>
-                        {formatNumberWithCommas(item?.formattedBidAmount)}
+                        {item?.formattedBidAmount}
                       </Text>
                     </Box>
                   </Box>

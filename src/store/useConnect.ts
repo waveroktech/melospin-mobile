@@ -15,11 +15,14 @@ export const useGetConnections = () => {
 };
 
 export const useGetConnectionRequests = () => {
-  return useQuery({
+  const {data, refetch} = useQuery({
     queryKey: ['get-melospin-connections-requests'],
     queryFn: () => getConnectionRequests(),
     enabled: false,
   });
+
+  console.log(data, 'data');
+  return {data, refetch};
 };
 
 export const useSetHandleConnection = ({
