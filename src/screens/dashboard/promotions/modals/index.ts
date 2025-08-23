@@ -1,4 +1,5 @@
 export * from './AddBank';
+export * from './BankList';
 export * from './BookingRate';
 export * from './Cashout';
 export * from './PaymentRedirection';

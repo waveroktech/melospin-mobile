@@ -19,6 +19,20 @@ interface MelospinStore {
   setBookingRate: (bookingRate: number) => void;
   playSessions: string[];
   setPlaySessions: (playSessions: string[]) => void;
+
+  bankInfo: {
+    bankName: string;
+    accountNumber: string;
+    bankCode: string;
+    accountName: string;
+  };
+
+  setBankInfo: (bankInfo: {
+    bankName: string;
+    accountNumber: string;
+    bankCode: string;
+    accountName: string;
+  }) => void;
 }
 
 const melospinSlice: StateCreator<
@@ -32,6 +46,12 @@ const melospinSlice: StateCreator<
   userInfo: undefined,
   bookingRate: 0,
   playSessions: [],
+  bankInfo: {
+    bankName: '',
+    accountNumber: '',
+    bankCode: '',
+    accountName: '',
+  },
 
   setAuthToken: (authToken: string) => set({authToken: authToken}),
   setIsLoggedIn: (isLoggedIn: boolean) => set({isLoggedIn: isLoggedIn}),
@@ -44,6 +64,12 @@ const melospinSlice: StateCreator<
   setBookingRate: (bookingRate: number) => set({bookingRate: bookingRate}),
   setPlaySessions: (playSessions: string[]) =>
     set({playSessions: playSessions}),
+  setBankInfo: (bankInfo: {
+    bankName: string;
+    accountNumber: string;
+    bankCode: string;
+    accountName: string;
+  }) => set({bankInfo: bankInfo}),
 });
 
 export const useMelospinStore = create<MelospinStore>()(
