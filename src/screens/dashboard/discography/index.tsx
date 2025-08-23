@@ -34,7 +34,7 @@ export const Discography = () => {
       }
 
       const query = searchQuery.toLowerCase().trim();
-      const fileName = item?.name?.toLowerCase() || '';
+      const fileName = item?.title?.toLowerCase() || '';
 
       return fileName.includes(query);
     }) || [];
