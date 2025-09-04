@@ -1,12 +1,13 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {Box, Button, Text} from 'design-system';
-import {BaseModal, Icon, Loader, ModalHeader} from 'shared';
-import {fontSz, hp, wp} from 'utils';
+import {BaseModal, FlashMessageToast, Icon, Loader, ModalHeader} from 'shared';
+import {fontSz, formatNumberWithCommas, hp, wp} from 'utils';
 import theme from 'theme';
 import {FlatList, Image, TextInput, TouchableOpacity} from 'react-native';
 import {styles} from './style';
 import {useGetDjs} from 'store';
 import {EmptyPromotionContainer} from '../components';
+import FlashMessage from 'react-native-flash-message';
 
 interface SelectDjsProps {
   isVisible: boolean;
@@ -30,7 +31,7 @@ export const SelectDjs = ({
   const [searchQuery, setSearchQuery] = useState<string>('');
   const {data, isPending, refetch} = useGetDjs();
 
-  console.log(data, 'data');
+  const flashMessageRef = useRef<FlashMessage>(null);
 
   useEffect(() => {
     if (isVisible) {
@@ -61,21 +62,27 @@ export const SelectDjs = ({
     }) || [];
 
   const onSelectDj = async (selectedDj: any) => {
-    const checkExisting = selectedDjs?.find(
-      d => d?.userId === selectedDj?.userId,
-    );
-
-    if (checkExisting === undefined) {
-      const payload = [...selectedDjs, selectedDj];
-      setSelectedDjs(payload);
-      console.log('we are here');
-    } else if (checkExisting?.name) {
-      const removeExisting = selectedDjs?.filter(
-        d => d?.userId !== selectedDj?.userId,
+    if (selectedDj?.canPromote) {
+      const checkExisting = selectedDjs?.find(
+        d => d?.userId === selectedDj?.userId,
       );
-      setSelectedDjs(removeExisting);
+
+      if (checkExisting === undefined) {
+        const payload = [...selectedDjs, selectedDj];
+        setSelectedDjs(payload);
+      } else if (checkExisting?.name) {
+        const removeExisting = selectedDjs?.filter(
+          d => d?.userId !== selectedDj?.userId,
+        );
+        setSelectedDjs(removeExisting);
+      }
+      forceUpdate();
+    } else {
+      flashMessageRef.current?.showMessage({
+        message: 'DJ cannot promote yet',
+        type: 'danger',
+      });
     }
-    forceUpdate();
   };
 
   return (
@@ -112,55 +119,76 @@ export const SelectDjs = ({
                 as={TouchableOpacity}
                 activeOpacity={0.8}
                 onPress={() => onSelectDj(item)}
-                flexDirection={'row'}
-                alignItems={'center'}
                 mb={hp(14)}
                 borderBottomColor={theme.colors.BASE_SECONDARY}
                 mx={wp(16)}>
-                {selectedDjs?.includes(item) && (
-                  <Box mr={wp(10)}>
-                    <Icon name="selected-dj" />
-                  </Box>
-                )}
-                <Image
-                  source={
-                    item?.profileUrl
-                      ? {uri: item?.profileUrl}
-                      : theme.images['dj-images']['dj-1']
-                  }
-                  style={styles.profileImage}
-                  resizeMode="contain"
-                />
-                <Box ml={wp(10)}>
-                  <Box flexDirection={'row'} alignItems={'center'}>
+                <Box flexDirection={'row'} alignItems={'center'}>
+                  {selectedDjs?.includes(item) && (
+                    <Box mr={wp(10)}>
+                      <Icon name="selected-dj" />
+                    </Box>
+                  )}
+                  <Image
+                    source={
+                      item?.profileUrl
+                        ? {uri: item?.profileUrl}
+                        : theme.images['dj-images']['dj-1']
+                    }
+                    style={styles.profileImage}
+                    resizeMode="contain"
+                  />
+                  <Box ml={wp(10)}>
                     <Box flexDirection={'row'} alignItems={'center'}>
-                      <Text
-                        pr={2}
-                        variant="bodyBold"
-                        fontSize={fontSz(14)}
-                        color={theme.colors.WHITE}>
-                        {item?.name}
-                      </Text>
-                      <Icon name="verified" />
+                      <Box flexDirection={'row'} alignItems={'center'}>
+                        <Text
+                          pr={2}
+                          variant="bodyBold"
+                          fontSize={fontSz(14)}
+                          color={theme.colors.WHITE}>
+                          {item?.name}
+                        </Text>
+                        <Icon name="verified" />
+                      </Box>
+
+                      {item?.connected && (
+                        <Box
+                          flexDirection={'row'}
+                          alignItems={'center'}
+                          ml={wp(20)}>
+                          <Box
+                            width={6}
+                            height={6}
+                            borderRadius={100}
+                            bg={theme.colors.TEXT_INPUT_PLACEHOLDER}
+                          />
+                          <Text
+                            pl={2}
+                            variant="bodyMedium"
+                            fontSize={fontSz(14)}
+                            color={theme.colors.TEXT_INPUT_PLACEHOLDER}>
+                            Connected
+                          </Text>
+                        </Box>
+                      )}
                     </Box>
 
-                    {item?.connected && (
+                    {item?.chargePerPlay && (
                       <Box
+                        mt={hp(10)}
                         flexDirection={'row'}
-                        alignItems={'center'}
-                        ml={wp(20)}>
-                        <Box
-                          width={6}
-                          height={6}
-                          borderRadius={100}
-                          bg={theme.colors.TEXT_INPUT_PLACEHOLDER}
-                        />
+                        alignItems={'center'}>
+                        <Icon name="tag-icon" />
+
                         <Text
-                          pl={2}
+                          style={{paddingLeft: wp(10)}}
                           variant="bodyMedium"
                           fontSize={fontSz(14)}
-                          color={theme.colors.TEXT_INPUT_PLACEHOLDER}>
-                          Connected
+                          color={theme.colors.WHITE}>
+                          from{' '}
+                          {formatNumberWithCommas(
+                            item?.chargePerPlay?.toString(),
+                          )}{' '}
+                          NGN
                         </Text>
                       </Box>
                     )}
@@ -191,6 +219,8 @@ export const SelectDjs = ({
         title="Add to promo list"
       />
       <Loader loading={isPending} />
+
+      <FlashMessageToast ref={flashMessageRef} />
     </BaseModal>
   );
 };
