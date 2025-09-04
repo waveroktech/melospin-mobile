@@ -21,8 +21,8 @@ interface FormData {
 }
 
 const schema = yup.object().shape({
-  password: yup.string().required(),
-  amount: yup.string().required(),
+  password: yup.string().required('Password is required'),
+  amount: yup.string().required('Amount is required'),
 });
 
 export const BookingRate = ({isVisible, onClose}: BookingRateProps) => {
@@ -54,7 +54,13 @@ export const BookingRate = ({isVisible, onClose}: BookingRateProps) => {
     },
   });
 
-  const {control, setValue, watch, reset} = useForm<FormData>({
+  const {
+    control,
+    setValue,
+    watch,
+    reset,
+    formState: {errors},
+  } = useForm<FormData>({
     resolver: yupResolver(schema),
     defaultValues: {
       password: '',
@@ -73,7 +79,9 @@ export const BookingRate = ({isVisible, onClose}: BookingRateProps) => {
   const form = watch();
 
   const handleAmountChange = (value: string) => {
-    setValue('amount', formatNumberWithCommas(value));
+    const numberAmount = Number(value.replace(/\D/g, ''));
+    const formattedValue = (Number(numberAmount) || '').toLocaleString();
+    setValue('amount', formattedValue);
   };
 
   const handleClose = () => {
@@ -136,6 +144,9 @@ export const BookingRate = ({isVisible, onClose}: BookingRateProps) => {
                 containerStyle={{width: wp(230), marginBottom: hp(0)}}
                 name="amount"
                 value={form.amount}
+                keyboardType="number-pad"
+                returnKeyType="done"
+                errorText={errors.amount?.message}
                 onChangeText={(text: string) => handleAmountChange(text)}
                 label="Enter budget amount"
               />
@@ -143,6 +154,7 @@ export const BookingRate = ({isVisible, onClose}: BookingRateProps) => {
 
             <FormInput
               control={control}
+              errorText={errors.password?.message}
               value={form.password}
               name="password"
               isPassword

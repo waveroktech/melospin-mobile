@@ -37,7 +37,6 @@ interface FormTextInputProps extends RNTextInputProps {
   inputTextStyle?: ViewStyle;
   dropDownStyle?: ViewStyle;
   isLoading?: boolean;
-  keyboardType?: RNTextInputProps['keyboardType'];
   disablePasswordPrevention?: boolean;
 }
 
@@ -59,41 +58,12 @@ export const FormInput = forwardRef<RNTextInput, FormTextInputProps>(
       isDate,
       dropDownStyle,
       isLoading,
-      keyboardType,
-      disablePasswordPrevention,
       ...props
     },
     ref,
   ) => {
     const {field} = useController({control, defaultValue: '', name});
     const animatedValue = useRef(new Animated.Value(0));
-
-    // Determine autoComplete and textContentType based on input type
-    const getAutoCompleteValue = (): RNTextInputProps['autoComplete'] => {
-      if (disablePasswordPrevention) {
-        return undefined;
-      }
-      if (isPassword) {
-        return 'off';
-      }
-      if (keyboardType === 'email-address') {
-        return 'off';
-      }
-      return 'off'; // Default to off to prevent saved passwords
-    };
-
-    const getTextContentType = (): RNTextInputProps['textContentType'] => {
-      if (disablePasswordPrevention) {
-        return undefined;
-      }
-      if (isPassword) {
-        return 'none';
-      }
-      if (keyboardType === 'email-address') {
-        return 'none';
-      }
-      return 'none'; // Default to none to prevent saved passwords
-    };
 
     useEffect(() => {
       // Set initial animation state based on field value
@@ -204,8 +174,11 @@ export const FormInput = forwardRef<RNTextInput, FormTextInputProps>(
                   onFocus={onFocus}
                   selectionColor={theme.colors.WHITE}
                   pointerEvents={isDropDown || isDate ? 'none' : 'auto'}
-                  autoComplete={getAutoCompleteValue()}
-                  textContentType={getTextContentType()}
+                  autoComplete="off"
+                  importantForAutofill="no"
+                  textContentType="none"
+                  // autoComplete={getAutoCompleteValue()}
+                  // textContentType={getTextContentType()}
                   {...{ref}}
                   {...props}
                 />

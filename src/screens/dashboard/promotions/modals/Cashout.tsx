@@ -1,16 +1,19 @@
 import React, {useState} from 'react';
 import {Box, Button, FormInput, Text} from 'design-system';
 import {BaseModal, Icon, ModalHeader} from 'shared';
-import {formatNumberWithCommas, hp, wp} from 'utils';
+import {hp, wp} from 'utils';
 import theme from 'theme';
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import {useForm} from 'react-hook-form';
 import {BankDetails} from '../components';
+import {useMelospinStore} from 'store';
 
 interface CashoutProps {
   isVisible: boolean;
   onClose: () => void;
+  addBank: () => void;
+  handleCashout: () => void;
 }
 
 interface FormData {
@@ -19,17 +22,28 @@ interface FormData {
 }
 
 const schema = yup.object().shape({
-  password: yup.string().required(),
-  amount: yup.string().required(),
+  password: yup.string().required('Password is required'),
+  amount: yup.string().required('Amount is required'),
 });
 
-export const Cashout = ({isVisible, onClose}: CashoutProps) => {
+export const Cashout = ({
+  isVisible,
+  onClose,
+  addBank,
+  handleCashout,
+}: CashoutProps) => {
   const [showPassword, setShowPassword] = useState(true);
-  const {control, setValue, watch} = useForm<FormData>({
+  const {userInfo} = useMelospinStore();
+  const bankInfo = userInfo?.banks?.[0];
+  const {
+    control,
+    setValue,
+    watch,
+    formState: {errors},
+  } = useForm<FormData>({
     resolver: yupResolver(schema),
     defaultValues: {
       password: '',
-
       amount: '',
     },
     mode: 'all',
@@ -38,7 +52,9 @@ export const Cashout = ({isVisible, onClose}: CashoutProps) => {
   const form = watch();
 
   const handleAmountChange = (value: string) => {
-    setValue('amount', formatNumberWithCommas(value));
+    const numberAmount = Number(value.replace(/\D/g, ''));
+    const formattedValue = (Number(numberAmount) || '').toLocaleString();
+    setValue('amount', formattedValue);
   };
 
   return (
@@ -62,7 +78,7 @@ export const Cashout = ({isVisible, onClose}: CashoutProps) => {
             Confirm details to continue
           </Text>
 
-          <BankDetails />
+          <BankDetails onPress={addBank} />
 
           <Box
             flexDirection={'row'}
@@ -88,7 +104,10 @@ export const Cashout = ({isVisible, onClose}: CashoutProps) => {
               control={control}
               containerStyle={{width: wp(230), marginBottom: hp(0)}}
               name="amount"
+              keyboardType="number-pad"
+              returnKeyType="done"
               value={form.amount}
+              errorText={errors.amount?.message}
               onChangeText={(text: string) => handleAmountChange(text)}
               label="Enter budget amount"
             />
@@ -101,6 +120,7 @@ export const Cashout = ({isVisible, onClose}: CashoutProps) => {
             isPassword
             value={form.password}
             secureTextEntry={showPassword}
+            errorText={errors.password?.message}
             onPressPasswordIcon={() => setShowPassword(!showPassword)}
           />
         </Box>
@@ -117,7 +137,22 @@ export const Cashout = ({isVisible, onClose}: CashoutProps) => {
             title="Cancel"
             onPress={onClose}
           />
-          <Button isNotBottom width={wp(150)} title="Cashout" hasBorder />
+          <Button
+            isNotBottom
+            width={wp(150)}
+            disabled={
+              form.password.length >= 8 &&
+              form.amount &&
+              bankInfo?.accountNumber &&
+              bankInfo?.bankName &&
+              bankInfo?.accountName
+                ? false
+                : true
+            }
+            onPress={handleCashout}
+            title="Cashout"
+            hasBorder
+          />
         </Box>
       </Box>
     </BaseModal>

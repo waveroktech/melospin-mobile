@@ -6,10 +6,40 @@ import {Icon} from 'shared';
 import {ImageBackground, ScrollView, TouchableOpacity} from 'react-native';
 import {Cashout} from '../modals';
 import {styles} from './style';
+import {showMessage} from 'react-native-flash-message';
+import {useMelospinStore} from 'store';
 
-export const DjEarnings = () => {
+interface DjEarningsProps {
+  setActiveIndex: (index: number) => void;
+}
+
+export const DjEarnings = ({setActiveIndex}: DjEarningsProps) => {
   const [hideBalance, setHideBalance] = useState(false);
   const [open, setOpen] = useState<'cashout' | ''>('');
+  const {userInfo} = useMelospinStore();
+  const balance = userInfo;
+  console.log(balance, 'balance');
+
+  const addBank = () => {
+    setOpen('');
+    // Navigate to DJSettings tab (index 3) with a small delay for smoother transition
+    setTimeout(() => {
+      setActiveIndex(3);
+    }, 300);
+  };
+
+  const handleCashout = () => {
+    setOpen('');
+    // Navigate to DJSettings tab (index 3) with a small delay for smoother transition
+    setTimeout(() => {
+      showMessage({
+        message: 'Cashout successful',
+        type: 'success',
+        duration: 2000,
+      });
+    }, 300);
+  };
+
   return (
     <Box mt={hp(20)} mx={wp(16)} height={hp(800)}>
       <ScrollView contentContainerStyle={{paddingBottom: hp(100)}}>
@@ -100,18 +130,16 @@ export const DjEarnings = () => {
             as={TouchableOpacity}
             activeOpacity={0.8}
             onPress={() => setOpen('cashout')}
-            p={hp(12)}
+            style={{padding: hp(5)}}
             borderWidth={1}
             borderRadius={hp(24)}
             alignSelf={'center'}
-            height={hp(40)}
             flexDirection={'row'}
-            width={wp(121)}
             borderColor={theme.colors.ACCENT_04}>
             <Text
               variant="bodyMedium"
-              color={theme.colors.WHITE}
-              bottom={hp(1)}>
+              lineHeight={hp(24)}
+              color={theme.colors.WHITE}>
               Cash out
             </Text>
             <Icon name="arrow-right-3" color={theme.colors.LIGHT_PRIMARY} />
@@ -197,7 +225,12 @@ export const DjEarnings = () => {
         </Box>
       </ScrollView>
 
-      <Cashout isVisible={open === 'cashout'} onClose={() => setOpen('')} />
+      <Cashout
+        isVisible={open === 'cashout'}
+        onClose={() => setOpen('')}
+        addBank={addBank}
+        handleCashout={handleCashout}
+      />
     </Box>
   );
 };

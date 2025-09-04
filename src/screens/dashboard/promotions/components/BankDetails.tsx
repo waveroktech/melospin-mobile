@@ -36,7 +36,9 @@ export const BankDetails = ({onPress}: BankDetailsProps) => {
         </Box>
       </Box>
 
-      {bankInfo.accountNumber && bankInfo.bankName && bankInfo.accountName ? (
+      {bankInfo?.accountNumber &&
+      bankInfo?.bankName &&
+      bankInfo?.accountName ? (
         <Box mt={hp(20)} flexDirection={'row'}>
           <Box flexDirection={'row'} alignItems={'center'}>
             <Icon name="bank-icon" />
@@ -47,7 +49,7 @@ export const BankDetails = ({onPress}: BankDetailsProps) => {
                 numberOfLines={1}
                 width={wp(200)}
                 color={theme.colors.WHITE}>
-                {bankInfo.accountNumber} - {bankInfo.bankName}
+                {bankInfo?.accountNumber} - {bankInfo?.bankName}
               </Text>
               <Text
                 variant="body"
@@ -55,7 +57,7 @@ export const BankDetails = ({onPress}: BankDetailsProps) => {
                 // eslint-disable-next-line react-native/no-inline-styles
                 style={{textTransform: 'capitalize'}}
                 fontSize={fontSz(12)}>
-                {bankInfo.accountName}
+                {bankInfo?.accountName}
               </Text>
             </Box>
           </Box>

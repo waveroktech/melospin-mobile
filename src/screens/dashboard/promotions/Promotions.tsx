@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {Icon, Loader, Screen} from 'shared';
 import {DashboardHeader} from '../home/components';
 import {FlatList, ScrollView, TextInput} from 'react-native';
@@ -14,7 +14,11 @@ import {
   PromotionButton,
   PromotionItem,
 } from './components';
-import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {
+  NavigationProp,
+  useFocusEffect,
+  useNavigation,
+} from '@react-navigation/native';
 import {DashboardStackParamList} from 'types';
 import {useUserPromotions} from 'store/usePromotion';
 import {useMelospinStore} from 'store';
@@ -24,7 +28,11 @@ export const Promotions = () => {
   const {navigate} = useNavigation<NavigationProp<DashboardStackParamList>>();
   const [activeIndex, setActiveIndex] = useState(1);
 
-  console.log(activeIndex);
+  useFocusEffect(
+    useCallback(() => {
+      setActiveIndex(1);
+    }, [setActiveIndex]),
+  );
 
   const {data, refetch, isPending} = useUserPromotions();
   const {userType} = useMelospinStore();
@@ -32,8 +40,6 @@ export const Promotions = () => {
   useEffect(() => {
     refetch();
   }, [refetch]);
-
-  console.log(data?.data);
 
   return (
     <Screen removeSafeaArea backgroundColor={theme.colors.BASE_PRIMARY}>
@@ -107,7 +113,7 @@ export const Promotions = () => {
             })}
           </ScrollView>
 
-          {activeIndex === 1 && <DjEarnings />}
+          {activeIndex === 1 && <DjEarnings setActiveIndex={setActiveIndex} />}
           {activeIndex === 2 && <BookingHistory />}
           {activeIndex === 3 && <DjSettings />}
         </Box>

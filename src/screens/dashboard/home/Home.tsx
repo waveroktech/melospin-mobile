@@ -154,6 +154,9 @@ export const Home = () => {
                 pt={hp(10)}
                 justifyContent={'center'}>
                 <Box
+                  as={TouchableOpacity}
+                  activeOpacity={0.8}
+                  onPress={() => navigate('Discography')}
                   width={wp(100)}
                   height={hp(102)}
                   justifyContent={'center'}
@@ -171,6 +174,9 @@ export const Home = () => {
                   <Icon name="border-width" />
                 </Box>
                 <Box
+                  as={TouchableOpacity}
+                  activeOpacity={0.8}
+                  onPress={() => navigate('Promotions')}
                   width={wp(100)}
                   height={hp(102)}
                   justifyContent={'center'}

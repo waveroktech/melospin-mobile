@@ -8,7 +8,7 @@ import {
   useRoute,
 } from '@react-navigation/native';
 import {DashboardStackParamList} from 'types';
-import {fontSz, formatNumberWithCommas, hp, wp} from 'utils';
+import {fontSz, hp, wp} from 'utils';
 import * as yup from 'yup';
 import {useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
@@ -73,7 +73,9 @@ export const PromotionBudget = () => {
   };
 
   const handleAmountChange = (value: string) => {
-    setValue('amount', formatNumberWithCommas(value));
+    const numberAmount = Number(value.replace(/\D/g, ''));
+    const formattedValue = (Number(numberAmount) || '').toLocaleString();
+    setValue('amount', formattedValue);
   };
 
   const {mutate, isPending} = useCalculateBiddingSplit({
