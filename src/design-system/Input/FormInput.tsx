@@ -58,6 +58,7 @@ export const FormInput = forwardRef<RNTextInput, FormTextInputProps>(
       isDate,
       dropDownStyle,
       isLoading,
+      isLocked,
       ...props
     },
     ref,
@@ -141,7 +142,7 @@ export const FormInput = forwardRef<RNTextInput, FormTextInputProps>(
         <Box flexDirection={'row'}>
           <TouchableOpacity
             activeOpacity={isDropDown || isDate ? 0.8 : 1}
-            onPressIn={() => {
+            onPress={() => {
               isDropDown || isDate
                 ? onPressDropDown && onPressDropDown()
                 : null;
@@ -173,12 +174,17 @@ export const FormInput = forwardRef<RNTextInput, FormTextInputProps>(
                   onBlur={onBlur}
                   onFocus={onFocus}
                   selectionColor={theme.colors.WHITE}
-                  pointerEvents={isDropDown || isDate ? 'none' : 'auto'}
-                  autoComplete="off"
+                  editable={!(isDropDown || isDate)}
+                  autoComplete={isPassword ? 'new-password' : 'off'}
+                  autoCorrect={false}
+                  autoCapitalize="none"
+                  spellCheck={false}
                   importantForAutofill="no"
-                  textContentType="none"
-                  // autoComplete={getAutoCompleteValue()}
-                  // textContentType={getTextContentType()}
+                  textContentType={isPassword ? 'newPassword' : 'none'}
+                  passwordRules=""
+                  keyboardType="default"
+                  returnKeyType="done"
+                  blurOnSubmit={true}
                   {...{ref}}
                   {...props}
                 />

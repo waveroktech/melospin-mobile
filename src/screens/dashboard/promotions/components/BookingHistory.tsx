@@ -6,14 +6,14 @@ import {Icon} from 'shared';
 import theme from 'theme';
 import {styles} from './style';
 import {PromotionItem} from './PromotionItem';
-import {useUserPromotions} from 'store';
+import {useGetPromotionRequests, } from 'store';
 import {EmptyPromotionContainer} from './EmptyPromotionContainer';
 import {promotions} from 'data';
 import {PromotionDetails} from '../modals';
 import {showMessage} from 'react-native-flash-message';
 
 export const BookingHistory = () => {
-  const {data: djPromotions, refetch} = useUserPromotions();
+  const {data: djPromotions, refetch} = useGetPromotionRequests();
   const [open, setOpen] = useState<string>('');
 
   useEffect(() => {

@@ -4,6 +4,7 @@ import {
   setCalculateBiddingSplit,
   setCalculatePromotionCost,
   setCreatePromotion,
+  getPromotionRequests,
 } from 'services/api/promotion.service';
 
 export const useUserPromotions = () => {
@@ -53,5 +54,13 @@ export const useCreatePromotion = ({
     mutationFn: setCreatePromotion,
     onSuccess,
     onError,
+  });
+};
+
+export const useGetPromotionRequests = () => {
+  return useQuery({
+    queryKey: ['get-promotion-requests'],
+    queryFn: () => getPromotionRequests(),
+    enabled: false,
   });
 };

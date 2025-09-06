@@ -149,6 +149,7 @@ export const AddBank = ({isVisible, onClose}: AddBankProps) => {
               name="bvn"
               errorText={errors.bvn?.message}
               label="Enter BVN here"
+              maxLength={11}
               keyboardType="number-pad"
               returnKeyType="done"
             />
