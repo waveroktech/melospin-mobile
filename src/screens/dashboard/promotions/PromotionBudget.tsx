@@ -88,21 +88,46 @@ export const PromotionBudget = () => {
         });
       }
       if (response?.status === 'success') {
-        showMessage({
-          message: 'Bidding split calculated successfully',
-          type: 'success',
-          duration: 2000,
-        });
-        navigate('PromotionCheckout', {
-          data: {
-            amount: form.amount,
-            frequency: form.frequency,
-            startDate: form.startDate,
-            endDate: form.endDate,
-            responseData: response?.data,
-            ...payload,
-          },
-        });
+        // Sum the amount values from the response.data array
+        const totalAmount = response?.data?.reduce((sum: number, item: any) => {
+          return sum + (item.amount || 0);
+        }, 0);
+
+        // Get the proposed budget amount (remove commas and convert to number)
+        const proposedAmount = Number(form.amount?.split(',')?.join(''));
+
+        if (totalAmount > proposedAmount) {
+          const shortfall = totalAmount - proposedAmount;
+          showMessage({
+            message: `Total bid amount (₦${totalAmount.toLocaleString()}) exceeds your proposed budget (₦${proposedAmount.toLocaleString()}). You need ₦${shortfall.toLocaleString()} more to cover the expenses.`,
+            type: 'danger',
+            duration: 3000,
+          });
+        } else if (totalAmount < proposedAmount) {
+          console.log('totalAmount < proposedAmount');
+          const excess = proposedAmount - totalAmount;
+          showMessage({
+            message: `Total cost (₦${totalAmount.toLocaleString()}) is less than your proposed budget (₦${proposedAmount.toLocaleString()}). You have ₦${excess.toLocaleString()} remaining. Please adjust your budget to match the exact cost.`,
+            type: 'danger',
+            duration: 3000,
+          });
+        } else {
+          showMessage({
+            message: `Perfect! Total cost (₦${totalAmount.toLocaleString()}) matches your proposed budget (₦${proposedAmount.toLocaleString()}). Proceeding to checkout.`,
+            type: 'success',
+            duration: 3000,
+          });
+          navigate('PromotionCheckout', {
+            data: {
+              amount: form.amount,
+              frequency: form.frequency,
+              startDate: form.startDate,
+              endDate: form.endDate,
+              responseData: response?.data,
+              ...payload,
+            },
+          });
+        }
       }
     },
   });

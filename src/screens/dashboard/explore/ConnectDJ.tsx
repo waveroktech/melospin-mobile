@@ -9,13 +9,14 @@ import {Image} from 'react-native';
 import {EmptyPromotionContainer} from '../promotions/components';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {DashboardStackParamList} from 'types';
-import {useGetDjs, useSetSendConnection} from 'store';
+import {useGetDjs, useMelospinStore, useSetSendConnection} from 'store';
 import {showMessage} from 'react-native-flash-message';
 
 export const ConnectDj = () => {
   const {dj} =
     useRoute<RouteProp<DashboardStackParamList, 'ConnectDJ'>>()?.params;
   const {goBack} = useNavigation();
+  const {userType} = useMelospinStore();
 
   const {refetch} = useGetDjs();
 
@@ -48,6 +49,7 @@ export const ConnectDj = () => {
     sendConnection({targetUserId: dj?.userId});
   }, [dj?.userId, sendConnection]);
 
+  console.log(dj);
   return (
     <Screen removeSafeaArea>
       <Header hasBackText="Profile" />
@@ -107,46 +109,86 @@ export const ConnectDj = () => {
                   fontFamily={theme.font.AvenirNextSemiBold}
                   color={theme.colors.WHITE}
                   pl={10}>
-                  {formatNumber(10)} Song Uploads
+                  {formatNumber(10)} {userType === 'artiste' ? 'Song Uploads' : 'Song Plays'}
                 </Text>
               </Box>
 
-              <Box
-                mt={hp(16)}
-                width={wp(260)}
-                justifyContent={'space-between'}
-                flexDirection={'row'}
-                alignItems={'center'}>
+              {userType === 'artiste' && (
                 <Box
-                  height={hp(40)}
-                  px={wp(10)}
-                  borderWidth={1}
-                  as={TouchableOpacity}
-                  activeOpacity={0.8}
-                  onPress={handleConnect}
-                  justifyContent={'center'}
-                  alignItems={'center'}
-                  borderRadius={hp(24)}
-                  borderColor={theme.colors.WHITE}>
-                  <Text variant="bodyMedium" color={theme.colors.WHITE}>
-                    Connect
-                  </Text>
+                  mt={hp(16)}
+                  width={wp(260)}
+                  justifyContent={'space-between'}
+                  flexDirection={'row'}
+                  alignItems={'center'}>
+                  <Box
+                    height={hp(40)}
+                    px={wp(10)}
+                    borderWidth={1}
+                    as={TouchableOpacity}
+                    activeOpacity={0.8}
+                    onPress={handleConnect}
+                    justifyContent={'center'}
+                    alignItems={'center'}
+                    borderRadius={hp(24)}
+                    borderColor={theme.colors.WHITE}>
+                    <Text variant="bodyMedium" color={theme.colors.WHITE}>
+                      Connect
+                    </Text>
+                  </Box>
+                  <Box
+                    height={hp(40)}
+                    px={wp(10)}
+                    borderWidth={1}
+                    as={TouchableOpacity}
+                    activeOpacity={0.8}
+                    justifyContent={'center'}
+                    alignItems={'center'}
+                    borderRadius={hp(24)}
+                    borderColor={theme.colors.WHITE}>
+                    <Text variant="bodyMedium" color={theme.colors.WHITE}>
+                      Send promo request
+                    </Text>
+                  </Box>
                 </Box>
+              )}
+              {userType === 'dj' && (
                 <Box
-                  height={hp(40)}
-                  px={wp(10)}
-                  borderWidth={1}
-                  as={TouchableOpacity}
-                  activeOpacity={0.8}
-                  justifyContent={'center'}
-                  alignItems={'center'}
-                  borderRadius={hp(24)}
-                  borderColor={theme.colors.WHITE}>
-                  <Text variant="bodyMedium" color={theme.colors.WHITE}>
-                    Send promo request
-                  </Text>
+                  mt={hp(16)}
+                  width={wp(200)}
+                  justifyContent={'space-between'}
+                  flexDirection={'row'}
+                  alignItems={'center'}>
+                  <Box
+                    height={hp(40)}
+                    px={wp(10)}
+                    borderWidth={1}
+                    as={TouchableOpacity}
+                    activeOpacity={0.8}
+                    onPress={handleConnect}
+                    justifyContent={'center'}
+                    alignItems={'center'}
+                    borderRadius={hp(24)}
+                    borderColor={theme.colors.WHITE}>
+                    <Text variant="bodyMedium" color={theme.colors.WHITE}>
+                      Follow
+                    </Text>
+                  </Box>
+                  <Box
+                    height={hp(40)}
+                    px={wp(10)}
+                    borderWidth={1}
+                    as={TouchableOpacity}
+                    activeOpacity={0.8}
+                    justifyContent={'center'}
+                    alignItems={'center'}
+                    borderRadius={hp(24)}
+                    borderColor={theme.colors.WHITE}>
+                    <Text variant="bodyMedium" color={theme.colors.WHITE}>
+                      Share Profile
+                    </Text>
+                  </Box>
                 </Box>
-              </Box>
+              )}
             </Box>
           </Box>
         </ImageBackground>

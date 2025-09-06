@@ -116,7 +116,7 @@ export const DjEarnings = ({setActiveIndex}: DjEarningsProps) => {
                     fontFamily={theme.font.AvenirNextSemiBold}
                     fontSize={fontSz(14)}
                     color={theme.colors.WHITE}>
-                    1.1k
+                    {userInfo?.requests || 0}
                   </Text>
                 </Box>
               </Box>

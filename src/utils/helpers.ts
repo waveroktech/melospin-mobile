@@ -35,15 +35,16 @@ export function subtractYears(date: Date, years: number) {
   return dateCopy;
 }
 
-export const formatNumberWithCommas = (text: string) => {
+export const formatNumberWithCommas = (text: any) => {
+  let value = text?.toString();
   // Remove all non-numeric characters except the decimal point
-  if (!text) {
+  if (!value) {
     return '';
   }
-  text = text?.replace(/[^0-9.]/g, '');
+  value = value?.replace(/[^0-9.]/g, '');
 
   // Split the number into the integer and decimal parts
-  const parts = text?.split('.');
+  const parts = value?.split('.');
 
   // Format the integer part with commas
   parts[0] = parts?.[0]?.replace(/\B(?=(\d{3})+(?!\d))/g, ',');

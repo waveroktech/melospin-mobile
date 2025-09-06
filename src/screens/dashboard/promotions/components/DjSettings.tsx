@@ -107,7 +107,7 @@ export const DjSettings = () => {
                   </Box>
                 );
               })}
-              {playSessions?.length === 0 && (
+              {userInfo?.playingDays?.length === 0 && (
                 <Text
                   variant="bodyMedium"
                   fontSize={fontSz(14)}

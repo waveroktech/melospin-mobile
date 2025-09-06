@@ -5,6 +5,7 @@ import WebView from 'react-native-webview';
 import {hp} from 'utils';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {BottomTabStackParamList, DashboardStackParamList} from 'types';
+import {showMessage} from 'react-native-flash-message';
 
 interface WebviewModalProps {
   isVisible: boolean;
@@ -25,8 +26,13 @@ export const WebviewModal = ({isVisible, onClose, url}: WebviewModalProps) => {
   }) => {
     const {url} = navState;
     console.log(url, 'url');
-    if (url?.includes('http://localhost:3300')) {
+    if (url?.includes('http://13.48.183.216:3600/payments/verify-payment')) {
       onClose();
+      showMessage({
+        message: 'Payment successful',
+        type: 'success',
+        duration: 2000,
+      });
       setTimeout(() => {
         //@ts-ignore
         navigate('Dashboard');

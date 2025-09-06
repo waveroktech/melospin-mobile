@@ -1,8 +1,16 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {useEffect} from 'react';
 import {Box, Text} from 'design-system';
 import {Icon, Loader, Screen} from 'shared';
 import theme from 'theme';
-import {Image, ScrollView, TouchableOpacity} from 'react-native';
+import {
+  Image,
+  ScrollView,
+  UIManager,
+  Platform,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import {DashboardHeader, ReleaseItem} from './components';
 import {fontSz, hp, wp} from 'utils';
 import {newReleases} from 'data';
@@ -18,6 +26,14 @@ import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {BottomTabStackParamList, DashboardStackParamList} from 'types';
 
 export const Home = () => {
+  // Enable layout animation for Android
+  if (
+    Platform.OS === 'android' &&
+    UIManager.setLayoutAnimationEnabledExperimental
+  ) {
+    UIManager.setLayoutAnimationEnabledExperimental(true);
+  }
+
   const {userType} = useMelospinStore();
   const {navigate} =
     useNavigation<
@@ -147,20 +163,23 @@ export const Home = () => {
               gradientProps={{
                 colors: ['#FFFFFF', '#D73C3C', '#8932F7'],
               }}
-              style={styles.gradientContainer}>
-              <Box
-                flexDirection={'row'}
-                alignItems={'center'}
-                pt={hp(10)}
-                justifyContent={'center'}>
-                <Box
-                  as={TouchableOpacity}
-                  activeOpacity={0.8}
+              style={[styles.gradientContainer, {pointerEvents: 'box-none'}]}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  paddingTop: hp(10),
+                  justifyContent: 'center',
+                }}>
+                <TouchableOpacity
                   onPress={() => navigate('Discography')}
-                  width={wp(100)}
-                  height={hp(102)}
-                  justifyContent={'center'}
-                  alignItems={'center'}>
+                  activeOpacity={0.8}
+                  style={{
+                    width: wp(100),
+                    height: hp(102),
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
                   <Text
                     variant="body"
                     fontSize={fontSz(12)}
@@ -169,18 +188,19 @@ export const Home = () => {
                     My Playlists
                   </Text>
                   <Icon name="playlist-icon" />
-                </Box>
+                </TouchableOpacity>
                 <Box mx={wp(20)}>
                   <Icon name="border-width" />
                 </Box>
-                <Box
-                  as={TouchableOpacity}
-                  activeOpacity={0.8}
+                <TouchableOpacity
                   onPress={() => navigate('Promotions')}
-                  width={wp(100)}
-                  height={hp(102)}
-                  justifyContent={'center'}
-                  alignItems={'center'}>
+                  activeOpacity={0.8}
+                  style={{
+                    width: wp(100),
+                    height: hp(102),
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
                   <Text
                     variant="body"
                     fontSize={fontSz(12)}
@@ -189,8 +209,8 @@ export const Home = () => {
                     My Promotions
                   </Text>
                   <Icon name="promotion-icon" />
-                </Box>
-              </Box>
+                </TouchableOpacity>
+              </View>
               <Box
                 borderTopWidth={1}
                 mx={wp(30)}
@@ -273,12 +293,14 @@ export const Home = () => {
                   color={theme.colors.WHITE}>
                   Trending Now
                 </Text>
-                <Box
-                  ml={10}
-                  as={TouchableOpacity}
+                <TouchableOpacity
                   onPress={() => navigate('Explore')}
-                  flexDirection={'row'}
-                  alignItems={'center'}>
+                  activeOpacity={0.8}
+                  style={{
+                    marginLeft: 10,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                  }}>
                   <Text
                     variant="bodyMedium"
                     fontSize={fontSz(15)}
@@ -287,7 +309,7 @@ export const Home = () => {
                     Explore
                   </Text>
                   <Icon name="arrow-right-2" />
-                </Box>
+                </TouchableOpacity>
               </Box>
 
               <Image

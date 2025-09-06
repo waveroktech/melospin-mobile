@@ -10,7 +10,7 @@ import {
 } from '@react-navigation/native';
 import {Image, Linking, ScrollView, TouchableOpacity} from 'react-native';
 import {Box, Button, Text} from 'design-system';
-import {hp, wp} from 'utils';
+import {formatNumberWithCommas, hp, wp} from 'utils';
 import {DiscographyItem} from '../discography/component';
 import {DashboardStackParamList} from 'types';
 import {useGetDiscography} from 'store';
@@ -21,6 +21,7 @@ import {useCreatePromotion} from 'store/usePromotion';
 import {showMessage} from 'react-native-flash-message';
 import {PaymentRedirection, WebviewModal} from './modals';
 import {useExternalLinks} from 'hooks';
+import WebView from 'react-native-webview';
 
 export const PromotionCheckout = () => {
   const {goBack, navigate} =
@@ -70,6 +71,7 @@ export const PromotionCheckout = () => {
         setTimeout(() => {
           if (data?.data?.hasPaymentLink) {
             setUrl(data?.data?.paymentInfo?.authorization_url);
+            // Linking.openURL(data?.data?.paymentInfo?.authorization_url);
             setTimeout(() => {
               setOpen('webview');
             }, 300);
@@ -93,8 +95,6 @@ export const PromotionCheckout = () => {
 
     setOpen('payment-info');
 
-    console.log(totalPrice);
-
     mutate({
       promotionId: data?.discographyId,
       promotionLink: findDiscography?.url,
@@ -108,6 +108,8 @@ export const PromotionCheckout = () => {
   }, [data, mutate, findDiscography]);
 
   const {validLinks} = useExternalLinks(data);
+
+  console.log(url);
 
   return (
     <Screen removeSafeaArea backgroundColor={theme.colors.BASE_PRIMARY}>
@@ -316,7 +318,7 @@ export const PromotionCheckout = () => {
                         variant="bodyMedium"
                         pl={2}
                         color={theme.colors.WHITE}>
-                        {item?.formattedBidAmount}
+                        {formatNumberWithCommas(item?.formattedBidAmount)}
                       </Text>
                     </Box>
                   </Box>
@@ -383,6 +385,11 @@ export const PromotionCheckout = () => {
         isVisible={open === 'webview'}
         onClose={() => setOpen('')}
         url={url}
+      />
+      <WebView
+        source={{uri: 'https://www.google.com'}}
+        style={{padding: hp(20)}}
+        // onNavigationStateChange={onNavigationStateChange}
       />
     </Screen>
   );

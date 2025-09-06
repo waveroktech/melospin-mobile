@@ -29,7 +29,7 @@ export const FlashMessageItem = ({
       mx={wp(16)}
       justifyContent={'center'}
       px={wp(16)}
-      height={hp(88)}
+      minHeight={hp(88)}
       borderRadius={hp(24)}>
       <Box
         borderRadius={hp(8)}
