@@ -57,4 +57,12 @@ export const styles = StyleSheet.create({
   imageStyle: {
     borderRadius: hp(24),
   },
+  kycStatusContainer: {
+    paddingHorizontal: hp(8),
+    height: hp(24),
+    borderRadius: hp(12),
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: wp(10),
+  },
 });

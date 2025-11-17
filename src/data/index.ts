@@ -1433,3 +1433,43 @@ export const bankList = [
     bankName: 'ZINTERNET - KONGAPAY',
   },
 ];
+
+export const kycStatus = {
+  pending: {
+    title: 'Pending approval',
+    description: 'Your KYC is pending. Please wait for verification.',
+    bgColor: '#FEF7EC',
+    textColor: '#B47818',
+  },
+  approved: {
+    title: 'Approved',
+    description: 'Your KYC is approved. You can now use the app.',
+    bgColor: '#EFFAF6',
+    textColor: '#176448',
+  },
+  rejected: {
+    title: 'Rejected',
+    description: 'Your KYC is rejected. Please try again.',
+    bgColor: '#FDEDF0',
+    textColor: '#DF1C41',
+  },
+};
+
+export const idTypeList = [
+  {
+    id: 1,
+    title: 'National ID',
+  },
+  {
+    id: 2,
+    title: 'Passport',
+  },
+  {
+    id: 3,
+    title: "Driver's License",
+  },
+  {
+    id: 4,
+    title: "Voter's Card",
+  },
+];

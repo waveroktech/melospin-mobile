@@ -11,11 +11,14 @@ import {
 } from 'react-native';
 import theme from 'theme';
 import {styles} from './style';
-import {EditProfile, ShareProfile} from './modals';
+import {EditProfile, ManageKyc, ShareProfile} from './modals';
 import {useMelospinStore} from 'store';
+import {kycStatus} from 'data';
 
 export const DJProfile = () => {
-  const [open, setOpen] = useState<'share-profile' | 'edit-profile' | ''>('');
+  const [open, setOpen] = useState<
+    'share-profile' | 'edit-profile' | 'manage-kyc' | ''
+  >('');
   const {userData} = useMelospinStore();
   console.log(userData);
 
@@ -109,6 +112,46 @@ export const DJProfile = () => {
               I’m a Multi- talented DJ with a vibe beyond the borders
             </Text>
 
+            <Box
+              mt={10}
+              flexDirection={'row'}
+              alignItems={'center'}
+              justifyContent={'space-between'}>
+              <Box
+                width={wp(110)}
+                height={hp(40)}
+                as={TouchableOpacity}
+                activeOpacity={0.8}
+                justifyContent={'center'}
+                alignItems={'center'}
+                borderRadius={24}
+                bg={theme.colors.OFF_WHITE_500}>
+                <Icon name="instagram" />
+              </Box>
+              <Box
+                width={wp(110)}
+                height={hp(40)}
+                as={TouchableOpacity}
+                activeOpacity={0.8}
+                justifyContent={'center'}
+                alignItems={'center'}
+                borderRadius={24}
+                bg={theme.colors.OFF_WHITE_500}>
+                <Icon name="tiktok" />
+              </Box>
+              <Box
+                width={wp(110)}
+                height={hp(40)}
+                as={TouchableOpacity}
+                activeOpacity={0.8}
+                justifyContent={'center'}
+                alignItems={'center'}
+                borderRadius={24}
+                bg={theme.colors.OFF_WHITE_500}>
+                <Icon name="snapchat" />
+              </Box>
+            </Box>
+
             <Box mt={hp(20)} flexDirection={'row'} alignItems={'center'}>
               <Box
                 width={wp(134)}
@@ -155,53 +198,39 @@ export const DJProfile = () => {
             borderTopWidth={1}
             mt={hp(25)}
             borderTopColor={theme.colors.BASE_SECONDARY}>
-            <Text
-              variant="body"
-              pt={hp(20)}
-              color={theme.colors.TEXT_INPUT_PLACEHOLDER}>
-              Socials
-            </Text>
             <Box
-              mt={10}
-              flexDirection={'row'}
-              alignItems={'center'}
-              justifyContent={'space-between'}>
-              <Box
-                width={wp(110)}
-                height={hp(40)}
-                as={TouchableOpacity}
-                activeOpacity={0.8}
-                justifyContent={'center'}
-                alignItems={'center'}
-                borderRadius={24}
-                bg={theme.colors.OFF_WHITE_500}>
-                <Icon name="instagram" />
+              as={TouchableOpacity}
+              activeOpacity={0.8}
+              onPress={() => setOpen('manage-kyc')}
+              bg={theme.colors.OFF_BLACK_100}
+              p={hp(16)}
+              mt={hp(20)}
+              borderRadius={hp(12)}>
+              <Box flexDirection={'row'} alignItems={'center'}>
+                <Icon name="verify-icon" />
+                <Box flexDirection={'row'} alignItems={'center'} ml={wp(12)}>
+                  <Text variant="bodyMedium" color={theme.colors.WHITE}>
+                    Manage KYC
+                  </Text>
+                  <Box
+                    bg={kycStatus.pending.bgColor}
+                    style={styles.kycStatusContainer}
+                    borderRadius={hp(12)}>
+                    <Text color={kycStatus.pending.textColor}>
+                      {kycStatus.pending.title}
+                    </Text>
+                  </Box>
+                </Box>
               </Box>
-              <Box
-                width={wp(110)}
-                height={hp(40)}
-                as={TouchableOpacity}
-                activeOpacity={0.8}
-                justifyContent={'center'}
-                alignItems={'center'}
-                borderRadius={24}
-                bg={theme.colors.OFF_WHITE_500}>
-                <Icon name="tiktok" />
-              </Box>
-              <Box
-                width={wp(110)}
-                height={hp(40)}
-                as={TouchableOpacity}
-                activeOpacity={0.8}
-                justifyContent={'center'}
-                alignItems={'center'}
-                borderRadius={24}
-                bg={theme.colors.OFF_WHITE_500}>
-                <Icon name="snapchat" />
-              </Box>
+              <Text
+                variant="body"
+                pt={hp(12)}
+                fontSize={fontSz(12)}
+                color={theme.colors.TEXT_INPUT_PLACEHOLDER}>
+                {kycStatus.pending.description}
+              </Text>
             </Box>
-
-            <Box mt={hp(26)}>
+            <Box mt={hp(20)}>
               <Text variant="body" color={theme.colors.TEXT_INPUT_PLACEHOLDER}>
                 Milestones
               </Text>
@@ -264,6 +293,11 @@ export const DJProfile = () => {
       />
       <EditProfile
         isVisible={open === 'edit-profile'}
+        onClose={() => setOpen('')}
+      />
+
+      <ManageKyc
+        isVisible={open === 'manage-kyc'}
         onClose={() => setOpen('')}
       />
     </Screen>

@@ -58,7 +58,6 @@ export const FormInput = forwardRef<RNTextInput, FormTextInputProps>(
       isDate,
       dropDownStyle,
       isLoading,
-      isLocked,
       ...props
     },
     ref,

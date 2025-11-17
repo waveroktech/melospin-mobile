@@ -37,6 +37,7 @@
     "react-native-fast-image": "^8.6.3",
     "react-native-flash-message": "^0.4.2",
     "react-native-gesture-handler": "^2.23.0",
+    "react-native-image-picker": "^8.2.1",
     "react-native-linear-gradient": "^2.8.3",
     "react-native-modal": "^13.0.1",
     "react-native-reanimated": "^3.16.7",
@@ -74,5 +75,6 @@
   },
   "engines": {
     "node": ">=18"
-  }
+  },
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }
