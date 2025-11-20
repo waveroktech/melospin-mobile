@@ -11,16 +11,16 @@ import {
 } from 'react-native';
 import theme from 'theme';
 import {styles} from './style';
-import {EditProfile, ManageKyc, ShareProfile} from './modals';
+import {AddNewPlaySpot, EditProfile, ManageKyc, ShareProfile} from './modals';
 import {useMelospinStore} from 'store';
 import {kycStatus} from 'data';
+import {Genres, PlaySpots} from './components';
 
 export const DJProfile = () => {
   const [open, setOpen] = useState<
-    'share-profile' | 'edit-profile' | 'manage-kyc' | ''
+    'share-profile' | 'edit-profile' | 'manage-kyc' | 'add-new-play-spot' | ''
   >('');
   const {userData} = useMelospinStore();
-  console.log(userData);
 
   return (
     <Screen removeSafeaArea>
@@ -230,59 +230,13 @@ export const DJProfile = () => {
                 {kycStatus.pending.description}
               </Text>
             </Box>
-            <Box mt={hp(20)}>
-              <Text variant="body" color={theme.colors.TEXT_INPUT_PLACEHOLDER}>
-                Milestones
-              </Text>
+            <PlaySpots
+              onAddNew={() => {
+                setOpen('add-new-play-spot');
+              }}
+            />
 
-              <Box
-                bg={theme.colors.OFF_WHITE_400}
-                p={hp(20)}
-                mt={hp(10)}
-                borderRadius={hp(24)}>
-                <Box flexDirection={'row'} alignItems={'center'}>
-                  <Icon name="connects" />
-                  <Text
-                    pl={wp(10)}
-                    variant="bodyMedium"
-                    color={theme.colors.WHITE}>
-                    {userData?.connectCount} Connects
-                  </Text>
-                </Box>
-
-                <Box flexDirection={'row'} mt={hp(16)} alignItems={'center'}>
-                  <Icon name="song-plays" />
-                  <Text
-                    pl={wp(10)}
-                    variant="bodyMedium"
-                    color={theme.colors.WHITE}>
-                    1.1k Song Plays
-                  </Text>
-                </Box>
-              </Box>
-            </Box>
-
-            <Box mt={hp(26)}>
-              <Text variant="body" color={theme.colors.TEXT_INPUT_PLACEHOLDER}>
-                Genres
-              </Text>
-
-              <Box
-                bg={theme.colors.OFF_WHITE_400}
-                p={hp(20)}
-                mt={hp(10)}
-                borderRadius={hp(24)}>
-                <Box flexDirection={'row'} alignItems={'center'}>
-                  <Icon name="genres" />
-                  <Text
-                    pl={wp(10)}
-                    variant="bodyMedium"
-                    color={theme.colors.WHITE}>
-                    RnB, Afro-House, Amapiano, Hip-hop, Pop
-                  </Text>
-                </Box>
-              </Box>
-            </Box>
+            <Genres genres={userData?.musicGenres || []} />
           </Box>
         </Box>
       </ScrollView>
@@ -298,6 +252,10 @@ export const DJProfile = () => {
 
       <ManageKyc
         isVisible={open === 'manage-kyc'}
+        onClose={() => setOpen('')}
+      />
+      <AddNewPlaySpot
+        isVisible={open === 'add-new-play-spot'}
         onClose={() => setOpen('')}
       />
     </Screen>

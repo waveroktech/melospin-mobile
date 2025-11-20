@@ -12,12 +12,15 @@ import {RouteProp, useRoute} from '@react-navigation/native';
 import {AuthStackParamList} from 'types';
 import {useGetGenre} from 'store/useGenre';
 import {showMessage} from 'react-native-flash-message';
+import {SelectState} from './modals';
 
 interface FormData {
   brandName: string;
   instagram: string;
   tictok: string;
   snapchat: string;
+  country: string;
+  state: string;
 }
 
 const schema = yup.object().shape({
@@ -29,6 +32,7 @@ const schema = yup.object().shape({
 
 export const SetupProfile = () => {
   const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
+  const [open, setOpen] = useState<'country' | 'state' | ''>('');
 
   const {setIsLoggedIn, setAuthToken, setUserData, setUserType} =
     useMelospinStore();
@@ -43,15 +47,18 @@ export const SetupProfile = () => {
 
   const {
     control,
+    setValue,
     watch,
     formState: {errors},
   } = useForm<FormData>({
-    resolver: yupResolver(schema),
+    resolver: yupResolver(schema) as any,
     defaultValues: {
       brandName: '',
       instagram: '',
       tictok: '',
       snapchat: '',
+      country: 'Nigeria',
+      state: '',
     },
     mode: 'all',
   });
@@ -90,7 +97,7 @@ export const SetupProfile = () => {
       userType: accountType,
       brandName: form.brandName,
       instagram: form.instagram,
-      tictok: form.tictok,
+      tictok: form.tictok || '',
       musicGenres: selectedGenres,
     });
   }, [accountType, form, selectedGenres, setAccountProfile]);
@@ -123,23 +130,28 @@ export const SetupProfile = () => {
               value={form.instagram}
               errorText={errors.instagram?.message}
             />
+
             <FormInput
-              label="Enter TikTok handle (ex @dj_zee)"
-              autoCapitalize="none"
+              label="Select your country of residence"
               control={control}
-              name="tictok"
-              value={form.tictok}
-              errorText={errors.tictok?.message}
-            />
-            <FormInput
-              label="Enter Snapchat handle (ex @dj_zee)"
-              autoCapitalize="none"
-              control={control}
-              name="snapchat"
-              value={form.snapchat}
-              errorText={errors.snapchat?.message}
+              name="country"
+              isDropDown
+              editable={false}
+              onPressDropDown={() => setOpen('country')}
+              value={form.country}
+              errorText={errors.country?.message}
             />
 
+            <FormInput
+              label="Select state of residence"
+              control={control}
+              name="state"
+              isDropDown
+              editable={false}
+              onPressDropDown={() => setOpen('state')}
+              value={form.state}
+              errorText={errors.state?.message}
+            />
             <Box
               bg={theme.colors.TEXT_INPUT_BG}
               pt={hp(12)}
@@ -199,11 +211,7 @@ export const SetupProfile = () => {
         onPress={createAccountProfile}
         bg={theme.colors.PRIMARY_100}
         disabled={
-          form.brandName &&
-          form.instagram &&
-          form.tictok &&
-          form.snapchat &&
-          selectedGenres?.length > 0
+          form.brandName && form.instagram && selectedGenres?.length > 0
             ? false
             : true
         }
@@ -211,6 +219,15 @@ export const SetupProfile = () => {
       />
 
       <Loader loading={isPending} />
+
+      <SelectState
+        isVisible={open === 'state'}
+        onClose={() => setOpen('')}
+        onSelectState={(state: any) => {
+          setOpen('');
+          setValue('state', state.state);
+        }}
+      />
     </Screen>
   );
 };

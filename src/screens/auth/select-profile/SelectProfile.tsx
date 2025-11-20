@@ -114,11 +114,17 @@ export const SelectProfile = () => {
       </Box>
       <Button
         title="Next"
-        onPress={() =>
-          navigate('SetupProfile', {
-            accountType: selectedIndex === 0 ? 'artiste' : 'dj',
-          })
-        }
+        onPress={() => {
+          if (selectedIndex === 0) {
+            navigate('SetupProfile', {
+              accountType: 'artiste',
+            });
+          } else {
+            navigate('SetupDjProfile', {
+              accountType: 'dj',
+            });
+          }
+        }}
         hasBorder
         bg={theme.colors.PRIMARY_100}
       />

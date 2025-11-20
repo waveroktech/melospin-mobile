@@ -21,6 +21,7 @@ export type AuthStackParamList = {
   };
   SelectProfile: undefined;
   SetupProfile: {accountType: 'artiste' | 'dj'};
+  SetupDjProfile: {accountType: 'dj'};
 };
 
 export type BottomTabStackParamList = {

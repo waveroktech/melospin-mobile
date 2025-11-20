@@ -12,6 +12,7 @@ import {
   VerifyPasswordReset,
 } from 'screens/auth';
 import {AuthStackParamList} from 'types';
+import {SetupDjProfile} from 'screens/auth/select-profile/SetupDjProfile';
 
 const AuthStack = createStackNavigator<AuthStackParamList>();
 
@@ -35,6 +36,7 @@ const AuthNavigation = () => {
       <AuthStack.Screen name="ResetPassword" component={ResetPassword} />
       <AuthStack.Screen name="SelectProfile" component={SelectProfile} />
       <AuthStack.Screen name="SetupProfile" component={SetupProfile} />
+      <AuthStack.Screen name="SetupDjProfile" component={SetupDjProfile} />
     </AuthStack.Navigator>
   );
 };

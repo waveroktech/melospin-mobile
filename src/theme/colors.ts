@@ -38,4 +38,5 @@ export const colors = {
   OFF_WHITE_600: '#FFFFFF33',
   GREY_100: '#9B9BA5',
   BOTTOM_TAB_BG: '#4F314B',
+  OFF_BLACK_300: '#00000033',
 };
