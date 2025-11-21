@@ -12,12 +12,12 @@ interface PromotionItemProps {
 
 export const PromotionItem = ({promotion, onPress}: PromotionItemProps) => {
   const statusBg =
-    promotion?.status === 'pending'
+    promotion?.status === 'Pending approval'
       ? theme.colors.LIGHT_YELLOW
       : theme.colors.SEMANTIC_GREEN;
 
   const statusColor =
-    promotion?.status === 'pending'
+    promotion?.status === 'Pending approval'
       ? theme.colors.SEMANTIC_YELLOW
       : theme.colors.DARKER_GREEN;
 
@@ -41,7 +41,9 @@ export const PromotionItem = ({promotion, onPress}: PromotionItemProps) => {
           </Text>
           <Box ml={10} bg={statusBg} p={1} borderRadius={24}>
             <Text style={{fontSize: fontSz(10)}} color={statusColor}>
-              {promotion?.status === 'pending' ? 'Pending approval' : 'Active'}
+              {promotion?.status === 'Pending approval'
+                ? 'Pending approval'
+                : 'Active'}
             </Text>
           </Box>
         </Box>

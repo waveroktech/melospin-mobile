@@ -53,4 +53,22 @@ export const styles = StyleSheet.create({
     borderColor: theme.colors.WHITE,
     borderRadius: 100,
   },
+  uploadCover: {
+    width: wp(56),
+    height: hp(56),
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  uploadCoverImage: {
+    borderRadius: hp(12),
+  },
+  accordionContent: {
+    overflow: 'hidden',
+  },
+  scrollViewContainer: {
+    flex: 1,
+  },
+  scrollViewWrapper: {
+    minHeight: 0,
+  },
 });

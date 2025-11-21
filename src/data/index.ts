@@ -2526,3 +2526,47 @@ export const states: StateProps[] = [
     ],
   },
 ];
+
+export const proofOfPlay = [
+  {
+    id: 1,
+    title: 'Shared',
+    date: '10-02-2025',
+    status: 'Completed',
+    statusBg: '#FFFFFF',
+    statusBgBorder: '#F6F8FA',
+    statusTextColor: '#0A0D14',
+  },
+  {
+    id: 2,
+    title: 'Shared',
+    date: '10-02-2025',
+    status: 'Pending Confirmation',
+    statusBg: '#FEF7EC',
+    statusTextColor: '#B47818',
+  },
+  {
+    id: 3,
+    title: 'Shared',
+    date: '10-02-2025',
+    status: 'Rejected',
+    statusBg: '#FDEDF0',
+    statusTextColor: '#DF1C41',
+  },
+  {
+    id: 4,
+    title: 'Shared',
+    date: '10-02-2025',
+    status: 'Pending Confirmation',
+    statusBg: '#FEF7EC',
+    statusTextColor: '#B47818',
+  },
+  {
+    id: 5,
+    title: 'Shared',
+    date: '10-02-2025',
+    status: 'Pending Confirmation',
+    statusBg: '#FEF7EC',
+    statusTextColor: '#B47818',
+  },
+];

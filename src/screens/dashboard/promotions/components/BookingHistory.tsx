@@ -6,21 +6,21 @@ import {Icon} from 'shared';
 import theme from 'theme';
 import {styles} from './style';
 import {PromotionItem} from './PromotionItem';
-import {useGetPromotionRequests, } from 'store';
+import {useGetPromotionRequests} from 'store';
 import {EmptyPromotionContainer} from './EmptyPromotionContainer';
 import {promotions} from 'data';
-import {PromotionDetails} from '../modals';
+import {OngoingPromotionDetails, PromotionDetails} from '../modals';
 import {showMessage} from 'react-native-flash-message';
 
 export const BookingHistory = () => {
   const {data: djPromotions, refetch} = useGetPromotionRequests();
-  const [open, setOpen] = useState<string>('');
+  const [open, setOpen] = useState<
+    'promotion-details' | 'ongoing-promotion-details' | ''
+  >('');
 
   useEffect(() => {
     refetch();
   }, [refetch]);
-
-  console.log(djPromotions, 'djPromotions');
 
   return (
     <Box mt={hp(20)}>
@@ -64,6 +64,7 @@ export const BookingHistory = () => {
             <FlatList
               contentContainerStyle={{
                 marginTop: hp(20),
+                paddingBottom: hp(100),
               }}
               // data={djPromotions?.data}
               data={promotions}
@@ -71,7 +72,11 @@ export const BookingHistory = () => {
                 return (
                   <PromotionItem
                     promotion={item}
-                    onPress={() => setOpen('promotion-details')}
+                    onPress={() =>
+                      item.status === 'Pending approval'
+                        ? setOpen('promotion-details')
+                        : setOpen('ongoing-promotion-details')
+                    }
                   />
                 );
               }}
@@ -100,6 +105,11 @@ export const BookingHistory = () => {
             });
           }, 1000);
         }}
+      />
+
+      <OngoingPromotionDetails
+        isVisible={open === 'ongoing-promotion-details'}
+        onClose={() => setOpen('')}
       />
     </Box>
   );
