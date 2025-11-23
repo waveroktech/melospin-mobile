@@ -10,6 +10,10 @@ export const typography = {
     fontFamily: font.AvenirNextMedium,
     fontSize: fontSz(14),
   },
+  bodySemiBold: {
+    fontFamily: font.AvenirNextSemiBold,
+    fontSize: fontSz(14),
+  },
   bodyBold: {
     fontFamily: font.AvenirNextBold,
     fontSize: fontSz(14),

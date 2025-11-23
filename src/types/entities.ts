@@ -45,7 +45,9 @@ export type DashboardStackParamList = {
   };
   PromotionBudget: {
     payload: {
-      activePromoters: any[];
+      promotionTypes: string[];
+      timeline: string;
+      date: string;
       discographyId: string;
       promotionLink?: string;
       externalLinks?: UploadFileLink[];

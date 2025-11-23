@@ -1,9 +1,11 @@
-import React, {useCallback, useState} from 'react';
+/* eslint-disable @typescript-eslint/no-shadow */
+import React, {useCallback, useEffect, useState} from 'react';
 import {Box, Button, FormInput, Text} from 'design-system';
 import {AvoidingView, Header, HeaderText, Icon, Loader, Screen} from 'shared';
 import {
   NavigationProp,
   RouteProp,
+  StackActions,
   useNavigation,
   useRoute,
 } from '@react-navigation/native';
@@ -13,12 +15,16 @@ import * as yup from 'yup';
 import {useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
 import DatePicker from 'react-native-date-picker';
-import {SelectFrequency, useForceUpdate} from './modals';
+import {SelectFrequency, SelectRate, useForceUpdate} from './modals';
 import theme from 'theme';
-import {ScrollView} from 'react-native';
+import {FlatList, ScrollView, TextInput, TouchableOpacity} from 'react-native';
 import moment from 'moment';
 import {useCalculateBiddingSplit} from 'store/usePromotion';
 import {showMessage} from 'react-native-flash-message';
+import {FilterTabs, SelectDjItem, SelectDjItemComponent} from './components';
+import {SelectState} from 'screens/auth/select-profile/modals';
+import {styles} from './style';
+import {useGetDjs} from 'store';
 
 interface FormData {
   frequency: string;
@@ -37,15 +43,28 @@ const schema = yup.object().shape({
 });
 
 export const PromotionBudget = () => {
-  const {goBack} = useNavigation<NavigationProp<DashboardStackParamList>>();
+  const {goBack, dispatch} =
+    useNavigation<NavigationProp<DashboardStackParamList>>();
   const {payload} =
     useRoute<RouteProp<DashboardStackParamList, 'PromotionBudget'>>()?.params;
   const {navigate} = useNavigation<NavigationProp<DashboardStackParamList>>();
+  const [selectedRate, setSelectedRate] = useState<string>('');
+  const [selectedState, setSelectedState] = useState<string>('');
+  const [selectedDjs, setSelectedDjs] = useState<any[]>([]);
+  const [showSelectedDjs, setShowSelectedDjs] = useState(false);
+
+  const {data, isPending: isDjsPending, refetch: refetchDjs} = useGetDjs();
+
+  useEffect(() => {
+    refetchDjs();
+  }, [refetchDjs]);
 
   const [open, setOpen] = useState<
-    'frequency' | 'end-date' | 'start-date' | ''
+    'frequency' | 'end-date' | 'start-date' | 'rate' | 'state' | ''
   >('');
   const forceUpdate = useForceUpdate();
+
+  console.log(data?.data, 'data');
 
   const {
     control,
@@ -132,20 +151,27 @@ export const PromotionBudget = () => {
     },
   });
 
-  const continueProcess = useCallback(() => {
-    const promoters: any[] = [];
-    payload?.activePromoters?.map(promoter => {
-      promoters.push({promoterId: promoter.userId});
+  const continueProcess = () => {
+    // const promoters: any[] = [];
+    // selectedDjs?.map(dj => {
+    //   promoters.push({promoterId: dj.userId});
+    // });
+    // mutate({
+    //   promotionId: payload.discographyId,
+    //   frequency: form.frequency?.toLowerCase(),
+    //   startDate: moment(form.startDate).format('YYYY-MM-DD'),
+    //   endDate: moment(form.endDate).format('YYYY-MM-DD'),
+    //   bidAmount: Number(form.amount?.split(',')?.join('')),
+    //   promoters,
+    // });
+
+    navigate('PromotionCheckout', {
+      data: {
+        responseData: selectedDjs,
+        ...payload,
+      },
     });
-    mutate({
-      promotionId: payload.discographyId,
-      frequency: form.frequency?.toLowerCase(),
-      startDate: moment(form.startDate).format('YYYY-MM-DD'),
-      endDate: moment(form.endDate).format('YYYY-MM-DD'),
-      bidAmount: Number(form.amount?.split(',')?.join('')),
-      promoters,
-    });
-  }, [form, mutate, payload]);
+  };
 
   return (
     <Screen removeSafeaArea backgroundColor={theme.colors.BASE_PRIMARY}>
@@ -153,13 +179,65 @@ export const PromotionBudget = () => {
       <AvoidingView>
         <ScrollView>
           <HeaderText
-            hasHeaderText="Fill Audio details for promotion"
+            hasHeaderText="Assign DJs"
             hasHeaderTextStyle={{fontSize: fontSz(14)}}
             hasIndicatorLevel
             currentPage={3}
           />
 
-          <Box mt={hp(20)} mx={wp(16)}>
+          <FilterTabs
+            title="Filter Tab"
+            selectedRate={selectedRate}
+            selectedState={selectedState}
+            setOpen={(open: string) =>
+              setOpen(
+                open as '' | 'rate' | 'frequency' | 'end-date' | 'start-date',
+              )
+            }
+          />
+
+          <Box
+            style={styles.searchInputContainer}
+            mx={wp(16)}
+            mt={hp(20)}
+            bg={theme.colors.TEXT_INPUT_BG}>
+            <Icon name="search-icon" />
+            <TextInput
+              style={styles.searchTextInput}
+              placeholder="Search DJ"
+              selectionColor={theme.colors.WHITE}
+              placeholderTextColor={theme.colors.TEXT_INPUT_PLACEHOLDER}
+            />
+          </Box>
+
+          <FlatList
+            data={data?.data}
+            contentContainerStyle={styles.contentContainerStyle}
+            renderItem={({item}) => (
+              <SelectDjItemComponent
+                item={item}
+                onPress={(dj: any) => {
+                  setSelectedDjs(prevDjs => {
+                    const isAlreadySelected = prevDjs.some(
+                      (selectedDj: any) => selectedDj?.userId === dj?.userId,
+                    );
+                    if (isAlreadySelected) {
+                      // Remove DJ if already selected
+                      return prevDjs.filter(
+                        (selectedDj: any) => selectedDj?.userId !== dj?.userId,
+                      );
+                    } else {
+                      // Add DJ if not selected
+                      return [...prevDjs, dj];
+                    }
+                  });
+                }}
+                selectedDjs={selectedDjs}
+              />
+            )}
+          />
+
+          {/* <Box mt={hp(20)} mx={wp(16)}>
             <FormInput
               control={control}
               name="frequency"
@@ -241,9 +319,79 @@ export const PromotionBudget = () => {
                 returnKeyType="done"
               />
             </Box>
-          </Box>
+          </Box> */}
         </ScrollView>
       </AvoidingView>
+      {selectedDjs.length > 0 && (
+        <Box
+          mt={hp(24)}
+          mx={wp(16)}
+          position={'absolute'}
+          bottom={hp(100)}
+          left={0}
+          right={0}>
+          <Box bg={theme.colors.BLACK_DEFAULT} p={hp(24)} borderRadius={hp(24)}>
+            <Box
+              as={TouchableOpacity}
+              activeOpacity={0.8}
+              onPress={() => setShowSelectedDjs(!showSelectedDjs)}
+              flexDirection={'row'}
+              mb={showSelectedDjs ? hp(16) : 0}
+              alignItems={'center'}
+              justifyContent={'space-between'}>
+              <Text variant="bodyMedium" color={theme.colors.WHITE}>
+                ({selectedDjs.length}) DJs Added
+              </Text>
+
+              <Box>
+                <Icon name={showSelectedDjs ? 'arrow-up-2' : 'arrow-down-2'} />
+              </Box>
+            </Box>
+
+            {showSelectedDjs && (
+              <Box mt={hp(16)}>
+                {selectedDjs.map((dj: any, index: number) => (
+                  <Box
+                    key={dj?.userId || index}
+                    flexDirection={'row'}
+                    alignItems={'center'}
+                    pb={hp(16)}
+                    borderBottomWidth={index < selectedDjs.length - 1 ? 1 : 0}
+                    borderBottomColor={theme.colors.BASE_SECONDARY}
+                    mb={index < selectedDjs.length - 1 ? hp(16) : 0}>
+                    <Box
+                      as={TouchableOpacity}
+                      activeOpacity={0.8}
+                      onPress={() => {
+                        setSelectedDjs(prevDjs =>
+                          prevDjs.filter(
+                            (selectedDj: any) =>
+                              selectedDj?.userId !== dj?.userId,
+                          ),
+                        );
+                      }}
+                      width={wp(32)}
+                      height={hp(24)}
+                      borderRadius={hp(16)}
+                      bg={theme.colors.WHITE}
+                      alignItems={'center'}
+                      justifyContent={'center'}>
+                      <Icon name="trash-3" />
+                    </Box>
+
+                    <Text
+                      variant="bodyMedium"
+                      pl={wp(12)}
+                      color={theme.colors.TEXT_INPUT_PLACEHOLDER}>
+                      {dj?.name}
+                    </Text>
+                  </Box>
+                ))}
+              </Box>
+            )}
+          </Box>
+        </Box>
+      )}
       <SelectFrequency
         isVisible={open === 'frequency'}
         onClose={() => setOpen('')}
@@ -274,18 +422,53 @@ export const PromotionBudget = () => {
         }}
       />
 
-      <Button
-        title="Continue"
-        hasBorder
-        disabled={
-          form.amount && form.endDate && form.frequency && form.startDate
-            ? false
-            : true
-        }
-        onPress={continueProcess}
-      />
+      <Box
+        flexDirection={'row'}
+        justifyContent={'space-between'}
+        mx={wp(16)}
+        bottom={hp(20)}>
+        <Button
+          title="Cancel Promo"
+          onPress={() => dispatch(StackActions.pop(3))}
+          isNotBottom
+          width={wp(160)}
+          icon="cancel-promo"
+          hasIcon
+          hasBorder
+          textColor={theme.colors.ERROR_TONE}
+          backgroundColor={theme.colors.PRIMARY}
+          borderColor={theme.colors.BASE_SECONDARY}
+        />
+
+        <Button
+          title="Continue"
+          hasBorder
+          isNotBottom
+          disabled={selectedDjs.length > 0 ? false : true}
+          width={wp(160)}
+          onPress={continueProcess}
+        />
+      </Box>
 
       <Loader loading={isPending} />
+
+      <SelectState
+        isVisible={open === 'state'}
+        onClose={() => setOpen('')}
+        onSelectState={(state: any) => {
+          setOpen('');
+          setSelectedState(state?.state);
+        }}
+      />
+
+      <SelectRate
+        isVisible={open === 'rate'}
+        onClose={() => setOpen('')}
+        onComplete={(rate: string) => {
+          setOpen('');
+          setSelectedRate(rate);
+        }}
+      />
     </Screen>
   );
 };

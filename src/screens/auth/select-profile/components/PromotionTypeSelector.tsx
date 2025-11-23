@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-shadow */
 import React from 'react';
 import {Box, Text} from 'design-system';
 import {fontSz, hp, wp} from 'utils';
@@ -10,9 +11,11 @@ interface PromotionTypeSelectorProps {
   value?: string[];
   onChange?: (selectedTypes: string[]) => void;
   onSelectAll?: () => void;
+  title?: string;
 }
 
 export const PromotionTypeSelector = ({
+  title,
   value = [],
   onChange,
   onSelectAll,
@@ -61,7 +64,7 @@ export const PromotionTypeSelector = ({
         justifyContent={'space-between'}
         alignItems={'center'}>
         <Text variant="body" fontSize={fontSz(14)} color={theme.colors.WHITE}>
-          Select promotion type
+          {title || 'Select promotion type'}
         </Text>
 
         <Box

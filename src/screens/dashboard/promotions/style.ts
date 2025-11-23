@@ -58,4 +58,17 @@ export const styles = StyleSheet.create({
   scrollViewContainer: {
     paddingHorizontal: wp(16),
   },
+  calendarContainer: {
+    backgroundColor: theme.colors.TEXT_INPUT_BG,
+    padding: hp(16),
+    borderRadius: hp(24),
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: hp(24),
+  },
+  calendarText: {
+    fontSize: fontSz(16),
+    color: theme.colors.WHITE,
+    marginLeft: wp(12),
+  },
 });

@@ -1,29 +1,74 @@
 import React, {useState} from 'react';
-import {Box, Button, Text} from 'design-system';
-import {Header, HeaderText, Icon, Screen} from 'shared';
+import {Box, Button, FormInput, Text} from 'design-system';
+import {AvoidingView, Header, HeaderText, Icon, Screen} from 'shared';
 import {fontSz, hp, wp} from 'utils';
 import theme from 'theme';
-import {BackHandler, FlatList, TouchableOpacity} from 'react-native';
-import {DjPromoItem, EmptyPromotionContainer} from './components';
-import {SelectDjs} from './modals';
+import {BackHandler, ScrollView, TouchableOpacity} from 'react-native';
+import {SelectTimeline} from './modals';
 import {
   NavigationProp,
   RouteProp,
+  StackActions,
   useFocusEffect,
   useNavigation,
   useRoute,
 } from '@react-navigation/native';
 import {DashboardStackParamList} from 'types';
+import {styles} from './style';
+import DatePicker from 'react-native-date-picker';
+import * as yup from 'yup';
+import {yupResolver} from '@hookform/resolvers/yup';
+import {Controller, useForm} from 'react-hook-form';
+import moment from 'moment';
+import {PromotionTypeSelector} from 'screens/auth/select-profile/components';
+
+interface FormData {
+  date: string;
+  timeline: string;
+  promotionTypes: string[];
+}
+
+const schema = yup.object().shape({
+  date: yup.string().required('Date is required'),
+  timeline: yup.string().required('Timeline is required'),
+  promotionTypes: yup
+    .array()
+    .of(yup.string().required())
+    .required('Promotion types are required'),
+});
 
 export const AddDjs = () => {
-  const [open, setOpen] = useState<'select-dj' | ''>('');
-  const [activePromoters, setActivePromoters] = useState<any[]>([]);
+  const [open, setOpen] = useState<
+    'select-dj' | 'date' | 'select-timeline' | ''
+  >('');
 
   const {data} =
     useRoute<RouteProp<DashboardStackParamList, 'AddDjs'>>()?.params;
 
-  const {navigate, goBack} =
+  const {navigate, goBack, dispatch} =
     useNavigation<NavigationProp<DashboardStackParamList>>();
+
+  const {
+    control,
+    watch,
+    setValue,
+    formState: {errors},
+  } = useForm<FormData>({
+    resolver: yupResolver(schema),
+    defaultValues: {
+      date: '',
+      timeline: '',
+      promotionTypes: [],
+    },
+    mode: 'all',
+  });
+
+  const form = watch();
+
+  const onCompleteTimeline = async (timeline: string) => {
+    setOpen('');
+    setValue('timeline', timeline);
+  };
 
   useFocusEffect(
     React.useCallback(() => {
@@ -44,115 +89,135 @@ export const AddDjs = () => {
     }, [open]),
   );
 
-  const onComplete = async (selectedDjs: any[]) => {
-    setOpen('');
-    const mergeUnique = (currentArray: any[], incomingArray: any[]) => [
-      ...new Set([...currentArray, ...incomingArray]),
-    ];
-    let mergedArray = mergeUnique(activePromoters, selectedDjs);
-    setActivePromoters(selectedDjs);
-  };
-
   const continueProcess = async () => {
     navigate('PromotionBudget', {
       payload: {
         ...data,
-        activePromoters,
+        promotionTypes: form.promotionTypes,
+        timeline: form?.timeline,
+        date: form?.date,
       },
     });
-  };
-
-  const removePromoter = async (selectedPromoted: any) => {
-    const removeExisting = activePromoters?.filter(
-      d => d?.userId !== selectedPromoted?.userId,
-    );
-    setActivePromoters(removeExisting);
   };
 
   return (
     <Screen removeSafeaArea>
       <Header hasBackText="Set up Promotion" onPressLeftIcon={goBack} />
       <HeaderText
-        hasHeaderText="Fill Audio details for promotion"
+        hasHeaderText="Fill promotion details"
         hasHeaderTextStyle={{fontSize: fontSz(14)}}
         hasIndicatorLevel
         currentPage={2}
       />
 
+      <AvoidingView>
+        <ScrollView>
+          <Box mx={wp(16)} mt={hp(24)}>
+            <Box
+              style={styles.calendarContainer}
+              as={TouchableOpacity}
+              onPress={() => setOpen('date')}
+              activeOpacity={0.8}>
+              <Icon name="calendar-icon" />
+              <Text
+                style={styles.calendarText}
+                variant={form.date ? 'bodyMedium' : 'body'}>
+                {form.date
+                  ? moment(form.date).format('DD - MM - YYYY')
+                  : 'Select Date'}
+              </Text>
+            </Box>
+
+            <FormInput
+              control={control}
+              name="timeline"
+              label="Select Timeline (Monthly)"
+              value={form.timeline}
+              errorText={errors.timeline?.message}
+              isDropDown
+              onPressDropDown={() => setOpen('select-timeline')}
+            />
+
+            <Box flexDirection={'row'} bottom={hp(12)} mb={hp(24)}>
+              <Icon name="info-icon" />
+              <Text
+                variant="body"
+                color={theme.colors.WHITE}
+                ml={wp(2)}
+                width={wp(300)}
+                fontSize={fontSz(12)}>
+                The promotion will be played at least 12 times each month, with
+                proof verified by our team.
+              </Text>
+            </Box>
+
+            <Controller
+              control={control}
+              name="promotionTypes"
+              render={({field: {onChange, value}}) => (
+                <PromotionTypeSelector
+                  value={value}
+                  title="Preferred promotion type"
+                  onChange={onChange}
+                  onSelectAll={() => {}}
+                />
+              )}
+            />
+          </Box>
+        </ScrollView>
+      </AvoidingView>
+
       <Box
-        mt={hp(60)}
-        justifyContent={'space-between'}
-        alignItems={'center'}
-        px={wp(10)}
-        onPress={() => setOpen('select-dj')}
-        as={TouchableOpacity}
-        activeOpacity={0.8}
-        borderColor={theme.colors.ACCENT_04}
         flexDirection={'row'}
-        alignSelf={'center'}
-        width={wp(119)}
-        height={hp(40)}
-        borderRadius={hp(24)}
-        borderWidth={1}>
-        <Text
-          variant="bodyMedium"
-          fontSize={fontSz(16)}
-          color={theme.colors.WHITE}>
-          Add DJs
-        </Text>
-        <Icon name="arrow-right-2" />
-      </Box>
-
-      <Box
-        borderBottomWidth={1}
-        pt={hp(40)}
+        justifyContent={'space-between'}
         mx={wp(16)}
-        borderBottomColor={theme.colors.BASE_SECONDARY}
-      />
-
-      <Box mt={hp(24)}>
-        <Text
-          px={wp(16)}
-          variant="body"
-          fontSize={fontSz(14)}
-          color={theme.colors.WHITE}>
-          DJs on Promo List
-        </Text>
-        <Box height={hp(500)}>
-          <FlatList
-            data={activePromoters}
-            renderItem={({item, index}) => (
-              <DjPromoItem
-                dj={item}
-                key={index}
-                removePromoter={removePromoter}
-              />
-            )}
-            ListEmptyComponent={
-              <EmptyPromotionContainer
-                icon="headphones"
-                containerStyles={{my: hp(50)}}
-                title="No DJs added"
-                subTitle="DJs available for promotions will appear here as you add them to list"
-              />
-            }
-          />
-        </Box>
+        bottom={hp(20)}>
+        <Button
+          title="Cancel Promo"
+          onPress={() => dispatch(StackActions.pop(2))}
+          isNotBottom
+          width={wp(160)}
+          icon="cancel-promo"
+          hasIcon
+          hasBorder
+          textColor={theme.colors.ERROR_TONE}
+          backgroundColor={theme.colors.PRIMARY}
+          borderColor={theme.colors.BASE_SECONDARY}
+        />
+        <Button
+          title="Continue"
+          onPress={continueProcess}
+          hasBorder
+          isNotBottom
+          disabled={
+            form.date && form.timeline && form.promotionTypes?.length > 0
+              ? false
+              : true
+          }
+          width={wp(344) / 2}
+          bg={theme.colors.PRIMARY_100}
+        />
       </Box>
 
-      <Button
-        title="Continue"
-        onPress={continueProcess}
-        hasBorder
-        disabled={activePromoters?.length > 0 ? false : true}
-        bg={theme.colors.PRIMARY_100}
+      <DatePicker
+        modal
+        open={open === 'date'}
+        mode="date"
+        date={new Date()}
+        minimumDate={new Date()}
+        onConfirm={selectedDate => {
+          setOpen('');
+          setValue('date', selectedDate?.toISOString());
+        }}
+        onCancel={() => {
+          setOpen('');
+        }}
       />
 
-      <SelectDjs
-        onComplete={onComplete}
-        isVisible={open === 'select-dj'}
+      <SelectTimeline
+        isVisible={open === 'select-timeline'}
         onClose={() => setOpen('')}
-        activePromoters={activePromoters}
+        onComplete={onCompleteTimeline}
       />
     </Screen>
   );

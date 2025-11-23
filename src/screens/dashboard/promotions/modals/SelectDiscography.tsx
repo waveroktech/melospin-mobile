@@ -32,7 +32,7 @@ export const SelectDiscography = ({
         <ModalHeader
           hasBackIcon
           onClose={onClose}
-          modalHeaderText="Choose file"
+          modalHeaderText="Select Audio File"
         />
         <Text
           pt={hp(20)}
@@ -46,7 +46,7 @@ export const SelectDiscography = ({
           <Icon name="search-icon" />
           <TextInput
             style={styles.searchTextInput}
-            placeholder="Search DJ"
+            placeholder="Search Audio File"
             selectionColor={theme.colors.WHITE}
             placeholderTextColor={theme.colors.TEXT_INPUT_PLACEHOLDER}
           />

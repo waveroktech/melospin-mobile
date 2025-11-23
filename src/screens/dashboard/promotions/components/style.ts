@@ -65,4 +65,15 @@ export const styles = StyleSheet.create({
   transactionImageStyle: {
     borderRadius: 8,
   },
+  filterContainer: {
+    borderWidth: 1,
+    marginTop: wp(16),
+    borderColor: theme.colors.BASE_SECONDARY,
+    borderRadius: hp(24),
+    padding: hp(12),
+    marginRight: wp(8),
+    alignSelf: 'flex-start',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
 });

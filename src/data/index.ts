@@ -232,6 +232,33 @@ export const sessions = [
   },
 ];
 
+export const timeline = [
+  {
+    id: 1,
+    title: '1 month',
+  },
+  {
+    id: 2,
+    title: '2 months',
+  },
+  {
+    id: 3,
+    title: '3 months',
+  },
+  {
+    id: 4,
+    title: '4 months',
+  },
+  {
+    id: 5,
+    title: '5 months',
+  },
+  {
+    id: 6,
+    title: '6 months',
+  },
+];
+
 export const notifications = [
   {
     title: 'Today',
@@ -2568,5 +2595,28 @@ export const proofOfPlay = [
     status: 'Pending Confirmation',
     statusBg: '#FEF7EC',
     statusTextColor: '#B47818',
+  },
+];
+
+export const rateAmount = [
+  {
+    id: 1,
+    title: '< ₦100,000',
+  },
+  {
+    id: 2,
+    title: '₦100,000 - ₦499,000',
+  },
+  {
+    id: 3,
+    title: '₦500,000 - ₦999,000',
+  },
+  {
+    id: 4,
+    title: '₦1,000,000 - ₦5,000,000',
+  },
+  {
+    id: 5,
+    title: '> ₦5,000,000',
   },
 ];

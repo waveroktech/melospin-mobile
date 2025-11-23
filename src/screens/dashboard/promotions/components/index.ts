@@ -8,3 +8,5 @@ export * from './FileUpload';
 export * from './PromotionButton';
 export * from './PromotionItem';
 export * from './SelectDjItem';
+export * from './FilterTabs';
+export * from './SelectDjItemComponent';

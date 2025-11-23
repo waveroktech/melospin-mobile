@@ -32,4 +32,5 @@ export const images = {
   upload: require('assets/images/upload.jpeg'),
   trending: require('assets/images/trending.png'),
   barcode: require('assets/images/barcode.png'),
+  'no-profile': require('assets/images/no-profile.png'),
 };
