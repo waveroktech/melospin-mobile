@@ -10,7 +10,8 @@
     "test": "jest",
     "postinstall": "patch-package",
     "generate-release": "cd android && ./gradlew clean && ./gradlew assembleRelease && cd ..",
-    "generate-bundle": "cd android && ./gradlew clean && ./gradlew bundleRelease && cd .."
+    "generate-bundle": "cd android && ./gradlew clean && ./gradlew bundleRelease && cd ..",
+    "clean-android": "cd android && ./gradlew clean && cd .."
   },
   "dependencies": {
     "@emotion/native": "^11.11.0",

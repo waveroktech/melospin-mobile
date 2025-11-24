@@ -33,6 +33,7 @@ export const PromotionCheckout = () => {
   const [open, setOpen] = useState<'payment-info' | 'webview' | ''>('');
   const [url, setUrl] = useState('');
   const [showPromoBudgetDetails, setShowPromoBudgetDetails] = useState(false);
+  const [showPaymentDetails, setShowPaymentDetails] = useState(false);
 
   const {data: discographyList, refetch} = useGetDiscography();
 
@@ -256,100 +257,106 @@ export const PromotionCheckout = () => {
           </Box>
 
           <Box
-            mt={hp(30)}
+            p={hp(24)}
+            mt={hp(20)}
             mx={wp(16)}
             bg={theme.colors.BASE_SECONDARY}
-            px={hp(20)}
-            py={hp(10)}
             borderRadius={hp(24)}>
             <Box
+              as={TouchableOpacity}
+              activeOpacity={0.8}
+              onPress={() => setShowPaymentDetails(!showPaymentDetails)}
               flexDirection={'row'}
               alignItems={'center'}
+              mb={showPaymentDetails ? hp(20) : 0}
               justifyContent={'space-between'}>
-              <Text variant="body" color={theme.colors.WHITE}>
+              <Text variant="bodyBold" color={theme.colors.WHITE}>
                 Payment Details
               </Text>
-              <Icon name="chevron-up" />
+              <Icon name={showPaymentDetails ? 'arrow-up-2' : 'arrow-down-2'} />
             </Box>
 
-            <Box mt={hp(20)}>
-              <Box
-                flexDirection={'row'}
-                alignItems={'center'}
-                borderBottomWidth={1}
-                pb={2}
-                mb={hp(12)}
-                borderBottomColor={theme.colors.BASE_SECONDARY}
-                justifyContent={'space-between'}>
-                <Text
-                  variant="body"
-                  color={theme.colors.TEXT_INPUT_PLACEHOLDER}>
-                  Assigned DJs
-                </Text>
-                <Text variant="bodyBold" color={theme.colors.WHITE}>
-                  {data?.responseData?.length}
-                </Text>
-              </Box>
-              <Box
-                flexDirection={'row'}
-                alignItems={'center'}
-                borderBottomWidth={1}
-                pb={2}
-                mb={hp(12)}
-                borderBottomColor={theme.colors.BASE_SECONDARY}
-                justifyContent={'space-between'}>
-                <Text
-                  variant="body"
-                  color={theme.colors.TEXT_INPUT_PLACEHOLDER}>
-                  Cummulative Cost (NGN)
-                </Text>
-                <Text variant="bodyBold" color={theme.colors.WHITE}>
-                  NGN{' '}
-                  {formatNumberWithCommas(cumulativeCost?.toString() || '0')}
-                </Text>
-              </Box>
-              <Box
-                flexDirection={'row'}
-                alignItems={'center'}
-                borderBottomWidth={1}
-                pb={2}
-                mb={hp(12)}
-                borderBottomColor={theme.colors.BASE_SECONDARY}
-                justifyContent={'space-between'}>
-                <Text
-                  variant="body"
-                  color={theme.colors.TEXT_INPUT_PLACEHOLDER}>
-                  Service Fee (5%)
-                </Text>
-                <Text variant="bodyBold" color={theme.colors.WHITE}>
-                  NGN{' '}
-                  {formatNumberWithCommas(
-                    (cumulativeCost * 0.05)?.toString() || '0',
-                  )}
-                </Text>
-              </Box>
+            {showPaymentDetails && (
+              <Box mt={hp(20)}>
+                <Box
+                  flexDirection={'row'}
+                  alignItems={'center'}
+                  borderBottomWidth={1}
+                  pb={2}
+                  mb={hp(12)}
+                  borderBottomColor={theme.colors.BASE_SECONDARY}
+                  justifyContent={'space-between'}>
+                  <Text
+                    variant="body"
+                    color={theme.colors.TEXT_INPUT_PLACEHOLDER}>
+                    Assigned DJs
+                  </Text>
+                  <Text variant="bodyBold" color={theme.colors.WHITE}>
+                    {data?.responseData?.length}
+                  </Text>
+                </Box>
+                <Box
+                  flexDirection={'row'}
+                  alignItems={'center'}
+                  borderBottomWidth={1}
+                  pb={2}
+                  mb={hp(12)}
+                  borderBottomColor={theme.colors.BASE_SECONDARY}
+                  justifyContent={'space-between'}>
+                  <Text
+                    variant="body"
+                    color={theme.colors.TEXT_INPUT_PLACEHOLDER}>
+                    Cummulative Cost (NGN)
+                  </Text>
+                  <Text variant="bodyBold" color={theme.colors.WHITE}>
+                    NGN{' '}
+                    {formatNumberWithCommas(cumulativeCost?.toString() || '0')}
+                  </Text>
+                </Box>
+                <Box
+                  flexDirection={'row'}
+                  alignItems={'center'}
+                  borderBottomWidth={1}
+                  pb={2}
+                  mb={hp(12)}
+                  borderBottomColor={theme.colors.BASE_SECONDARY}
+                  justifyContent={'space-between'}>
+                  <Text
+                    variant="body"
+                    color={theme.colors.TEXT_INPUT_PLACEHOLDER}>
+                    Service Fee (5%)
+                  </Text>
+                  <Text variant="bodyBold" color={theme.colors.WHITE}>
+                    NGN{' '}
+                    {formatNumberWithCommas(
+                      (cumulativeCost * 0.05)?.toString() || '0',
+                    )}
+                  </Text>
+                </Box>
 
-              <Box
-                flexDirection={'row'}
-                alignItems={'center'}
-                borderBottomWidth={1}
-                pb={2}
-                mb={hp(12)}
-                borderBottomColor={theme.colors.BASE_SECONDARY}
-                justifyContent={'space-between'}>
-                <Text
-                  variant="body"
-                  color={theme.colors.TEXT_INPUT_PLACEHOLDER}>
-                  Total Amount Due
-                </Text>
-                <Text variant="bodyBold" color={theme.colors.WHITE}>
-                  NGN{' '}
-                  {formatNumberWithCommas(
-                    (cumulativeCost + cumulativeCost * 0.05)?.toString() || '0',
-                  )}
-                </Text>
+                <Box
+                  flexDirection={'row'}
+                  alignItems={'center'}
+                  borderBottomWidth={1}
+                  pb={2}
+                  mb={hp(12)}
+                  borderBottomColor={theme.colors.BASE_SECONDARY}
+                  justifyContent={'space-between'}>
+                  <Text
+                    variant="body"
+                    color={theme.colors.TEXT_INPUT_PLACEHOLDER}>
+                    Total Amount Due
+                  </Text>
+                  <Text variant="bodyBold" color={theme.colors.WHITE}>
+                    NGN{' '}
+                    {formatNumberWithCommas(
+                      (cumulativeCost + cumulativeCost * 0.05)?.toString() ||
+                        '0',
+                    )}
+                  </Text>
+                </Box>
               </Box>
-            </Box>
+            )}
           </Box>
 
           <Box mt={hp(40)} mx={wp(16)} flexDirection={'row'}>
@@ -410,11 +417,6 @@ export const PromotionCheckout = () => {
         isVisible={open === 'webview'}
         onClose={() => setOpen('')}
         url={url}
-      />
-      <WebView
-        source={{uri: 'https://www.google.com'}}
-        style={{padding: hp(20)}}
-        // onNavigationStateChange={onNavigationStateChange}
       />
     </Screen>
   );
