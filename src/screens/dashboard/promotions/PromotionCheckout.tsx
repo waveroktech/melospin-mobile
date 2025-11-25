@@ -30,10 +30,12 @@ export const PromotionCheckout = () => {
     useRoute<RouteProp<DashboardStackParamList, 'PromotionCheckout'>>()?.params;
 
   const [accept, setAccept] = useState(false);
-  const [open, setOpen] = useState<'payment-info' | 'webview' | ''>('');
+  const [open, setOpen] = useState<
+    'payment-info' | 'webview' | 'select-audio' | ''
+  >('');
   const [url, setUrl] = useState('');
-  const [showPromoBudgetDetails, setShowPromoBudgetDetails] = useState(false);
-  const [showPaymentDetails, setShowPaymentDetails] = useState(false);
+  const [showPromoBudgetDetails, setShowPromoBudgetDetails] = useState(true);
+  const [showPaymentDetails, setShowPaymentDetails] = useState(true);
 
   const {data: discographyList, refetch} = useGetDiscography();
 
@@ -122,14 +124,26 @@ export const PromotionCheckout = () => {
         contentContainerStyle={{paddingBottom: hp(160)}}
         showsVerticalScrollIndicator={false}>
         <Box mt={hp(20)}>
-          <Text
-            variant="bodyBold"
-            pb={hp(10)}
+          <Box
             px={wp(16)}
-            fontFamily={theme.font.AvenirNextSemiBold}
-            color={theme.colors.WHITE}>
-            File Upload
-          </Text>
+            pb={hp(10)}
+            flexDirection={'row'}
+            justifyContent={'space-between'}
+            alignItems={'center'}>
+            <Text
+              variant="bodyBold"
+              fontFamily={theme.font.AvenirNextSemiBold}
+              color={theme.colors.WHITE}>
+              File Upload
+            </Text>
+
+            <Box
+              as={TouchableOpacity}
+              activeOpacity={0.8}
+              onPress={() => setOpen('select-audio')}>
+              <Text>Change File</Text>
+            </Box>
+          </Box>
 
           <DiscographyItem item={findDiscography} />
 

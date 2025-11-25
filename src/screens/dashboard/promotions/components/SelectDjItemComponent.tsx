@@ -44,11 +44,15 @@ export const SelectDjItemComponent = ({
         />
 
         <Box ml={wp(12)}>
-          <Box flexDirection={'row'} alignItems={'center'}>
-            <Box flexDirection={'row'} alignItems={'center'} mb={hp(4)}>
+          <Box
+            flexDirection={'row'}
+            alignItems={'center'}
+            style={styles.nameTextContainer}>
+            <Box flexDirection={'row'} alignItems={'center'}>
               <Text
                 variant="bodyMedium"
                 fontSize={fontSz(14)}
+                style={styles.nameText}
                 color={theme.colors.WHITE}>
                 {item?.name}
               </Text>
@@ -70,7 +74,10 @@ export const SelectDjItemComponent = ({
               ₦{formatNumberWithCommas(item?.chargePerPlay?.toString())} P/M
             </Text>
           </Box>
-          <Box flexDirection={'row'} alignItems={'center'}>
+          <Box
+            flexDirection={'row'}
+            alignItems={'center'}
+            style={styles.locationTextContainer}>
             <Icon name="current-location" />
             <Text
               variant="bodyMedium"

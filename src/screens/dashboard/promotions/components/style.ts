@@ -76,4 +76,13 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
+  nameText: {
+    paddingRight: wp(4),
+  },
+  nameTextContainer: {
+    marginBottom: hp(8),
+  },
+  locationTextContainer: {
+    marginBottom: hp(8),
+  },
 });
