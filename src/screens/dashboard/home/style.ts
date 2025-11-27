@@ -7,10 +7,15 @@ export const styles = StyleSheet.create({
     marginTop: hp(20),
   },
   trendingImage: {
-    width: wp(350),
+    width: '100%',
     height: hp(140),
-    marginTop: hp(10),
-    borderRadius: hp(16),
+    borderRadius: hp(24),
+  },
+  gradientOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    borderRadius: hp(24),
+    borderBottomWidth: 1,
+    borderBottomColor: theme.colors.BASE_SECONDARY,
   },
   gradientContainer: {
     borderWidth: 1,
@@ -46,5 +51,12 @@ export const styles = StyleSheet.create({
     color: theme.colors.WHITE,
     fontSize: fontSz(16),
     marginLeft: wp(12),
+  },
+  djProfile2: {
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: theme.colors.OFF_WHITE_300,
   },
 });

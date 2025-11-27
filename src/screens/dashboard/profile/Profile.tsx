@@ -120,7 +120,7 @@ export const Profile = () => {
           </Box>
         </ImageBackground>
 
-        <Box
+        {/* <Box
           mt={hp(20)}
           mx={wp(16)}
           borderBottomWidth={1}
@@ -168,7 +168,7 @@ export const Profile = () => {
               <Icon name="snapchat" />
             </Box>
           </Box>
-        </Box>
+        </Box> */}
 
         <Box mt={hp(20)}>
           <Text

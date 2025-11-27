@@ -124,7 +124,7 @@ export const AddDjs = () => {
                 variant={form.date ? 'bodyMedium' : 'body'}>
                 {form.date
                   ? moment(form.date).format('DD - MM - YYYY')
-                  : 'Select Date'}
+                  : 'Select Start Date'}
               </Text>
             </Box>
 

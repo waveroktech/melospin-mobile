@@ -88,8 +88,18 @@ export const DiscographyItem = ({
         </Box>
       </Box>
 
-      <Box activeOpacity={0.8} onPress={handleDelete} disabled={isPending}>
-        <Icon name="like-song" />
+      <Box
+        activeOpacity={0.8}
+        onPress={handleDelete}
+        disabled={isPending}
+        width={wp(37)}
+        justifyContent={'center'}
+        alignItems={'center'}
+        height={hp(37)}
+        borderWidth={1}
+        borderRadius={hp(100)}
+        borderColor={theme.colors.OFF_WHITE_700}>
+        <Icon name="link-icon" />
       </Box>
     </Box>
   );

@@ -33,4 +33,5 @@ export const images = {
   trending: require('assets/images/trending.png'),
   barcode: require('assets/images/barcode.png'),
   'no-profile': require('assets/images/no-profile.png'),
+  'pick-of-the-week': require('assets/images/pick-of-the-week.jpg'),
 };
