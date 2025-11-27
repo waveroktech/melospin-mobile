@@ -17,8 +17,8 @@ export const OngoingPromotionDetails = ({
   isVisible,
   onClose,
 }: OngoingPromotionDetailsProps) => {
-  const [showPromotionDetails, setShowPromotionDetails] = useState(false);
-  const [showProofOfPlay, setShowProofOfPlay] = useState(false);
+  const [showPromotionDetails, setShowPromotionDetails] = useState(true);
+  const [showProofOfPlay, setShowProofOfPlay] = useState(true);
 
   return (
     <Modal

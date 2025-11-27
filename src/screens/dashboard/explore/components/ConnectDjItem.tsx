@@ -2,7 +2,6 @@ import React from 'react';
 import {Box, Text} from 'design-system';
 import theme from 'theme';
 import {fontSz, hp, wp} from 'utils';
-import {GradientBorderView} from '@good-react-native/gradient-border';
 import {styles} from './style';
 import {Image, TouchableOpacity} from 'react-native';
 import {Icon} from 'shared';

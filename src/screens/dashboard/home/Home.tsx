@@ -205,8 +205,7 @@ export const Home = () => {
             </GradientBorderView>
 
             <Box mt={hp(30)}>
-              <TrendingNow onExplorePress={() => navigate('Explore')} />
-
+              <TrendingNow />
               <DjsOnDeck djs={data?.data} />
             </Box>
           </Box>

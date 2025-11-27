@@ -23,10 +23,14 @@ import {DashboardStackParamList} from 'types';
 import {useUserPromotions} from 'store/usePromotion';
 import {useMelospinStore} from 'store';
 import {promotionTabs} from 'data';
+import {OngoingPromotionDetails, PromotionDetails} from './modals';
 
 export const Promotions = () => {
   const {navigate} = useNavigation<NavigationProp<DashboardStackParamList>>();
   const [activeIndex, setActiveIndex] = useState(1);
+  const [open, setOpen] = useState<
+    'promotion-details' | 'ongoing-promotion-details' | ''
+  >('');
 
   useFocusEffect(
     useCallback(() => {
@@ -70,7 +74,15 @@ export const Promotions = () => {
               contentContainerStyle={styles.contentContainerStyle}
               data={data?.data}
               renderItem={({item, index}) => (
-                <PromotionItem promotion={item} key={index} />
+                <PromotionItem
+                  promotion={item}
+                  key={index}
+                  onPress={() => {
+                    item.status === 'pending'
+                      ? setOpen('ongoing-promotion-details')
+                      : setOpen('ongoing-promotion-details');
+                  }}
+                />
               )}
               ListEmptyComponent={
                 <EmptyPromotionContainer
@@ -120,6 +132,18 @@ export const Promotions = () => {
       ) : null}
 
       <Loader loading={isPending} />
+
+      <PromotionDetails
+        isVisible={open === 'promotion-details'}
+        onClose={() => setOpen('')}
+        onAccept={() => {
+          setOpen('');
+        }}
+      />
+      <OngoingPromotionDetails
+        isVisible={open === 'ongoing-promotion-details'}
+        onClose={() => setOpen('')}
+      />
     </Screen>
   );
 };

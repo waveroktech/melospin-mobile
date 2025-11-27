@@ -1,17 +1,12 @@
 import React from 'react';
 import {Box, Text} from 'design-system';
-import {Icon} from 'shared';
-import {fontSz, hp, wp} from 'utils';
+import {hp, wp} from 'utils';
 import theme from 'theme';
-import {Image, TouchableOpacity} from 'react-native';
+import {Image} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {styles} from '../style';
 
-interface TrendingNowProps {
-  onExplorePress?: () => void;
-}
-
-export const TrendingNow = ({onExplorePress}: TrendingNowProps) => {
+export const TrendingNow = () => {
   return (
     <Box mt={20}>
       <Box flexDirection={'row'} alignItems={'center'}>
@@ -21,22 +16,6 @@ export const TrendingNow = ({onExplorePress}: TrendingNowProps) => {
           color={theme.colors.WHITE}>
           Trending Now
         </Text>
-        <Box
-          ml={10}
-          flexDirection={'row'}
-          alignItems={'center'}
-          as={onExplorePress ? TouchableOpacity : undefined}
-          onPress={onExplorePress}
-          activeOpacity={onExplorePress ? 0.8 : 1}>
-          <Text
-            variant="bodyMedium"
-            fontSize={fontSz(15)}
-            color={theme.colors.LIGHT_PRIMARY}
-            pr={2}>
-            Explore
-          </Text>
-          <Icon name="arrow-right-2" />
-        </Box>
       </Box>
 
       <Box

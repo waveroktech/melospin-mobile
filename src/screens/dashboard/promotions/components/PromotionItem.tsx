@@ -4,6 +4,7 @@ import theme from 'theme';
 import {styles} from './style';
 import {Image, TouchableOpacity} from 'react-native';
 import {fontSz, wp} from 'utils';
+import {Icon} from 'shared';
 
 interface PromotionItemProps {
   promotion: any;
@@ -22,6 +23,8 @@ export const PromotionItem = ({promotion, onPress}: PromotionItemProps) => {
       : theme.colors.DARKER_GREEN;
 
   const promotionName = promotion?.promotionLink?.split('/');
+
+  console.log(promotion);
   return (
     <Box
       style={styles.promotionContainer}
@@ -47,7 +50,7 @@ export const PromotionItem = ({promotion, onPress}: PromotionItemProps) => {
             </Text>
           </Box>
         </Box>
-        <Box flexDirection={'row'} mt={2} alignItems={'center'}>
+        {/* <Box flexDirection={'row'} mt={2} alignItems={'center'}>
           <Image
             source={theme.images['artist-list']}
             style={styles.sharedList}
@@ -60,6 +63,42 @@ export const PromotionItem = ({promotion, onPress}: PromotionItemProps) => {
             color={theme.colors.OFF_WHITE_100}>
             {promotion?.sharedWith}
           </Text>
+        </Box> */}
+        <Box
+          flexDirection={'row'}
+          alignItems={'center'}
+          justifyContent={'space-between'}>
+          <Box flexDirection={'row'} mt={2} alignItems={'center'}>
+            <Box flexDirection={'row'} alignItems={'center'}>
+              <Icon name="play-location" />
+              <Text
+                variant="body"
+                style={{fontSize: fontSz(12), paddingLeft: wp(5)}}
+                color={theme.colors.WHITE}>
+                {promotion?.djCount || 5}
+              </Text>
+            </Box>
+          </Box>
+
+          <Box flexDirection={'row'} mt={2} alignItems={'center'}>
+            <Icon name="calendar-icon-2" />
+            <Text
+              variant="body"
+              style={{fontSize: fontSz(12), paddingLeft: wp(5)}}
+              color={theme.colors.WHITE}>
+              {promotion?.playlistName || '10-11-25'}
+            </Text>
+          </Box>
+
+          <Box flexDirection={'row'} mt={2} alignItems={'center'}>
+            <Icon name="timeline-icon" />
+            <Text
+              variant="body"
+              style={{fontSize: fontSz(12), paddingLeft: wp(5)}}
+              color={theme.colors.WHITE}>
+              {promotion?.timeline || '1 month'}
+            </Text>
+          </Box>
         </Box>
       </Box>
     </Box>

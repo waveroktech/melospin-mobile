@@ -2,22 +2,51 @@ import React from 'react';
 import {Box, Text} from 'design-system';
 import {fontSz, hp, wp} from 'utils';
 import theme from 'theme';
-import {Image, ScrollView} from 'react-native';
+import {Image, ScrollView, TouchableOpacity} from 'react-native';
 import {styles} from '../style';
+import {Icon} from 'shared';
+import {BottomTabStackParamList, DashboardStackParamList} from 'types';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
 
 interface DjsOnDeckProps {
   djs?: any[];
 }
 
 export const DjsOnDeck = ({djs = []}: DjsOnDeckProps) => {
+  const {navigate} =
+    useNavigation<
+      NavigationProp<BottomTabStackParamList & DashboardStackParamList>
+    >();
   return (
     <Box mt={hp(20)}>
-      <Text
-        variant="bodyMedium"
-        fontSize={fontSz(16)}
-        color={theme.colors.WHITE}>
-        DJs on deck
-      </Text>
+      <Box
+        flexDirection={'row'}
+        justifyContent={'space-between'}
+        alignItems={'center'}>
+        <Text
+          variant="bodyMedium"
+          fontSize={fontSz(16)}
+          color={theme.colors.WHITE}>
+          DJs on deck
+        </Text>
+
+        <Box
+          ml={10}
+          flexDirection={'row'}
+          alignItems={'center'}
+          as={TouchableOpacity}
+          onPress={() => navigate('Explore')}
+          activeOpacity={0.8}>
+          <Text
+            variant="bodyMedium"
+            fontSize={fontSz(15)}
+            color={theme.colors.LIGHT_PRIMARY}
+            pr={2}>
+            Explore
+          </Text>
+          <Icon name="arrow-right-2" />
+        </Box>
+      </Box>
 
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         {djs?.length &&
@@ -53,4 +82,3 @@ export const DjsOnDeck = ({djs = []}: DjsOnDeckProps) => {
     </Box>
   );
 };
-

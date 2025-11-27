@@ -109,7 +109,8 @@ export const ConnectDj = () => {
                   fontFamily={theme.font.AvenirNextSemiBold}
                   color={theme.colors.WHITE}
                   pl={10}>
-                  {formatNumber(10)} {userType === 'artiste' ? 'Song Uploads' : 'Song Plays'}
+                  {formatNumber(10)}{' '}
+                  {userType === 'artiste' ? 'Song Uploads' : 'Song Plays'}
                 </Text>
               </Box>
 
@@ -193,55 +194,57 @@ export const ConnectDj = () => {
           </Box>
         </ImageBackground>
 
-        <Box
-          mt={hp(20)}
-          mx={wp(16)}
-          borderBottomWidth={1}
-          pb={20}
-          borderBottomColor={theme.colors.BASE_SECONDARY}>
-          <Text variant="body" color={theme.colors.TEXT_INPUT_PLACEHOLDER}>
-            Socials
-          </Text>
+        {userType === 'artiste' ? null : (
           <Box
-            mt={10}
-            flexDirection={'row'}
-            alignItems={'center'}
-            justifyContent={'space-between'}>
+            mt={hp(20)}
+            mx={wp(16)}
+            borderBottomWidth={1}
+            pb={20}
+            borderBottomColor={theme.colors.BASE_SECONDARY}>
+            <Text variant="body" color={theme.colors.TEXT_INPUT_PLACEHOLDER}>
+              Socials
+            </Text>
             <Box
-              width={wp(110)}
-              height={hp(40)}
-              as={TouchableOpacity}
-              activeOpacity={0.8}
-              justifyContent={'center'}
+              mt={10}
+              flexDirection={'row'}
               alignItems={'center'}
-              borderRadius={24}
-              bg={theme.colors.OFF_WHITE_500}>
-              <Icon name="instagram" />
-            </Box>
-            <Box
-              width={wp(110)}
-              height={hp(40)}
-              as={TouchableOpacity}
-              activeOpacity={0.8}
-              justifyContent={'center'}
-              alignItems={'center'}
-              borderRadius={24}
-              bg={theme.colors.OFF_WHITE_500}>
-              <Icon name="tiktok" />
-            </Box>
-            <Box
-              width={wp(110)}
-              height={hp(40)}
-              as={TouchableOpacity}
-              activeOpacity={0.8}
-              justifyContent={'center'}
-              alignItems={'center'}
-              borderRadius={24}
-              bg={theme.colors.OFF_WHITE_500}>
-              <Icon name="snapchat" />
+              justifyContent={'space-between'}>
+              <Box
+                width={wp(110)}
+                height={hp(40)}
+                as={TouchableOpacity}
+                activeOpacity={0.8}
+                justifyContent={'center'}
+                alignItems={'center'}
+                borderRadius={24}
+                bg={theme.colors.OFF_WHITE_500}>
+                <Icon name="instagram" />
+              </Box>
+              <Box
+                width={wp(110)}
+                height={hp(40)}
+                as={TouchableOpacity}
+                activeOpacity={0.8}
+                justifyContent={'center'}
+                alignItems={'center'}
+                borderRadius={24}
+                bg={theme.colors.OFF_WHITE_500}>
+                <Icon name="tiktok" />
+              </Box>
+              <Box
+                width={wp(110)}
+                height={hp(40)}
+                as={TouchableOpacity}
+                activeOpacity={0.8}
+                justifyContent={'center'}
+                alignItems={'center'}
+                borderRadius={24}
+                bg={theme.colors.OFF_WHITE_500}>
+                <Icon name="snapchat" />
+              </Box>
             </Box>
           </Box>
-        </Box>
+        )}
 
         <Box mt={hp(20)} mx={wp(16)}>
           <Text
