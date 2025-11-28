@@ -8,15 +8,16 @@ import {DiscographyItem} from './component';
 import {hp, wp} from 'utils';
 import {Box, Button, Text} from 'design-system';
 import {styles} from './style';
-import {AddDiscography, AddedDiscography} from './modals';
+import {AddDiscography, AddedDiscography, ViewDiscography} from './modals';
 import {useGetDiscography} from 'store';
 import {useFocusEffect} from '@react-navigation/native';
 
 export const Discography = () => {
   const [open, setOpen] = useState<
-    'add-discography' | 'added-discography' | ''
+    'add-discography' | 'added-discography' | 'discography-details' | ''
   >('');
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [currentDiscography, setCurrentDiscography] = useState<any>(null);
 
   const {data, refetch, isPending} = useGetDiscography();
 
@@ -133,8 +134,10 @@ export const Discography = () => {
           <DiscographyItem
             item={item}
             isPressable
+            isDisco
             onPress={() => {
-              Linking.openURL(item?.url);
+              setCurrentDiscography(item);
+              setOpen('discography-details');
             }}
           />
         )}
@@ -173,6 +176,12 @@ export const Discography = () => {
       <AddedDiscography
         isVisible={open === 'added-discography'}
         onClose={onClose}
+      />
+
+      <ViewDiscography
+        isVisible={open === 'discography-details'}
+        onClose={() => setOpen('')}
+        discography={currentDiscography}
       />
 
       <Loader loading={isPending} />

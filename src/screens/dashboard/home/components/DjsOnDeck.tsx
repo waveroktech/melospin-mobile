@@ -49,8 +49,9 @@ export const DjsOnDeck = ({djs = []}: DjsOnDeckProps) => {
       </Box>
 
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        {djs?.length &&
-          djs?.slice(0, 4)?.map((dj: any, index: number) => {
+        {djs &&
+          djs.length > 0 &&
+          djs.slice(0, 4).map((dj: any, index: number) => {
             return (
               <Box
                 key={index}
@@ -73,7 +74,7 @@ export const DjsOnDeck = ({djs = []}: DjsOnDeckProps) => {
                   // eslint-disable-next-line react-native/no-inline-styles
                   style={{textTransform: 'capitalize'}}
                   color={theme.colors.WHITE}>
-                  {dj?.name}
+                  {dj?.name || ''}
                 </Text>
               </Box>
             );

@@ -1688,6 +1688,27 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
+  - RNCClipboard (1.16.3):
+    - DoubleConversion
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2024.11.18.00)
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - Yoga
   - RNCMaskedView (0.3.2):
     - DoubleConversion
     - glog
@@ -1993,6 +2014,7 @@ DEPENDENCIES:
   - ReactCodegen (from `build/generated/ios`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
+  - "RNCClipboard (from `../node_modules/@react-native-clipboard/clipboard`)"
   - "RNCMaskedView (from `../node_modules/@react-native-masked-view/masked-view`)"
   - RNDeviceInfo (from `../node_modules/react-native-device-info`)
   - RNFastImage (from `../node_modules/react-native-fast-image`)
@@ -2158,6 +2180,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon"
   RNCAsyncStorage:
     :path: "../node_modules/@react-native-async-storage/async-storage"
+  RNCClipboard:
+    :path: "../node_modules/@react-native-clipboard/clipboard"
   RNCMaskedView:
     :path: "../node_modules/@react-native-masked-view/masked-view"
   RNDeviceInfo:
@@ -2252,6 +2276,7 @@ SPEC CHECKSUMS:
   ReactCodegen: c08a5113d9c9c895fe10f3c296f74c6b705a60a9
   ReactCommon: 1bd2dc684d7992acbf0dfee887b89a57a1ead86d
   RNCAsyncStorage: a025c661a88f7db9d59d451d495decb375bb1b53
+  RNCClipboard: ba9fda8e2c9f003a29f7f66793069c4d0dada955
   RNCMaskedView: 308c763227e237d4d260bd8841870e099572bb3e
   RNDeviceInfo: d863506092aef7e7af3a1c350c913d867d795047
   RNFastImage: 462a183c4b0b6b26fdfd639e1ed6ba37536c3b87

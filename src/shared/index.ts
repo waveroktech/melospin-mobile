@@ -1,5 +1,6 @@
 export * from './AvoidingView';
 export * from './BaseModal';
+export * from './BottomToast';
 export * from './FlashMessageToast';
 export * from './Header';
 export * from './HeaderText';

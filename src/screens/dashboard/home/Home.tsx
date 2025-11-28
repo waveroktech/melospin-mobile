@@ -157,7 +157,7 @@ export const Home = () => {
                     fontSize={fontSz(14)}
                     pt={hp(2)}
                     color={theme.colors.WHITE}>
-                    {userInfo?.ratings}
+                    {userInfo?.ratings ?? '0'}
                   </Text>
                 </Box>
                 <Box

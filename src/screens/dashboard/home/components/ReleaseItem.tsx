@@ -22,13 +22,13 @@ export const ReleaseItem = ({release}: ReleaseItemProps) => {
         fontSize={fontSz(13)}
         pt={1}
         color={theme.colors.WHITE}>
-        {release?.title}
+        {release?.title || ''}
       </Text>
       <Text
         pt={2}
         color={theme.colors.OFF_WHITE_100}
         fontFamily={theme.font.QuicksandRegular}>
-        {release?.artist}
+        {release?.artist || ''}
       </Text>
     </Box>
   );

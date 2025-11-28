@@ -22,11 +22,13 @@ interface DiscographyItemProps {
   };
   isPressable?: boolean;
   onPress?: () => void;
+  isDisco?: boolean;
 }
 export const DiscographyItem = ({
   item,
   isPressable,
   onPress,
+  isDisco,
 }: DiscographyItemProps) => {
   console.log(item);
   const {mutate: deleteDiscography, isPending} = useDeleteDiscography({
@@ -99,7 +101,7 @@ export const DiscographyItem = ({
         borderWidth={1}
         borderRadius={hp(100)}
         borderColor={theme.colors.OFF_WHITE_700}>
-        <Icon name="link-icon" />
+        <Icon name={isDisco ? 'arrow-right-5' : 'link-icon'} />
       </Box>
     </Box>
   );

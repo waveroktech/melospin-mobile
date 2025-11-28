@@ -31,7 +31,6 @@ export const OngoingPromotionDetails = ({
         py={hp(20)}
         flex={1}
         bg={theme.colors.BASE_PRIMARY}
-        // height={hp(600)}
         top={hp(80)}
         borderTopLeftRadius={hp(24)}
         borderTopRightRadius={hp(24)}
@@ -332,14 +331,16 @@ export const OngoingPromotionDetails = ({
 
                         <Box
                           bg={item.statusBg}
-                          p={hp(4)}
+                          style={{padding: wp(4)}}
                           borderRadius={hp(10)}
                           borderWidth={item.statusBgBorder ? 1 : 0}
                           borderColor={item.statusBgBorder}>
                           <Text
                             variant="bodyMedium"
-                            px={wp(4)}
-                            style={{fontSize: fontSz(10)}}
+                            style={{
+                              fontSize: fontSz(10),
+                              paddingHorizontal: wp(4),
+                            }}
                             color={item.statusTextColor}>
                             {item.status}
                           </Text>
