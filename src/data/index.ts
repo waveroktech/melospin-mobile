@@ -2620,3 +2620,42 @@ export const rateAmount = [
     title: '> ₦5,000,000',
   },
 ];
+
+export const promotionStatusReport = [
+  {
+    id: 1,
+    title: 'DJ Zenzee',
+    status: 'Completed',
+    statusBg: '#FFFFFF',
+    statusTextColor: '#0A0D14',
+    borderColor: '#F6F8FA',
+  },
+  {
+    id: 2,
+    title: 'DJ Nova',
+    status: 'Pending Confirmation',
+    statusBg: '#FEF7EC',
+    statusTextColor: '#B47818',
+  },
+  {
+    id: 3,
+    title: 'DJ Eze',
+    status: 'Ongoing',
+    statusBg: '#EFFAF6',
+    statusTextColor: '#176448',
+  },
+  {
+    id: 4,
+    title: 'DJ Femi',
+    status: 'Ongoing',
+    statusBg: '#EFFAF6',
+    statusTextColor: '#176448',
+  },
+  {
+    id: 5,
+    title: 'DJ Gbenga',
+    status: 'Ongoing',
+    statusBg: '#EFFAF6',
+    statusTextColor: '#176448',
+  },
+];

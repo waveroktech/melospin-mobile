@@ -3,7 +3,7 @@ import {Box, Text} from 'design-system';
 import theme from 'theme';
 import {styles} from './style';
 import {Image, TouchableOpacity} from 'react-native';
-import {fontSz, wp} from 'utils';
+import {fontSz, hp, wp} from 'utils';
 import {Icon} from 'shared';
 
 interface PromotionItemProps {
@@ -67,8 +67,9 @@ export const PromotionItem = ({promotion, onPress}: PromotionItemProps) => {
         <Box
           flexDirection={'row'}
           alignItems={'center'}
+          width={'85%'}
           justifyContent={'space-between'}>
-          <Box flexDirection={'row'} mt={2} alignItems={'center'}>
+          <Box flexDirection={'row'} mt={hp(2)} alignItems={'center'}>
             <Box flexDirection={'row'} alignItems={'center'}>
               <Icon name="play-location" />
               <Text
@@ -80,7 +81,7 @@ export const PromotionItem = ({promotion, onPress}: PromotionItemProps) => {
             </Box>
           </Box>
 
-          <Box flexDirection={'row'} mt={2} alignItems={'center'}>
+          <Box flexDirection={'row'} mt={hp(2)} alignItems={'center'}>
             <Icon name="calendar-icon-2" />
             <Text
               variant="body"
@@ -90,7 +91,7 @@ export const PromotionItem = ({promotion, onPress}: PromotionItemProps) => {
             </Text>
           </Box>
 
-          <Box flexDirection={'row'} mt={2} alignItems={'center'}>
+          <Box flexDirection={'row'} mt={hp(2)} alignItems={'center'}>
             <Icon name="timeline-icon" />
             <Text
               variant="body"

@@ -11,6 +11,7 @@ import {
   DjEarnings,
   DjSettings,
   EmptyPromotionContainer,
+  FilterTabs,
   PromotionButton,
   PromotionItem,
 } from './components';
@@ -23,14 +24,28 @@ import {DashboardStackParamList} from 'types';
 import {useUserPromotions} from 'store/usePromotion';
 import {useMelospinStore} from 'store';
 import {promotionTabs} from 'data';
-import {OngoingPromotionDetails, PromotionDetails} from './modals';
+import {
+  OngoingPromotionDetails,
+  PromotionDetails,
+  PromotionHistory,
+  SelectStatus,
+  SelectTimeline,
+} from './modals';
 
 export const Promotions = () => {
   const {navigate} = useNavigation<NavigationProp<DashboardStackParamList>>();
   const [activeIndex, setActiveIndex] = useState(1);
   const [open, setOpen] = useState<
-    'promotion-details' | 'ongoing-promotion-details' | ''
+    | 'promotion-details'
+    | 'ongoing-promotion-details'
+    | 'promotion-history'
+    | 'status'
+    | 'timeline'
+    | ''
   >('');
+  const [currentPromotion, setCurrentPromotion] = useState<any>(null);
+  const [selectedStatus, setSelectedStatus] = useState<string>('All');
+  const [selectedTimeline, setSelectedTimeline] = useState<string>('Today');
 
   useFocusEffect(
     useCallback(() => {
@@ -59,6 +74,21 @@ export const Promotions = () => {
               Promo history
             </Text>
 
+            <FilterTabs
+              filters={[
+                {
+                  label: 'Status',
+                  value: selectedStatus,
+                  onPress: () => setOpen('status'),
+                },
+                {
+                  label: 'Timeline',
+                  value: selectedTimeline,
+                  onPress: () => setOpen('timeline'),
+                },
+              ]}
+            />
+
             <Box mt={hp(20)} mx={wp(16)} style={styles.searchInputContainer}>
               <Icon name="search-icon" />
               <TextInput
@@ -78,9 +108,8 @@ export const Promotions = () => {
                   promotion={item}
                   key={index}
                   onPress={() => {
-                    item.status === 'pending'
-                      ? setOpen('ongoing-promotion-details')
-                      : setOpen('ongoing-promotion-details');
+                    setCurrentPromotion(item);
+                    setOpen('promotion-history');
                   }}
                 />
               )}
@@ -143,6 +172,26 @@ export const Promotions = () => {
       <OngoingPromotionDetails
         isVisible={open === 'ongoing-promotion-details'}
         onClose={() => setOpen('')}
+      />
+
+      <PromotionHistory
+        isVisible={open === 'promotion-history'}
+        onClose={() => setOpen('')}
+        promotion={currentPromotion}
+      />
+
+      <SelectStatus
+        isVisible={open === 'status'}
+        onClose={() => setOpen('')}
+        onSelect={setSelectedStatus}
+        selectedStatus={selectedStatus}
+      />
+
+      <SelectTimeline
+        isVisible={open === 'timeline'}
+        onClose={() => setOpen('')}
+        onComplete={setSelectedTimeline}
+        selectedTimeline={selectedTimeline}
       />
     </Screen>
   );

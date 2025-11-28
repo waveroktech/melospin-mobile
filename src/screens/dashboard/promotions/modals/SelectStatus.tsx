@@ -1,45 +1,44 @@
-import {Box, Text} from 'design-system';
 import React from 'react';
-import {TouchableOpacity} from 'react-native';
+import {Box, Text} from 'design-system';
 import {BaseModal, Icon, ModalHeader} from 'shared';
-import theme from 'theme';
 import {hp, wp} from 'utils';
+import theme from 'theme';
+import {TouchableOpacity} from 'react-native';
 
-interface SelectTimelineProps {
+interface SelectStatusProps {
   isVisible: boolean;
   onClose: () => void;
-  onComplete: (timeline: string) => void;
-  selectedTimeline?: string;
+  onSelect: (status: string) => void;
+  selectedStatus?: string;
 }
 
-const timelineFilterOptions = [
-  {id: 'today', title: 'Today'},
-  {id: 'yesterday', title: 'Yesterday'},
-  {id: 'this-week', title: 'This Week'},
-  {id: 'this-month', title: 'This Month'},
-  {id: 'last-month', title: 'Last Month'},
-  {id: 'all-time', title: 'All Time'},
+const statusOptions = [
+  {id: 'all', title: 'All'},
+  {id: 'active', title: 'Active'},
+  {id: 'ongoing', title: 'Ongoing'},
+  {id: 'completed', title: 'Completed'},
+  {id: 'pending', title: 'Pending'},
 ];
 
-export const SelectTimeline = ({
+export const SelectStatus = ({
   isVisible,
   onClose,
-  onComplete,
-  selectedTimeline,
-}: SelectTimelineProps) => {
-  const handleSelect = (timeline: string) => {
-    onComplete(timeline);
+  onSelect,
+  selectedStatus,
+}: SelectStatusProps) => {
+  const handleSelect = (status: string) => {
+    onSelect(status);
     onClose();
   };
 
   return (
     <BaseModal visible={isVisible} onClose={onClose}>
       <Box py={hp(24)}>
-        <ModalHeader modalHeaderText="Select Timeline" onClose={onClose} />
+        <ModalHeader modalHeaderText="Select Status" onClose={onClose} />
 
         <Box mt={hp(20)} mx={wp(16)}>
-          {timelineFilterOptions.map((item, index) => {
-            const isSelected = selectedTimeline === item.title;
+          {statusOptions.map((item, index) => {
+            const isSelected = selectedStatus === item.title;
             return (
               <Box
                 key={item.id}
@@ -50,9 +49,7 @@ export const SelectTimeline = ({
                 flexDirection={'row'}
                 alignItems={'center'}
                 justifyContent={'space-between'}
-                borderBottomWidth={
-                  index < timelineFilterOptions.length - 1 ? 1 : 0
-                }
+                borderBottomWidth={index < statusOptions.length - 1 ? 1 : 0}
                 borderBottomColor={theme.colors.BASE_SECONDARY}>
                 <Text
                   variant="body"

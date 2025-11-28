@@ -177,67 +177,66 @@ export const PromotionBudget = () => {
     <Screen removeSafeaArea backgroundColor={theme.colors.BASE_PRIMARY}>
       <Header hasBackText="Set up Promotion" onPressLeftIcon={goBack} />
       <AvoidingView>
-        <ScrollView>
-          <HeaderText
-            hasHeaderText="Assign DJs"
-            hasHeaderTextStyle={{fontSize: fontSz(14)}}
-            hasIndicatorLevel
-            currentPage={3}
+        <HeaderText
+          hasHeaderText="Assign DJs"
+          hasHeaderTextStyle={{fontSize: fontSz(14)}}
+          hasIndicatorLevel
+          currentPage={3}
+        />
+
+        <FilterTabs
+          title="Filter Tab"
+          selectedRate={selectedRate}
+          selectedState={selectedState}
+          setOpen={(open: string) =>
+            setOpen(
+              open as '' | 'rate' | 'frequency' | 'end-date' | 'start-date',
+            )
+          }
+        />
+
+        <Box
+          style={styles.searchInputContainer}
+          mx={wp(16)}
+          mt={hp(20)}
+          bg={theme.colors.TEXT_INPUT_BG}>
+          <Icon name="search-icon" />
+          <TextInput
+            style={styles.searchTextInput}
+            placeholder="Search DJ"
+            selectionColor={theme.colors.WHITE}
+            placeholderTextColor={theme.colors.TEXT_INPUT_PLACEHOLDER}
           />
+        </Box>
 
-          <FilterTabs
-            title="Filter Tab"
-            selectedRate={selectedRate}
-            selectedState={selectedState}
-            setOpen={(open: string) =>
-              setOpen(
-                open as '' | 'rate' | 'frequency' | 'end-date' | 'start-date',
-              )
-            }
-          />
-
-          <Box
-            style={styles.searchInputContainer}
-            mx={wp(16)}
-            mt={hp(20)}
-            bg={theme.colors.TEXT_INPUT_BG}>
-            <Icon name="search-icon" />
-            <TextInput
-              style={styles.searchTextInput}
-              placeholder="Search DJ"
-              selectionColor={theme.colors.WHITE}
-              placeholderTextColor={theme.colors.TEXT_INPUT_PLACEHOLDER}
-            />
-          </Box>
-
-          <FlatList
-            data={data?.data}
-            contentContainerStyle={styles.contentContainerStyle}
-            renderItem={({item}) => (
-              <SelectDjItemComponent
-                item={item}
-                onPress={(dj: any) => {
-                  setSelectedDjs(prevDjs => {
-                    const isAlreadySelected = prevDjs.some(
-                      (selectedDj: any) => selectedDj?.userId === dj?.userId,
+        <FlatList
+          data={data?.data}
+          contentContainerStyle={styles.contentContainerStyle}
+          renderItem={({item}) => (
+            <SelectDjItemComponent
+              item={item}
+              onPress={(dj: any) => {
+                setSelectedDjs(prevDjs => {
+                  const isAlreadySelected = prevDjs.some(
+                    (selectedDj: any) => selectedDj?.userId === dj?.userId,
+                  );
+                  if (isAlreadySelected) {
+                    // Remove DJ if already selected
+                    return prevDjs.filter(
+                      (selectedDj: any) => selectedDj?.userId !== dj?.userId,
                     );
-                    if (isAlreadySelected) {
-                      // Remove DJ if already selected
-                      return prevDjs.filter(
-                        (selectedDj: any) => selectedDj?.userId !== dj?.userId,
-                      );
-                    } else {
-                      // Add DJ if not selected
-                      return [...prevDjs, dj];
-                    }
-                  });
-                }}
-                selectedDjs={selectedDjs}
-              />
-            )}
-          />
+                  } else {
+                    // Add DJ if not selected
+                    return [...prevDjs, dj];
+                  }
+                });
+              }}
+              selectedDjs={selectedDjs}
+            />
+          )}
+        />
 
-          {/* <Box mt={hp(20)} mx={wp(16)}>
+        {/* <Box mt={hp(20)} mx={wp(16)}>
             <FormInput
               control={control}
               name="frequency"
@@ -320,78 +319,84 @@ export const PromotionBudget = () => {
               />
             </Box>
           </Box> */}
-        </ScrollView>
       </AvoidingView>
-      {selectedDjs.length > 0 && (
-        <Box
-          mt={hp(24)}
-          mx={wp(16)}
-          position={'absolute'}
-          bottom={hp(100)}
-          left={0}
-          right={0}>
-          <Box bg={theme.colors.BLACK_DEFAULT} p={hp(24)} borderRadius={hp(24)}>
+      <ScrollView>
+        {selectedDjs.length > 0 && (
+          <Box
+            mt={hp(24)}
+            mx={wp(16)}
+            position={'absolute'}
+            bottom={hp(100)}
+            left={0}
+            right={0}>
             <Box
-              as={TouchableOpacity}
-              activeOpacity={0.8}
-              onPress={() => setShowSelectedDjs(!showSelectedDjs)}
-              flexDirection={'row'}
-              mb={showSelectedDjs ? hp(16) : 0}
-              alignItems={'center'}
-              justifyContent={'space-between'}>
-              <Text variant="bodyMedium" color={theme.colors.WHITE}>
-                ({selectedDjs.length}) DJs Added
-              </Text>
+              bg={theme.colors.BLACK_DEFAULT}
+              p={hp(24)}
+              borderRadius={hp(24)}>
+              <Box
+                as={TouchableOpacity}
+                activeOpacity={0.8}
+                onPress={() => setShowSelectedDjs(!showSelectedDjs)}
+                flexDirection={'row'}
+                mb={showSelectedDjs ? hp(16) : 0}
+                alignItems={'center'}
+                justifyContent={'space-between'}>
+                <Text variant="bodyMedium" color={theme.colors.WHITE}>
+                  ({selectedDjs.length}) DJs Added
+                </Text>
 
-              <Box>
-                <Icon name={showSelectedDjs ? 'arrow-up-2' : 'arrow-down-2'} />
+                <Box>
+                  <Icon
+                    name={showSelectedDjs ? 'arrow-up-2' : 'arrow-down-2'}
+                  />
+                </Box>
               </Box>
-            </Box>
 
-            {showSelectedDjs && (
-              <Box mt={hp(16)}>
-                {selectedDjs.map((dj: any, index: number) => (
-                  <Box
-                    key={dj?.userId || index}
-                    flexDirection={'row'}
-                    alignItems={'center'}
-                    pb={hp(16)}
-                    borderBottomWidth={index < selectedDjs.length - 1 ? 1 : 0}
-                    borderBottomColor={theme.colors.BASE_SECONDARY}
-                    mb={index < selectedDjs.length - 1 ? hp(16) : 0}>
+              {showSelectedDjs && (
+                <Box mt={hp(16)}>
+                  {selectedDjs.map((dj: any, index: number) => (
                     <Box
-                      as={TouchableOpacity}
-                      activeOpacity={0.8}
-                      onPress={() => {
-                        setSelectedDjs(prevDjs =>
-                          prevDjs.filter(
-                            (selectedDj: any) =>
-                              selectedDj?.userId !== dj?.userId,
-                          ),
-                        );
-                      }}
-                      width={wp(32)}
-                      height={hp(24)}
-                      borderRadius={hp(16)}
-                      bg={theme.colors.WHITE}
+                      key={dj?.userId || index}
+                      flexDirection={'row'}
                       alignItems={'center'}
-                      justifyContent={'center'}>
-                      <Icon name="trash-3" />
-                    </Box>
+                      pb={hp(16)}
+                      borderBottomWidth={index < selectedDjs.length - 1 ? 1 : 0}
+                      borderBottomColor={theme.colors.BASE_SECONDARY}
+                      mb={index < selectedDjs.length - 1 ? hp(16) : 0}>
+                      <Box
+                        as={TouchableOpacity}
+                        activeOpacity={0.8}
+                        onPress={() => {
+                          setSelectedDjs(prevDjs =>
+                            prevDjs.filter(
+                              (selectedDj: any) =>
+                                selectedDj?.userId !== dj?.userId,
+                            ),
+                          );
+                        }}
+                        width={wp(32)}
+                        height={hp(24)}
+                        borderRadius={hp(16)}
+                        bg={theme.colors.WHITE}
+                        alignItems={'center'}
+                        justifyContent={'center'}>
+                        <Icon name="trash-3" />
+                      </Box>
 
-                    <Text
-                      variant="bodyMedium"
-                      pl={wp(12)}
-                      color={theme.colors.TEXT_INPUT_PLACEHOLDER}>
-                      {dj?.name}
-                    </Text>
-                  </Box>
-                ))}
-              </Box>
-            )}
+                      <Text
+                        variant="bodyMedium"
+                        pl={wp(12)}
+                        color={theme.colors.TEXT_INPUT_PLACEHOLDER}>
+                        {dj?.name}
+                      </Text>
+                    </Box>
+                  ))}
+                </Box>
+              )}
+            </Box>
           </Box>
-        </Box>
-      )}
+        )}
+      </ScrollView>
       <SelectFrequency
         isVisible={open === 'frequency'}
         onClose={() => setOpen('')}

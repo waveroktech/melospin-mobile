@@ -12,3 +12,5 @@ export * from './WebviewModal';
 export * from './OngoingPromotionDetails';
 export * from './SelectTimeline';
 export * from './SelectRate';
+export * from './SelectStatus';
+export * from './PromotionHistory';
