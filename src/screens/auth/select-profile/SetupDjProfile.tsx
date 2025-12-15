@@ -1,14 +1,16 @@
-import React, {useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {Box, Button, FormInput, Text} from 'design-system';
-import {AvoidingView, Header, HeaderText, Icon, Screen} from 'shared';
+import {AvoidingView, Header, HeaderText, Icon, Loader, Screen} from 'shared';
 import {fontSz, hp, wp} from 'utils';
 import theme from 'theme';
-import {ScrollView} from 'react-native';
+import {ScrollView, TouchableOpacity} from 'react-native';
 import {yupResolver} from '@hookform/resolvers/yup';
 import {Controller, useForm} from 'react-hook-form';
 import * as yup from 'yup';
 import {PromotionTypeSelector} from './components';
 import {SelectState} from './modals';
+import {useGetGenre, useMelospinStore, useSetAccountProfile} from 'store';
+import {showMessage} from 'react-native-flash-message';
 
 interface FormData {
   brandName: string;
@@ -39,7 +41,17 @@ const schema = yup.object().shape({
 });
 
 export const SetupDjProfile = () => {
+  const {setIsLoggedIn, setAuthToken, setUserData, setUserType} =
+    useMelospinStore();
+  const {data: musicGenres, refetch} = useGetGenre();
+
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
+
   const [open, setOpen] = useState<'country' | 'state' | ''>('');
+  const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
+
   const {
     control,
     watch,
@@ -62,6 +74,43 @@ export const SetupDjProfile = () => {
   });
 
   const form = watch();
+
+  const {mutate: setAccountProfile, isPending} = useSetAccountProfile({
+    onSuccess: (data: any) => {
+      console.log('data', data);
+      if (data?.status === 'success') {
+        showMessage({
+          message: 'Account profile created successfully',
+          type: 'success',
+          duration: 2000,
+        });
+        setAuthToken(data?.data?.token);
+        setUserData(data?.data);
+        setUserType(data?.data?.currentUserType);
+        setIsLoggedIn(true);
+      }
+    },
+  });
+
+  const selectGenre = async (selector: string) => {
+    setSelectedGenres(prevState => {
+      if (prevState.includes(selector)) {
+        return prevState.filter(genre => genre !== selector);
+      } else {
+        return [...prevState, selector];
+      }
+    });
+  };
+
+  const createAccountProfile = useCallback(() => {
+    setAccountProfile({
+      userType: 'dj',
+      brandName: form.brandName,
+      instagram: form.instagram,
+      tictok: form.tictok || 'tiktok',
+      musicGenres: selectedGenres,
+    });
+  }, [form, selectedGenres, setAccountProfile]);
 
   return (
     <Screen removeSafeaArea backgroundColor={theme.colors.PRIMARY}>
@@ -155,6 +204,58 @@ export const SetupDjProfile = () => {
               value={form.title}
             />
 
+            <Box
+              bg={theme.colors.TEXT_INPUT_BG}
+              pt={hp(12)}
+              px={wp(16)}
+              pb={hp(16)}
+              mb={hp(12)}
+              borderRadius={hp(24)}>
+              <Text variant="body" color={theme.colors.WHITE}>
+                Select genre of music you specialize in
+              </Text>
+              <Box
+                mt={hp(10)}
+                flexDirection={'row'}
+                alignItems={'center'}
+                flexWrap={'wrap'}>
+                {musicGenres?.data?.map(
+                  (genre: {_id: string; title: string}) => {
+                    return (
+                      <Box
+                        key={genre?._id}
+                        flexDirection={'row'}
+                        alignItems={'center'}
+                        mr={2}
+                        py={2}
+                        onPress={() => selectGenre(genre?.title)}
+                        as={TouchableOpacity}
+                        activeOpacity={0.8}
+                        px={2}
+                        borderRadius={hp(24)}
+                        mb={10}
+                        bg={theme.colors.BASE_SECONDARY}>
+                        <Icon
+                          name={
+                            selectedGenres?.includes(genre?.title)
+                              ? 'active-checkbox'
+                              : 'checkbox'
+                          }
+                        />
+                        <Text
+                          pl={2}
+                          variant="body"
+                          fontSize={fontSz(14)}
+                          color={theme.colors.WHITE}>
+                          {genre?.title}
+                        </Text>
+                      </Box>
+                    );
+                  },
+                )}
+              </Box>
+            </Box>
+
             <FormInput
               label="Enter play spot address"
               control={control}
@@ -189,7 +290,7 @@ export const SetupDjProfile = () => {
 
       <Button
         title="Done"
-        onPress={() => {}}
+        onPress={createAccountProfile}
         bg={theme.colors.PRIMARY_100}
         disabled={
           form.brandName && form.instagram && form.title && form.location
@@ -207,6 +308,7 @@ export const SetupDjProfile = () => {
           setValue('state', state.state);
         }}
       />
+      <Loader loading={isPending} />
     </Screen>
   );
 };

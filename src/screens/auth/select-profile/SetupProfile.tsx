@@ -97,7 +97,7 @@ export const SetupProfile = () => {
       userType: accountType,
       brandName: form.brandName,
       instagram: form.instagram,
-      tictok: form.tictok || '',
+      tictok: form.tictok || 'tiktok',
       musicGenres: selectedGenres,
     });
   }, [accountType, form, selectedGenres, setAccountProfile]);
