@@ -12,7 +12,6 @@ import {
 } from 'react-native';
 import theme from 'theme';
 import {fontSz, hp, wp} from 'utils';
-import {isIos} from 'utils/platform';
 import {Icon} from 'shared';
 import {useController} from 'react-hook-form';
 
@@ -79,7 +78,7 @@ export const FormInput = forwardRef<RNTextInput, FormTextInputProps>(
         {
           translateY: animatedValue?.current?.interpolate({
             inputRange: [0, 1],
-            outputRange: [isIos ? hp(18) : hp(20), hp(8)],
+            outputRange: [0, hp(-12)],
             extrapolate: 'clamp',
           }),
         },
@@ -156,6 +155,7 @@ export const FormInput = forwardRef<RNTextInput, FormTextInputProps>(
               <Animated.Text
                 onPress={() => onFocus()}
                 style={[
+                  styles.labelContainer,
                   returnAnimatedTitleStyles,
                   styles.labelStyle,
                   labelStyle,
@@ -265,8 +265,14 @@ const styles = StyleSheet.create({
     height: hp(50),
     width: wp(230),
     bottom: hp(0),
+    marginTop: hp(4),
     color: theme.colors.WHITE,
     fontFamily: theme.font.AvenirNextRegular,
+  },
+  labelContainer: {
+    position: 'absolute',
+    top: hp(15),
+    left: wp(20),
   },
   labelStyle: {
     fontFamily: theme.font.AvenirNextMedium,

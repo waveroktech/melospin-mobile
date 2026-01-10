@@ -91,6 +91,7 @@ export const VerifyEmail = () => {
   const {mutate: verifyAccount, isPending} = useSetVerifyAccount({
     onSuccess: (data: any) => {
       console.log(data);
+
       if (data?.status === 'failed') {
         return showMessage({
           message: data?.message,
@@ -101,6 +102,13 @@ export const VerifyEmail = () => {
         return showMessage({
           message: data?.message,
           type: 'info',
+          duration: 2000,
+        });
+      }
+      if (data?.includes('An Error occurred')) {
+        return showMessage({
+          message: data,
+          type: 'danger',
           duration: 2000,
         });
       }
