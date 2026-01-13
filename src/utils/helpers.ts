@@ -76,3 +76,11 @@ export function formatTitleUrl(str: string) {
 function getStringBeforeSubstring(parentString: string, substring: string) {
   return parentString?.substring(0, parentString?.indexOf(substring));
 }
+
+export const capitalizeTitle = (str: string) => {
+  return str
+    .toLowerCase()
+    .split(' ')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+};

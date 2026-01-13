@@ -13,7 +13,25 @@ const PERSISTENCE_KEY = 'NAVIGATION_STATE';
 const Stack = createStackNavigator<RootStackParamList>();
 
 const AppNav = () => {
-  const {isLoggedIn} = useMelospinStore();
+  const {isLoggedIn, _hasHydrated, setHasHydrated} = useMelospinStore();
+
+  React.useEffect(() => {
+    // Fallback: If hydration hasn't completed after a short delay, set it manually
+    // This handles cases where onRehydrateStorage might not fire
+    const timer = setTimeout(() => {
+      if (!_hasHydrated) {
+        setHasHydrated(true);
+      }
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }, [_hasHydrated, setHasHydrated]);
+
+  // Wait for Zustand persist to hydrate before rendering navigation
+  if (!_hasHydrated) {
+    return null; // Or a loading screen
+  }
+
   return (
     <Stack.Navigator
       screenOptions={{

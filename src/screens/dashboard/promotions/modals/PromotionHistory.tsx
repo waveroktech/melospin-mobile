@@ -35,7 +35,6 @@ export const PromotionHistory = ({
     updatedAt: '2021-01-01',
   };
 
-  console.log(promotionData);
   return (
     <Modal
       isVisible={isVisible}
@@ -241,9 +240,10 @@ export const PromotionHistory = ({
               </Box>
               {showPromotionStatusReport && (
                 <Box style={[styles.accordionContent]}>
-                  {promotionStatusReport?.map((item: any) => {
+                  {promotionStatusReport?.map((item: any, index: number) => {
                     return (
                       <Box
+                        key={item.title || index}
                         flexDirection={'row'}
                         alignItems={'center'}
                         borderBottomWidth={1}

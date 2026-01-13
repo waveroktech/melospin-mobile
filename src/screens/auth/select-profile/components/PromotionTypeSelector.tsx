@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-shadow */
-import React from 'react';
+import React, {useEffect, useMemo} from 'react';
 import {Box, Text} from 'design-system';
-import {fontSz, hp, wp} from 'utils';
+import {capitalizeTitle, fontSz, hp, wp} from 'utils';
 import theme from 'theme';
 import {StyleSheet, TouchableOpacity} from 'react-native';
-import {promotionTypeList} from 'data';
 import {Icon} from 'shared';
+import {useGetPromotionTypes} from 'store';
 
 interface PromotionTypeSelectorProps {
   value?: string[];
@@ -22,6 +22,24 @@ export const PromotionTypeSelector = ({
 }: PromotionTypeSelectorProps) => {
   const selectedPromotionTypes = value;
 
+  const {data: promotionTypes, refetch} = useGetPromotionTypes();
+
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
+
+  // Sort promotion types alphabetically
+  const sortedPromotionTypes = useMemo(() => {
+    if (!promotionTypes?.data) {
+      return [];
+    }
+    return [...promotionTypes.data].sort((a, b) => {
+      const titleA = a.title?.toLowerCase() || '';
+      const titleB = b.title?.toLowerCase() || '';
+      return titleA.localeCompare(titleB);
+    });
+  }, [promotionTypes?.data]);
+
   const selectPromotionType = (type: string) => {
     const updatedSelection = selectedPromotionTypes.includes(type)
       ? selectedPromotionTypes.filter(t => t !== type)
@@ -30,7 +48,10 @@ export const PromotionTypeSelector = ({
   };
 
   const handleSelectAll = () => {
-    const allTitles = promotionTypeList.map(item => item.title);
+    const allTitles =
+      sortedPromotionTypes.map(
+        (item: {_id: string; title: string}) => item.title,
+      ) || [];
     const allSelected = allTitles.every(title =>
       selectedPromotionTypes.includes(title),
     );
@@ -47,10 +68,13 @@ export const PromotionTypeSelector = ({
     onSelectAll?.();
   };
 
-  const allTitles = promotionTypeList.map(item => item.title);
-  const allSelected = allTitles.every(title =>
-    selectedPromotionTypes.includes(title),
-  );
+  const allTitles =
+    sortedPromotionTypes.map(
+      (item: {_id: string; title: string}) => item.title,
+    ) || [];
+  const allSelected =
+    allTitles.length > 0 &&
+    allTitles.every(title => selectedPromotionTypes.includes(title));
 
   return (
     <Box
@@ -82,9 +106,9 @@ export const PromotionTypeSelector = ({
       </Box>
 
       <Box flexDirection={'row'} flexWrap={'wrap'} mt={hp(16)}>
-        {promotionTypeList.map((item: {id: number; title: string}) => (
+        {sortedPromotionTypes.map((item: {_id: string; title: string}) => (
           <Box
-            key={item.id}
+            key={item._id}
             flexDirection={'row'}
             alignItems={'center'}
             onPress={() => selectPromotionType(item?.title)}
@@ -108,7 +132,7 @@ export const PromotionTypeSelector = ({
               fontSize={fontSz(14)}
               color={theme.colors.WHITE}
               pl={wp(2)}>
-              {item.title}
+              {capitalizeTitle(item.title || '')}
             </Text>
           </Box>
         ))}

@@ -5,6 +5,7 @@ import {
   setCalculatePromotionCost,
   setCreatePromotion,
   getPromotionRequests,
+  getPromotionTypes,
 } from 'services/api/promotion.service';
 
 export const useUserPromotions = () => {
@@ -61,6 +62,14 @@ export const useGetPromotionRequests = () => {
   return useQuery({
     queryKey: ['get-promotion-requests'],
     queryFn: () => getPromotionRequests(),
+    enabled: false,
+  });
+};
+
+export const useGetPromotionTypes = () => {
+  return useQuery({
+    queryKey: ['get-promotion-types'],
+    queryFn: () => getPromotionTypes(),
     enabled: false,
   });
 };

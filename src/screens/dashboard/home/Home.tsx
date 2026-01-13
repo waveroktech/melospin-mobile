@@ -58,7 +58,9 @@ export const Home = () => {
 
   return (
     <Screen removeSafeaArea backgroundColor={theme.colors.PRIMARY}>
-      <ScrollView>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{paddingBottom: hp(150)}}>
         <DashboardHeader title="Home" />
         {userType === 'artiste' ? (
           <Box mt={hp(30)} mx={wp(16)}>

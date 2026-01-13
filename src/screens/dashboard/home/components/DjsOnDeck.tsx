@@ -7,6 +7,7 @@ import {styles} from '../style';
 import {Icon} from 'shared';
 import {BottomTabStackParamList, DashboardStackParamList} from 'types';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {EmptyPromotionContainer} from '../../promotions/components';
 
 interface DjsOnDeckProps {
   djs?: any[];
@@ -48,10 +49,16 @@ export const DjsOnDeck = ({djs = []}: DjsOnDeckProps) => {
         </Box>
       </Box>
 
-      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        {djs &&
-          djs.length > 0 &&
-          djs.slice(0, 4).map((dj: any, index: number) => {
+      {!djs || djs.length === 0 ? (
+        <EmptyPromotionContainer
+          icon="empty-folder"
+          containerStyles={{my: hp(30), mb: hp(10)}}
+          title="No DJs Available"
+          subTitle="Explore to discover DJs on the platform"
+        />
+      ) : (
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          {djs.slice(0, 4).map((dj: any, index: number) => {
             return (
               <Box
                 key={index}
@@ -79,7 +86,8 @@ export const DjsOnDeck = ({djs = []}: DjsOnDeckProps) => {
               </Box>
             );
           })}
-      </ScrollView>
+        </ScrollView>
+      )}
     </Box>
   );
 };

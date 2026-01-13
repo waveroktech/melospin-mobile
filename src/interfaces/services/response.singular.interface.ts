@@ -1,5 +1,7 @@
 export interface ApiResponseSingular<T = {}> {
+  status: 'success' | 'failed';
   data?: T;
   message: string;
-  response_code: string;
+  code: string;
+  response_code?: string; // Keep for backward compatibility
 }

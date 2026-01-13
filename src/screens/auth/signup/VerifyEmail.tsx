@@ -104,22 +104,22 @@ export const VerifyEmail = () => {
           type: 'info',
           duration: 2000,
         });
-      }
-      if (data?.includes('An Error occurred')) {
+      } else if (data?.status === 'success') {
+        setAuthToken(data?.data?.token);
+        setUserData(data?.data);
+        showMessage({
+          message: data.message,
+          type: 'success',
+          duration: 2000,
+        });
+        navigate('SelectProfile');
+      } else if (data?.includes('An Error occurred')) {
         return showMessage({
           message: data,
           type: 'danger',
           duration: 2000,
         });
       }
-      setAuthToken(data?.data?.token);
-      setUserData(data?.data);
-      showMessage({
-        message: data.message,
-        type: 'success',
-        duration: 2000,
-      });
-      navigate('SelectProfile');
     },
   });
 

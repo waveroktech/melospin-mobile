@@ -22,3 +22,7 @@ export const setCreatePromotion = async (payload: any) => {
 export const getPromotionRequests = async () => {
   return get('promotions/requests').then(data => data as any);
 };
+
+export const getPromotionTypes = async (): Promise<any> => {
+  return get('promotion-types').then(data => data as any);
+};

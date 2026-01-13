@@ -107,8 +107,15 @@ export const SetupDjProfile = () => {
       userType: 'dj',
       brandName: form.brandName,
       instagram: form.instagram,
-      tictok: form.tictok || 'tiktok',
+      tictok: form.tictok,
       musicGenres: selectedGenres,
+      promotionTypes: form.promotionTypes,
+      playSpot: form.title,
+      playSpotAddress: form.location,
+      address: {
+        country: form.country,
+        state: form.state,
+      },
     });
   }, [form, selectedGenres, setAccountProfile]);
 
@@ -163,6 +170,14 @@ export const SetupDjProfile = () => {
               errorText={errors.instagram?.message}
             />
 
+            <FormInput
+              label="Enter TikTok handle (ex @dj_zee)"
+              control={control}
+              name="tictok"
+              value={form.tictok}
+              errorText={errors.tictok?.message}
+            />
+
             <Controller
               control={control}
               name="promotionTypes"
@@ -170,7 +185,10 @@ export const SetupDjProfile = () => {
                 <PromotionTypeSelector
                   value={value}
                   onChange={onChange}
-                  onSelectAll={() => {}}
+                  onSelectAll={() => {
+                    // Callback triggered after select all action
+                    // The component handles selection internally via onChange
+                  }}
                 />
               )}
             />

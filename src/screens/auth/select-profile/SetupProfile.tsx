@@ -1,18 +1,18 @@
-import React, {useCallback, useEffect, useState} from 'react';
-import {Box, Button, FormInput, Text} from 'design-system';
-import {AvoidingView, Header, HeaderText, Icon, Loader, Screen} from 'shared';
+import React, {useCallback, useState} from 'react';
+import {Box, Button, FormInput} from 'design-system';
+import {AvoidingView, Header, HeaderText, Loader, Screen} from 'shared';
 import theme from 'theme';
-import {fontSz, hp, wp} from 'utils';
-import {ScrollView, TouchableOpacity} from 'react-native';
+import {hp, wp} from 'utils';
+import {ScrollView} from 'react-native';
 import {useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import {useMelospinStore, useSetAccountProfile} from 'store';
 import {RouteProp, useRoute} from '@react-navigation/native';
 import {AuthStackParamList} from 'types';
-import {useGetGenre} from 'store/useGenre';
 import {showMessage} from 'react-native-flash-message';
 import {SelectState} from './modals';
+import {GenreSelector} from './components';
 
 interface FormData {
   brandName: string;
@@ -39,12 +39,6 @@ export const SetupProfile = () => {
   const {accountType} =
     useRoute<RouteProp<AuthStackParamList, 'SetupProfile'>>()?.params;
 
-  const {data: musicGenres, refetch} = useGetGenre();
-
-  useEffect(() => {
-    refetch();
-  }, [refetch]);
-
   const {
     control,
     setValue,
@@ -65,7 +59,7 @@ export const SetupProfile = () => {
 
   const form = watch();
 
-  const selectGenre = async (selector: string) => {
+  const selectGenre = (selector: string) => {
     setSelectedGenres(prevState => {
       if (prevState.includes(selector)) {
         return prevState.filter(genre => genre !== selector);
@@ -97,8 +91,12 @@ export const SetupProfile = () => {
       userType: accountType,
       brandName: form.brandName,
       instagram: form.instagram,
-      tictok: form.tictok || 'tiktok',
+      tictok: form.tictok,
       musicGenres: selectedGenres,
+      address: {
+        country: form.country,
+        state: form.state,
+      },
     });
   }, [accountType, form, selectedGenres, setAccountProfile]);
 
@@ -112,7 +110,9 @@ export const SetupProfile = () => {
       />
 
       <AvoidingView>
-        <ScrollView>
+        <ScrollView
+          contentContainerStyle={{paddingBottom: hp(120)}}
+          showsVerticalScrollIndicator={false}>
           <Box mt={hp(40)} mx={wp(16)}>
             <FormInput
               label="Enter brand name"
@@ -129,6 +129,14 @@ export const SetupProfile = () => {
               name="instagram"
               value={form.instagram}
               errorText={errors.instagram?.message}
+            />
+            <FormInput
+              label="Enter TikTok handle (ex @dj_zee)"
+              autoCapitalize="none"
+              control={control}
+              name="tictok"
+              value={form.tictok}
+              errorText={errors.tictok?.message}
             />
 
             <FormInput
@@ -152,56 +160,10 @@ export const SetupProfile = () => {
               value={form.state}
               errorText={errors.state?.message}
             />
-            <Box
-              bg={theme.colors.TEXT_INPUT_BG}
-              pt={hp(12)}
-              px={wp(16)}
-              pb={hp(16)}
-              borderRadius={hp(24)}>
-              <Text variant="body" color={theme.colors.WHITE}>
-                Select genre of music you specialize in
-              </Text>
-              <Box
-                mt={hp(10)}
-                flexDirection={'row'}
-                alignItems={'center'}
-                flexWrap={'wrap'}>
-                {musicGenres?.data?.map(
-                  (genre: {_id: string; title: string}) => {
-                    return (
-                      <Box
-                        key={genre?._id}
-                        flexDirection={'row'}
-                        alignItems={'center'}
-                        mr={2}
-                        py={2}
-                        onPress={() => selectGenre(genre?.title)}
-                        as={TouchableOpacity}
-                        activeOpacity={0.8}
-                        px={2}
-                        borderRadius={hp(24)}
-                        mb={10}
-                        bg={theme.colors.BASE_SECONDARY}>
-                        <Icon
-                          name={
-                            selectedGenres?.includes(genre?.title)
-                              ? 'active-checkbox'
-                              : 'checkbox'
-                          }
-                        />
-                        <Text
-                          pl={2}
-                          variant="body"
-                          fontSize={fontSz(14)}
-                          color={theme.colors.WHITE}>
-                          {genre?.title}
-                        </Text>
-                      </Box>
-                    );
-                  },
-                )}
-              </Box>
-            </Box>
+            <GenreSelector
+              selectedGenres={selectedGenres}
+              onSelectGenre={selectGenre}
+            />
           </Box>
         </ScrollView>
       </AvoidingView>

@@ -12,6 +12,7 @@ import {TouchableOpacity} from 'react-native';
 import {useLogin, useMelospinStore} from 'store';
 import {showMessage} from 'react-native-flash-message';
 import {UpdateUserAccount} from './modals';
+import {LoginResponse} from 'interfaces';
 
 interface FormData {
   email: string;
@@ -56,28 +57,29 @@ export const Login = () => {
         duration: 2000,
       });
     },
-    onSuccess: (data: any) => {
+    onSuccess: (data: LoginResponse) => {
       if (data?.status === 'failed') {
         return showMessage({
-          message: data?.message,
+          message: data?.message || 'Login failed',
           type: 'danger',
           duration: 2000,
         });
-      } else if (data?.status === 'success') {
-        if (data?.data?.currentUserType) {
+      }
+
+      if (data?.status === 'success' && data?.data) {
+        if (data.data.currentUserType) {
           showMessage({
-            message: data?.message,
+            message: data?.message || 'Login successful',
             type: 'success',
             duration: 2000,
           });
-          setAuthToken(data?.data?.token);
-          setUserData(data?.data);
-          setUserType(data?.data?.currentUserType);
+          setAuthToken(data.data.token);
+          setUserData(data.data);
+          setUserType(data.data.currentUserType as 'dj' | 'artiste');
           setIsLoggedIn(true);
         } else {
-          setAuthToken(data?.data?.token);
-          setUserData(data?.data);
-          setUserType(data?.data?.currentUserType);
+          setAuthToken(data.data.token);
+          setUserData(data.data);
           setOpen('update-user-account');
         }
       }

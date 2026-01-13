@@ -20,6 +20,8 @@ interface MelospinStore {
   setBookingRate: (bookingRate: number) => void;
   playSessions: string[];
   setPlaySessions: (playSessions: string[]) => void;
+  _hasHydrated: boolean;
+  setHasHydrated: (hasHydrated: boolean) => void;
 
   bankInfo: {
     bankName: string;
@@ -50,6 +52,7 @@ const melospinSlice: StateCreator<
   userInfo: undefined,
   bookingRate: 0,
   playSessions: [],
+  _hasHydrated: false,
   bankInfo: {
     bankName: '',
     accountNumber: '',
@@ -61,7 +64,13 @@ const melospinSlice: StateCreator<
   setAuthToken: (authToken: string) => set({authToken: authToken}),
   setIsLoggedIn: (isLoggedIn: boolean) => set({isLoggedIn: isLoggedIn}),
   logoutUser: () => {
-    set({authToken: '', isLoggedIn: false});
+    set({
+      authToken: '',
+      isLoggedIn: false,
+      userData: undefined,
+      userType: '',
+      userInfo: undefined,
+    });
   },
   setUserData: (userData: any) => set({userData: userData}),
   setUserType: (userType: 'dj' | 'artiste') => set({userType: userType}),
@@ -69,6 +78,7 @@ const melospinSlice: StateCreator<
   setBookingRate: (bookingRate: number) => set({bookingRate: bookingRate}),
   setPlaySessions: (playSessions: string[]) =>
     set({playSessions: playSessions}),
+  setHasHydrated: (hasHydrated: boolean) => set({_hasHydrated: hasHydrated}),
   setBankInfo: (bankInfo: {
     bankName: string;
     accountNumber: string;
@@ -82,5 +92,25 @@ export const useMelospinStore = create<MelospinStore>()(
   persist(melospinSlice, {
     name: 'melospin-storage',
     storage: createJSONStorage(() => AsyncStorage),
+    partialize: state => ({
+      authToken: state.authToken,
+      isLoggedIn: state.isLoggedIn,
+      userData: state.userData,
+      userType: state.userType,
+      userInfo: state.userInfo,
+      bookingRate: state.bookingRate,
+      playSessions: state.playSessions,
+      bankInfo: state.bankInfo,
+      bankList: state.bankList,
+    }),
+    onRehydrateStorage: () => (state, error) => {
+      if (error) {
+        console.error('Error rehydrating Zustand store:', error);
+        useMelospinStore.getState().setHasHydrated(true);
+      } else {
+        console.log('Zustand store rehydrated successfully');
+        useMelospinStore.getState().setHasHydrated(true);
+      }
+    },
   }),
 );

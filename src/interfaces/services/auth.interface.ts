@@ -37,6 +37,13 @@ export interface AccountProfileRequest {
   tictok: string;
   brandName: string;
   musicGenres: string[];
+  promotionTypes?: string[];
+  playSpot?: string;
+  playSpotAddress?: string;
+  address?: {
+    country: string;
+    state: string;
+  };
 }
 
 export interface SetPasswordResetRequest {
@@ -47,26 +54,28 @@ export interface SetPasswordResetRequest {
 }
 
 export interface LoginResponseData {
-  brandName: string;
-  completionPercent: string;
-  connectCount: number;
-  connectedUsers: any[];
-  currentUserType: string;
-  dateJoined: string;
-  email: string;
-  firstName: string;
-  instagram: string;
-  isProfileCompleted: true;
-  lastName: string;
-  musicGenres: string[];
-  profileUrl: string | null;
-  recentUploads: any[];
-  tictok: string;
-  token: string;
-  totalConnections: number;
-  totalPromotions: number;
   userId: string;
-  snapchat: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  tictok: string | null;
+  instagram: string | null;
+  profileUrl: string | null;
+  brandName: string | null;
+  currentUserType: string | null;
+  musicGenres: string[];
+  completionPercent: string;
+  isProfileCompleted: boolean;
+  token: string;
+  connectCount: number;
+  dateJoined: string;
+  totalConnections: number;
+  connectionRequestCount: number;
+  connectedUsers: any[];
+  recentUploads: any[];
+  uploadsCount: number;
+  snapchat: string | null;
+  promotionTypes: string[];
 }
 
 export interface LoginResponse extends ApiResponseSingular<LoginResponseData> {}

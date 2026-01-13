@@ -5,6 +5,7 @@ export const getDefaultHeaders = () => {
     'Content-Type': 'application/json',
   };
   const token = useMelospinStore.getState().authToken;
+  console.log(token, 'token');
   if (token) {
     headers.Authorization = `Bearer ${token}`;
     console.log(token);
