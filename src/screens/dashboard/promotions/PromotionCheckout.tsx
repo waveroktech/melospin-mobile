@@ -8,24 +8,21 @@ import {
   useNavigation,
   useRoute,
 } from '@react-navigation/native';
-import {Image, Linking, ScrollView, TouchableOpacity} from 'react-native';
+import {Linking, ScrollView, TouchableOpacity} from 'react-native';
 import {Box, Button, Text} from 'design-system';
 import {fontSz, formatNumberWithCommas, hp, wp} from 'utils';
 import {DiscographyItem} from '../discography/component';
 import {DashboardStackParamList} from 'types';
 import {useGetDiscography} from 'store';
 import moment from 'moment';
-import {GradientBorderView} from '@good-react-native/gradient-border';
 import {styles} from './style';
 import {useCreatePromotion} from 'store/usePromotion';
 import {showMessage} from 'react-native-flash-message';
 import {PaymentRedirection, WebviewModal} from './modals';
 import {useExternalLinks} from 'hooks';
-import WebView from 'react-native-webview';
 
 export const PromotionCheckout = () => {
-  const {goBack, navigate} =
-    useNavigation<NavigationProp<DashboardStackParamList>>();
+  const {goBack} = useNavigation<NavigationProp<DashboardStackParamList>>();
   const {data} =
     useRoute<RouteProp<DashboardStackParamList, 'PromotionCheckout'>>()?.params;
 
@@ -46,19 +43,6 @@ export const PromotionCheckout = () => {
   const findDiscography = discographyList?.data?.find(
     (d: {_id: string}) => d._id === data?.discographyId,
   );
-
-  // const combinedArray = data?.activePromoters
-  //   .filter((item1: {userId: any}) =>
-  //     data?.responseData.some(
-  //       (item2: {promoterId: any}) => item1.userId === item2.promoterId,
-  //     ),
-  //   )
-  //   .map((item1: {userId: any}) => {
-  //     const item2 = data?.responseData.find(
-  //       (item2: {promoterId: any}) => item1.userId === item2.promoterId,
-  //     );
-  //     return {...item1, ...item2}; // Merge objects
-  //   });
 
   const {mutate, isPending} = useCreatePromotion({
     onSuccess: (data: any) => {
@@ -85,36 +69,35 @@ export const PromotionCheckout = () => {
     },
   });
 
-  const handlePayment = useCallback(() => {
-    const promoters: any[] = [];
-    data?.activePromoters?.map((promoter: any) => {
-      promoters.push({promoterId: promoter.userId});
-    });
-    const totalPrice = data?.responseData?.reduce(
-      (acc: any, item: {amount: any}) => acc + item.amount,
-      0,
-    );
-
-    setOpen('payment-info');
-
-    // mutate({
-    //   promotionId: data?.discographyId,
-    //   promotionLink: findDiscography?.url,
-    //   frequency: data.frequency?.toLowerCase(),
-    //   startDate: moment(data.startDate).format('YYYY-MM-DD'),
-    //   endDate: moment(data.endDate).format('YYYY-MM-DD'),
-    //   bidAmount: Number(data.amount?.split(',')?.join('')),
-    //   promoters,
-    //   amount: totalPrice,
-    // });
-  }, [data]);
-
   const {validLinks} = useExternalLinks(data);
 
   // Calculate cumulative cost from selected DJs' chargePerPlay
   const cumulativeCost = data?.responseData?.reduce((sum: number, dj: any) => {
     return sum + (Number(dj?.chargePerPlay) || 0);
   }, 0);
+
+  const handlePayment = useCallback(() => {
+    const promoters: any[] = [];
+    data?.activePromoters?.map((promoter: any) => {
+      promoters.push({promoterId: promoter.userId});
+    });
+
+    setOpen('payment-info');
+
+    const payload = {
+      promotionId: data?.discographyId,
+      promotionLink: findDiscography?.url,
+      frequency: data.frequency?.toLowerCase(),
+      startDate: moment(data.startDate).format('YYYY-MM-DD'),
+      endDate: moment(data.endDate).format('YYYY-MM-DD'),
+      bidAmount: Number(cumulativeCost),
+      promoters,
+      amount: Number(cumulativeCost + cumulativeCost * 0.05),
+      minPlayCount: 12,
+    };
+
+    mutate(payload);
+  }, [data, findDiscography?.url, mutate, cumulativeCost]);
 
   return (
     <Screen removeSafeaArea backgroundColor={theme.colors.BASE_PRIMARY}>

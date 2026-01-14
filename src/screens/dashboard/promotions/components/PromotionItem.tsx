@@ -6,25 +6,74 @@ import {Image, TouchableOpacity} from 'react-native';
 import {fontSz, hp, wp} from 'utils';
 import {Icon} from 'shared';
 
+interface PromotionOwner {
+  firstName: string;
+  lastName: string;
+  currentUserType: string;
+  promoterId: string;
+}
+
+interface PromotionDetails {
+  paid: boolean;
+  status: 'pending' | 'active' | 'completed' | 'Pending approval';
+  promotionLink: string;
+  startDate: string;
+  endDate: string;
+  createdAt: string;
+  minPlayCount: number;
+  locations: string[];
+  owner: PromotionOwner;
+  bidAmount: number;
+  amount: number;
+  promotersCount: number;
+  promotionId: string;
+  promotionTypes: any[];
+}
+
+interface StatusReport {
+  reportId: string;
+  status: 'pending' | 'accepted' | 'declined';
+  firstName: string;
+  lastName: string;
+  brandName: string;
+  email: string;
+  bidAmount: number;
+}
+
+interface Promotion {
+  _id: string;
+  statusReport?: StatusReport[];
+  details: PromotionDetails;
+  title?: string;
+  djCount?: number;
+  playlistName?: string;
+  timeline?: string;
+}
+
 interface PromotionItemProps {
-  promotion: any;
+  promotion: Promotion;
   onPress?: () => void;
 }
 
 export const PromotionItem = ({promotion, onPress}: PromotionItemProps) => {
+  const promotionStatus =
+    promotion?.details?.status === 'pending' ||
+    promotion?.details?.status === 'Pending approval'
+      ? 'Pending approval'
+      : 'Active';
+
   const statusBg =
-    promotion?.status === 'Pending approval'
+    promotionStatus === 'Pending approval'
       ? theme.colors.LIGHT_YELLOW
       : theme.colors.SEMANTIC_GREEN;
 
   const statusColor =
-    promotion?.status === 'Pending approval'
+    promotionStatus === 'Pending approval'
       ? theme.colors.SEMANTIC_YELLOW
       : theme.colors.DARKER_GREEN;
 
-  const promotionName = promotion?.promotionLink?.split('/');
+  const promotionName = promotion?.details?.promotionLink?.split('/');
 
-  console.log(promotion);
   return (
     <Box
       style={styles.promotionContainer}
@@ -44,9 +93,7 @@ export const PromotionItem = ({promotion, onPress}: PromotionItemProps) => {
           </Text>
           <Box ml={10} bg={statusBg} p={1} borderRadius={24}>
             <Text style={{fontSize: fontSz(10)}} color={statusColor}>
-              {promotion?.status === 'Pending approval'
-                ? 'Pending approval'
-                : 'Active'}
+              {promotionStatus}
             </Text>
           </Box>
         </Box>
@@ -76,7 +123,7 @@ export const PromotionItem = ({promotion, onPress}: PromotionItemProps) => {
                 variant="body"
                 style={{fontSize: fontSz(12), paddingLeft: wp(5)}}
                 color={theme.colors.WHITE}>
-                {promotion?.djCount || 5}
+                {promotion?.details?.promotersCount || promotion?.djCount || 0}
               </Text>
             </Box>
           </Box>
@@ -87,7 +134,9 @@ export const PromotionItem = ({promotion, onPress}: PromotionItemProps) => {
               variant="body"
               style={{fontSize: fontSz(12), paddingLeft: wp(5)}}
               color={theme.colors.WHITE}>
-              {promotion?.playlistName || '10-11-25'}
+              {promotion?.details?.startDate
+                ? new Date(promotion.details.startDate).toLocaleDateString()
+                : promotion?.playlistName || 'N/A'}
             </Text>
           </Box>
 
@@ -97,7 +146,13 @@ export const PromotionItem = ({promotion, onPress}: PromotionItemProps) => {
               variant="body"
               style={{fontSize: fontSz(12), paddingLeft: wp(5)}}
               color={theme.colors.WHITE}>
-              {promotion?.timeline || '1 month'}
+              {promotion?.details?.startDate && promotion?.details?.endDate
+                ? `${Math.ceil(
+                    (new Date(promotion.details.endDate).getTime() -
+                      new Date(promotion.details.startDate).getTime()) /
+                      (1000 * 60 * 60 * 24),
+                  )} days`
+                : promotion?.timeline || 'N/A'}
             </Text>
           </Box>
         </Box>

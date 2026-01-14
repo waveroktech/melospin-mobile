@@ -1,17 +1,8 @@
-/* eslint-disable react/no-unstable-nested-components */
 import React, {useCallback, useEffect, useState} from 'react';
-import {AvoidingView, Icon, Loader, Screen} from 'shared';
+import {Loader, Screen} from 'shared';
 import {DashboardHeader} from '../home/components';
-import {FlatList, ScrollView, TextInput} from 'react-native';
-import {
-  ConnectDjItem,
-  DjConnectHeader,
-  ExploreHeaderContainer,
-} from './components';
+import {ArtisteExploreView, DjExploreView} from './components';
 import theme from 'theme';
-import {Box, Text} from 'design-system';
-import {fontSz, hp, wp} from 'utils';
-import {styles} from './style';
 import {
   useGetConnectionRequests,
   useGetConnections,
@@ -20,7 +11,6 @@ import {
 } from 'store';
 import {useFocusEffect} from '@react-navigation/native';
 import {ConnectionRequests} from './modals';
-import {EmptyPromotionContainer} from '../promotions/components';
 
 export const Explore = () => {
   const [open, setOpen] = useState<string | null>(null);
@@ -76,118 +66,27 @@ export const Explore = () => {
       <DashboardHeader title="Explore" />
 
       {userType === 'artiste' ? (
-        <AvoidingView>
-          <ScrollView>
-            <ExploreHeaderContainer />
-
-            <Box
-              flexDirection={'row'}
-              alignItems={'center'}
-              mx={wp(20)}
-              mt={hp(20)}>
-              <Icon name="explore-dj" />
-              <Text
-                pl={wp(10)}
-                variant="bodyMedium"
-                fontSize={fontSz(14)}
-                color={theme.colors.WHITE}>
-                Explore DJs
-              </Text>
-            </Box>
-
-            <Box mt={hp(20)} style={styles.searchInputContainer}>
-              <Icon name="search-icon" />
-              <TextInput
-                style={styles.searchTextInput}
-                onChangeText={setSearch}
-                placeholder="Search by name e.g djzenzee"
-                selectionColor={theme.colors.WHITE}
-                placeholderTextColor={theme.colors.TEXT_INPUT_PLACEHOLDER}
-              />
-            </Box>
-
-            <FlatList
-              contentContainerStyle={styles.contentContainerStyle}
-              data={filteredData}
-              numColumns={2}
-              renderItem={({item}) => <ConnectDjItem item={item} />}
-              ListEmptyComponent={() => {
-                if (search) {
-                  return (
-                    <EmptyPromotionContainer
-                      icon="empty-folder"
-                      title="No DJs found"
-                      containerStyles={{my: hp(20)}}
-                      subTitle="Please try again with a different search"
-                    />
-                  );
-                }
-                return (
-                  <EmptyPromotionContainer
-                    icon="empty-folder"
-                    title="No DJs found"
-                    containerStyles={{my: hp(20)}}
-                    subTitle="There are no DJs available at the moment"
-                  />
-                );
-              }}
-            />
-          </ScrollView>
-        </AvoidingView>
+        <ArtisteExploreView
+          filteredData={filteredData}
+          search={search}
+          onSearchChange={setSearch}
+        />
       ) : (
-        <ScrollView>
-          <DjConnectHeader
-            key={refreshTrigger} // Force rerender when refreshTrigger changes
-            onPress={() => setOpen('dj-connects')}
-            requestCount={connectionRequestsData?.length}
-            connectCount={connections?.data?.length}
-          />
-
-          <Box
-            borderTopWidth={1}
-            pt={hp(20)}
-            flexDirection={'row'}
-            alignItems={'center'}
-            borderColor={theme.colors.BASE_SECONDARY}
-            mx={wp(20)}
-            mt={hp(30)}>
-            <Icon name="explore-dj" />
-            <Text
-              pl={wp(10)}
-              variant="bodyMedium"
-              fontSize={fontSz(14)}
-              color={theme.colors.WHITE}>
-              Explore DJs
-            </Text>
-          </Box>
-
-          <FlatList
-            contentContainerStyle={styles.contentContainerStyle}
-            data={filteredData}
-            numColumns={2}
-            renderItem={({item}) => <ConnectDjItem item={item} />}
-            ListEmptyComponent={() => {
-              if (search) {
-                return (
-                  <EmptyPromotionContainer
-                    icon="empty-folder"
-                    title="No DJs found"
-                    containerStyles={{my: hp(20)}}
-                    subTitle="Please try again with a different search"
-                  />
-                );
-              }
-              return (
-                <EmptyPromotionContainer
-                  icon="empty-folder"
-                  title="No DJs found"
-                  containerStyles={{my: hp(20)}}
-                  subTitle="There are no DJs available at the moment"
-                />
-              );
-            }}
-          />
-        </ScrollView>
+        <DjExploreView
+          filteredData={filteredData}
+          search={search}
+          refreshTrigger={refreshTrigger}
+          requestCount={connectionRequestsData?.length}
+          connectCount={connections?.data?.length}
+          onConnectPress={() => setOpen('dj-connects')}
+          onRefresh={async () => {
+            await Promise.all([
+              refetch(),
+              refetchConnections(),
+              refetchConnectionRequests(),
+            ]);
+          }}
+        />
       )}
 
       <ConnectionRequests

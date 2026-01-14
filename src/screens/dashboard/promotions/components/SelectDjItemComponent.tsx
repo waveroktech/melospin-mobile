@@ -1,7 +1,7 @@
 import React from 'react';
 import {Box, Text} from 'design-system';
 import {Icon} from 'shared';
-import {fontSz, formatNumberWithCommas, hp, wp} from 'utils';
+import {capitalizeTitle, fontSz, formatNumberWithCommas, hp, wp} from 'utils';
 import theme from 'theme';
 import {Image, TouchableOpacity} from 'react-native';
 import {styles} from './style';
@@ -24,7 +24,7 @@ export const SelectDjItemComponent = ({
   return (
     <Box
       mx={wp(16)}
-      mb={hp(24)}
+      mb={hp(30)}
       flexDirection={'row'}
       alignItems={'center'}
       as={TouchableOpacity}
@@ -43,7 +43,7 @@ export const SelectDjItemComponent = ({
           resizeMode="contain"
         />
 
-        <Box ml={wp(12)}>
+        <Box ml={wp(12)} flex={1}>
           <Box
             flexDirection={'row'}
             alignItems={'center'}
@@ -54,7 +54,7 @@ export const SelectDjItemComponent = ({
                 fontSize={fontSz(14)}
                 style={styles.nameText}
                 color={theme.colors.WHITE}>
-                {item?.name}
+                {item?.name ? capitalizeTitle(item.name) : ''}
               </Text>
               <Icon name="verified" />
             </Box>
@@ -84,7 +84,11 @@ export const SelectDjItemComponent = ({
               fontSize={fontSz(14)}
               pl={wp(2)}
               color={theme.colors.TEXT_INPUT_PLACEHOLDER}>
-              Lagos, Nigeria
+              {item?.address?.state
+                ? `${capitalizeTitle(item.address.state)}, ${capitalizeTitle(
+                    item.address.country || '',
+                  )}`
+                : ''}
             </Text>
           </Box>
           <Box flexDirection={'row'} alignItems={'center'}>
@@ -96,7 +100,11 @@ export const SelectDjItemComponent = ({
               numberOfLines={1}
               maxWidth={wp(230)}
               color={theme.colors.TEXT_INPUT_PLACEHOLDER}>
-              Wbar Lounge, Zaza Lagos, Resto Bard
+              {item?.playSpotAddress || item?.playSpot
+                ? `${item?.playSpotAddress || ''} ${
+                    item?.playSpot || ''
+                  }`.trim()
+                : 'No play spot yet'}
             </Text>
           </Box>
         </Box>

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-shadow */
-import React, {useCallback, useEffect, useState} from 'react';
-import {Box, Button, FormInput, Text} from 'design-system';
-import {AvoidingView, Header, HeaderText, Icon, Loader, Screen} from 'shared';
+import React, {useEffect, useState} from 'react';
+import {Box, Button, Text} from 'design-system';
+import {Header, HeaderText, Icon, Loader, Screen} from 'shared';
 import {
   NavigationProp,
   RouteProp,
@@ -18,10 +18,7 @@ import DatePicker from 'react-native-date-picker';
 import {SelectFrequency, SelectRate, useForceUpdate} from './modals';
 import theme from 'theme';
 import {FlatList, ScrollView, TextInput, TouchableOpacity} from 'react-native';
-import moment from 'moment';
-import {useCalculateBiddingSplit} from 'store/usePromotion';
-import {showMessage} from 'react-native-flash-message';
-import {FilterTabs, SelectDjItem, SelectDjItemComponent} from './components';
+import {FilterTabs, SelectDjItemComponent} from './components';
 import {SelectState} from 'screens/auth/select-profile/modals';
 import {styles} from './style';
 import {useGetDjs} from 'store';
@@ -64,8 +61,6 @@ export const PromotionBudget = () => {
   >('');
   const forceUpdate = useForceUpdate();
 
-  console.log(data?.data, 'data');
-
   const {
     control,
     setValue,
@@ -91,80 +86,7 @@ export const PromotionBudget = () => {
     // Save the frequency to the backend
   };
 
-  const handleAmountChange = (value: string) => {
-    const numberAmount = Number(value.replace(/\D/g, ''));
-    const formattedValue = (Number(numberAmount) || '').toLocaleString();
-    setValue('amount', formattedValue);
-  };
-
-  const {mutate, isPending} = useCalculateBiddingSplit({
-    onSuccess: (response: any) => {
-      if (response?.status === 'failed') {
-        return showMessage({
-          message: response?.message,
-          type: 'danger',
-          duration: 2000,
-        });
-      }
-      if (response?.status === 'success') {
-        // Sum the amount values from the response.data array
-        const totalAmount = response?.data?.reduce((sum: number, item: any) => {
-          return sum + (item.amount || 0);
-        }, 0);
-
-        // Get the proposed budget amount (remove commas and convert to number)
-        const proposedAmount = Number(form.amount?.split(',')?.join(''));
-
-        if (totalAmount > proposedAmount) {
-          const shortfall = totalAmount - proposedAmount;
-          showMessage({
-            message: `Total bid amount (₦${totalAmount.toLocaleString()}) exceeds your proposed budget (₦${proposedAmount.toLocaleString()}). You need ₦${shortfall.toLocaleString()} more to cover the expenses.`,
-            type: 'danger',
-            duration: 3000,
-          });
-        } else if (totalAmount < proposedAmount) {
-          console.log('totalAmount < proposedAmount');
-          const excess = proposedAmount - totalAmount;
-          showMessage({
-            message: `Total cost (₦${totalAmount.toLocaleString()}) is less than your proposed budget (₦${proposedAmount.toLocaleString()}). You have ₦${excess.toLocaleString()} remaining. Please adjust your budget to match the exact cost.`,
-            type: 'danger',
-            duration: 3000,
-          });
-        } else {
-          showMessage({
-            message: `Perfect! Total cost (₦${totalAmount.toLocaleString()}) matches your proposed budget (₦${proposedAmount.toLocaleString()}). Proceeding to checkout.`,
-            type: 'success',
-            duration: 3000,
-          });
-          navigate('PromotionCheckout', {
-            data: {
-              amount: form.amount,
-              frequency: form.frequency,
-              startDate: form.startDate,
-              endDate: form.endDate,
-              responseData: response?.data,
-              ...payload,
-            },
-          });
-        }
-      }
-    },
-  });
-
   const continueProcess = () => {
-    // const promoters: any[] = [];
-    // selectedDjs?.map(dj => {
-    //   promoters.push({promoterId: dj.userId});
-    // });
-    // mutate({
-    //   promotionId: payload.discographyId,
-    //   frequency: form.frequency?.toLowerCase(),
-    //   startDate: moment(form.startDate).format('YYYY-MM-DD'),
-    //   endDate: moment(form.endDate).format('YYYY-MM-DD'),
-    //   bidAmount: Number(form.amount?.split(',')?.join('')),
-    //   promoters,
-    // });
-
     navigate('PromotionCheckout', {
       data: {
         responseData: selectedDjs,
@@ -176,150 +98,62 @@ export const PromotionBudget = () => {
   return (
     <Screen removeSafeaArea backgroundColor={theme.colors.BASE_PRIMARY}>
       <Header hasBackText="Set up Promotion" onPressLeftIcon={goBack} />
-      <AvoidingView>
-        <HeaderText
-          hasHeaderText="Assign DJs"
-          hasHeaderTextStyle={{fontSize: fontSz(14)}}
-          hasIndicatorLevel
-          currentPage={3}
+      <HeaderText
+        hasHeaderText="Assign DJs"
+        hasHeaderTextStyle={{fontSize: fontSz(14)}}
+        hasIndicatorLevel
+        currentPage={3}
+      />
+
+      <FilterTabs
+        title="Filter Tab"
+        selectedRate={selectedRate}
+        selectedState={selectedState}
+        setOpen={(open: string) =>
+          setOpen(open as '' | 'rate' | 'frequency' | 'end-date' | 'start-date')
+        }
+      />
+
+      <Box
+        style={styles.searchInputContainer}
+        mx={wp(16)}
+        mt={hp(20)}
+        bg={theme.colors.TEXT_INPUT_BG}>
+        <Icon name="search-icon" />
+        <TextInput
+          style={styles.searchTextInput}
+          placeholder="Search DJ"
+          selectionColor={theme.colors.WHITE}
+          placeholderTextColor={theme.colors.TEXT_INPUT_PLACEHOLDER}
         />
+      </Box>
 
-        <FilterTabs
-          title="Filter Tab"
-          selectedRate={selectedRate}
-          selectedState={selectedState}
-          setOpen={(open: string) =>
-            setOpen(
-              open as '' | 'rate' | 'frequency' | 'end-date' | 'start-date',
-            )
-          }
-        />
-
-        <Box
-          style={styles.searchInputContainer}
-          mx={wp(16)}
-          mt={hp(20)}
-          bg={theme.colors.TEXT_INPUT_BG}>
-          <Icon name="search-icon" />
-          <TextInput
-            style={styles.searchTextInput}
-            placeholder="Search DJ"
-            selectionColor={theme.colors.WHITE}
-            placeholderTextColor={theme.colors.TEXT_INPUT_PLACEHOLDER}
-          />
-        </Box>
-
-        <FlatList
-          data={data?.data}
-          contentContainerStyle={styles.contentContainerStyle}
-          renderItem={({item}) => (
-            <SelectDjItemComponent
-              item={item}
-              onPress={(dj: any) => {
-                setSelectedDjs(prevDjs => {
-                  const isAlreadySelected = prevDjs.some(
-                    (selectedDj: any) => selectedDj?.userId === dj?.userId,
+      <FlatList
+        data={data?.data}
+        contentContainerStyle={styles.contentContainerStyle}
+        renderItem={({item}) => (
+          <SelectDjItemComponent
+            item={item}
+            onPress={(dj: any) => {
+              setSelectedDjs(prevDjs => {
+                const isAlreadySelected = prevDjs.some(
+                  (selectedDj: any) => selectedDj?.userId === dj?.userId,
+                );
+                if (isAlreadySelected) {
+                  // Remove DJ if already selected
+                  return prevDjs.filter(
+                    (selectedDj: any) => selectedDj?.userId !== dj?.userId,
                   );
-                  if (isAlreadySelected) {
-                    // Remove DJ if already selected
-                    return prevDjs.filter(
-                      (selectedDj: any) => selectedDj?.userId !== dj?.userId,
-                    );
-                  } else {
-                    // Add DJ if not selected
-                    return [...prevDjs, dj];
-                  }
-                });
-              }}
-              selectedDjs={selectedDjs}
-            />
-          )}
-        />
-
-        {/* <Box mt={hp(20)} mx={wp(16)}>
-            <FormInput
-              control={control}
-              name="frequency"
-              label="Frequency"
-              editable={false}
-              isDropDown
-              errorText={errors.frequency?.message}
-              onPressDropDown={() => setOpen('frequency')}
-            />
-
-            <FormInput
-              control={control}
-              name="startDate"
-              label="Select start date"
-              isDate
-              value={
-                form.startDate
-                  ? moment(form.startDate).format('YYYY-MM-DD')
-                  : ''
-              }
-              editable={false}
-              errorText={errors.startDate?.message}
-              onPressDropDown={() => setOpen('start-date')}
-            />
-            <FormInput
-              control={control}
-              name="endDate"
-              label="Select end date"
-              isDate
-              value={
-                form.endDate ? moment(form.endDate).format('YYYY-MM-DD') : ''
-              }
-              editable={false}
-              errorText={errors.endDate?.message}
-              onPressDropDown={() => setOpen('end-date')}
-            />
-
-            <Box
-              borderBottomWidth={1}
-              borderBottomColor={theme.colors.BASE_SECONDARY}
-            />
-
-            <Text
-              variant="body"
-              pt={hp(20)}
-              fontSize={fontSz(14)}
-              color={theme.colors.WHITE}>
-              Budget
-            </Text>
-
-            <Box
-              flexDirection={'row'}
-              alignItems={'center'}
-              mt={hp(24)}
-              justifyContent={'space-between'}>
-              <Box
-                flexDirection={'row'}
-                alignItems={'center'}
-                height={hp(59)}
-                borderRadius={hp(24)}
-                width={wp(98)}
-                px={wp(20)}
-                justifyContent={'space-between'}
-                bg={theme.colors.TEXT_INPUT_BG}>
-                <Text variant="body" color={theme.colors.WHITE}>
-                  NGN
-                </Text>
-                <Icon name="chevron-down" />
-              </Box>
-
-              <FormInput
-                control={control}
-                containerStyle={{width: wp(230), marginBottom: hp(0)}}
-                name="amount"
-                onChangeText={(text: string) => handleAmountChange(text)}
-                label="Enter budget amount"
-                errorText={errors.amount?.message}
-                keyboardType="number-pad"
-                returnKeyType="done"
-              />
-            </Box>
-          </Box> */}
-      </AvoidingView>
+                } else {
+                  // Add DJ if not selected
+                  return [...prevDjs, dj];
+                }
+              });
+            }}
+            selectedDjs={selectedDjs}
+          />
+        )}
+      />
       <ScrollView>
         {selectedDjs.length > 0 && (
           <Box
@@ -455,7 +289,7 @@ export const PromotionBudget = () => {
         />
       </Box>
 
-      <Loader loading={isPending} />
+      <Loader loading={isDjsPending} />
 
       <SelectState
         isVisible={open === 'state'}

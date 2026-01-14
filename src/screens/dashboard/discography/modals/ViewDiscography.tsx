@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {Box, Button, Text} from 'design-system';
-import {hp, wp} from 'utils';
+import {capitalizeTitle, hp, wp} from 'utils';
 import theme from 'theme';
 import {BaseModal, Icon, ModalHeader, BottomToast} from 'shared';
 import {TouchableOpacity} from 'react-native';
@@ -79,7 +79,7 @@ export const ViewDiscography = ({
                 File name
               </Text>
               <Text variant="bodyMedium" color={theme.colors.WHITE}>
-                {discography?.title}
+                {discography?.title ? capitalizeTitle(discography?.title) : ''}
               </Text>
             </Box>
             <Box
@@ -178,6 +178,7 @@ export const ViewDiscography = ({
               title="Save & Close"
               isNotBottom
               width={wp(160)}
+              onPress={onClose}
               hasIcon
               hasBorder
             />

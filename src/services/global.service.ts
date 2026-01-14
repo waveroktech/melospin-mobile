@@ -28,8 +28,7 @@ async function handleResponse<T>(response: Response): Promise<T> {
       // toast(data.message, {type: 'error'});
       // Cookies.remove('token');
       // Cookies.remove('refreshToken');
-      useMelospinStore.getState().setIsLoggedIn(false);
-      useMelospinStore.getState().setAuthToken('');
+      useMelospinStore.getState().logoutUser();
     }
 
     // throw new Error(data.message || response.statusText);

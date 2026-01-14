@@ -1,5 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {useCallback, useRef} from 'react';
+import {useQueryClient} from '@tanstack/react-query';
 import {Box, Text} from 'design-system';
 import {BaseModal, FlashMessageToast, Loader, ModalHeader} from 'shared';
 import {fontSz, hp, wp} from 'utils';
@@ -27,11 +28,19 @@ export const ConnectionRequests = ({
   onModalHide,
 }: ConnectionRequestsProps) => {
   const flashMessageRef = useRef<FlashMessage>(null);
+  const queryClient = useQueryClient();
 
   const {mutate, isPending} = useSetHandleConnection({
     onSuccess: (data: any) => {
       console.log(data, 'data');
       if (data?.status === 'success') {
+        // Invalidate queries to refetch updated data
+        queryClient.invalidateQueries({
+          queryKey: ['get-melospin-connections'],
+        });
+        queryClient.invalidateQueries({
+          queryKey: ['get-melospin-connections-requests'],
+        });
         onComplete();
         showMessage({
           type: 'success',

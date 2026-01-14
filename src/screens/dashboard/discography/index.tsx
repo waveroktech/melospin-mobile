@@ -1,7 +1,7 @@
 import React, {useCallback, useState, useMemo} from 'react';
 import {Icon, Loader, Screen} from 'shared';
 import {DashboardHeader} from '../home/components';
-import {FlatList, Linking, TextInput, TouchableOpacity} from 'react-native';
+import {FlatList, TextInput, TouchableOpacity} from 'react-native';
 import {EmptyPromotionContainer} from '../promotions/components';
 import theme from 'theme';
 import {DiscographyItem} from './component';
@@ -143,7 +143,7 @@ export const Discography = () => {
         )}
         ListEmptyComponent={
           <EmptyPromotionContainer
-            containerStyles={{my: hp(220)}}
+            containerStyles={{my: hp(120)}}
             icon="empty-folder"
             title={searchQuery.trim() ? 'No Files Found' : 'No Files Uploaded'}
             subTitle={

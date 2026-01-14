@@ -1,7 +1,7 @@
 import React from 'react';
 import {Box, Text} from 'design-system';
 import theme from 'theme';
-import {fontSz, hp, wp} from 'utils';
+import {capitalizeTitle, fontSz, hp, wp} from 'utils';
 import {styles} from './style';
 import {Image, TouchableOpacity} from 'react-native';
 import {Icon} from 'shared';
@@ -10,7 +10,24 @@ import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {DashboardStackParamList} from 'types';
 
 interface ConnectDjItemProps {
-  item: any;
+  item: {
+    name: string;
+    connected: boolean;
+    connectionText: string | null;
+    currentUserType: string;
+    profileUrl: string;
+    createdAt: string;
+    userId: string;
+    chargePerPlay: number;
+    canPromote: boolean;
+    ratings: number;
+    accountStatus: string;
+    address: {
+      country: string;
+      state: string;
+    };
+    promotionTypes: any[];
+  };
 }
 
 export const ConnectDjItem = ({item}: ConnectDjItemProps) => {
@@ -43,7 +60,7 @@ export const ConnectDjItem = ({item}: ConnectDjItemProps) => {
           style={styles.profileImage}
         />
 
-        <Box mb={hp(24)} flexDirection={'row'} alignItems={'center'}>
+        <Box mb={hp(24)} flexDirection={'row'} mt={hp(2)} alignItems={'center'}>
           <Text
             pr={2}
             variant="bodyMedium"
@@ -51,7 +68,7 @@ export const ConnectDjItem = ({item}: ConnectDjItemProps) => {
             numberOfLines={1}
             maxWidth={wp(100)}
             color={theme.colors.WHITE}>
-            {item?.name}
+            {item?.name ? capitalizeTitle(item.name) : ''}
           </Text>
           <Icon name="verified" />
         </Box>
@@ -79,10 +96,10 @@ export const ConnectDjItem = ({item}: ConnectDjItemProps) => {
               pl={wp(1)}
               fontSize={fontSz(12)}
               color={theme.colors.WHITE}>
-              4.5
+              {item?.ratings}
             </Text>
           </Box>
-          <StarRating rating={4} />
+          <StarRating rating={item?.ratings} />
         </Box>
         {/* <GradientBorderView
           gradientProps={{

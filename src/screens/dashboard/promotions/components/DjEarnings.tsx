@@ -131,6 +131,7 @@ export const DjEarnings = ({setActiveIndex}: DjEarningsProps) => {
             activeOpacity={0.8}
             onPress={() => setOpen('cashout')}
             style={{padding: hp(5)}}
+            px={wp(13)}
             borderWidth={1}
             borderRadius={hp(24)}
             alignSelf={'center'}
