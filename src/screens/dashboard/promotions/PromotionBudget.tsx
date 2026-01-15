@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-shadow */
 import React, {useEffect, useState} from 'react';
-import {Box, Button, Text} from 'design-system';
+import {Box, Button} from 'design-system';
 import {Header, HeaderText, Icon, Loader, Screen} from 'shared';
 import {
   NavigationProp,
@@ -17,8 +17,13 @@ import {yupResolver} from '@hookform/resolvers/yup';
 import DatePicker from 'react-native-date-picker';
 import {SelectFrequency, SelectRate, useForceUpdate} from './modals';
 import theme from 'theme';
-import {FlatList, ScrollView, TextInput, TouchableOpacity} from 'react-native';
-import {FilterTabs, SelectDjItemComponent} from './components';
+import {FlatList, ScrollView, TextInput} from 'react-native';
+import {
+  EmptyPromotionContainer,
+  FilterTabs,
+  SelectDjItemComponent,
+  SelectedDjsList,
+} from './components';
 import {SelectState} from 'screens/auth/select-profile/modals';
 import {styles} from './style';
 import {useGetDjs} from 'store';
@@ -48,7 +53,7 @@ export const PromotionBudget = () => {
   const [selectedRate, setSelectedRate] = useState<string>('');
   const [selectedState, setSelectedState] = useState<string>('');
   const [selectedDjs, setSelectedDjs] = useState<any[]>([]);
-  const [showSelectedDjs, setShowSelectedDjs] = useState(false);
+  const [searchQuery, setSearchQuery] = useState<string>('');
 
   const {data, isPending: isDjsPending, refetch: refetchDjs} = useGetDjs();
 
@@ -61,12 +66,7 @@ export const PromotionBudget = () => {
   >('');
   const forceUpdate = useForceUpdate();
 
-  const {
-    control,
-    setValue,
-    watch,
-    formState: {errors},
-  } = useForm<FormData>({
+  const {setValue, watch} = useForm<FormData>({
     resolver: yupResolver(schema),
     defaultValues: {
       frequency: '',
@@ -79,6 +79,76 @@ export const PromotionBudget = () => {
   });
 
   const form = watch();
+
+  // Helper function to parse rate range
+  const parseRateRange = (rateString: string): {min?: number; max?: number} => {
+    if (!rateString) {
+      return {};
+    }
+
+    // Handle "< ₦100,000"
+    if (rateString.includes('<')) {
+      const max = parseFloat(rateString.replace(/[^0-9.]/g, ''));
+      return {max: max - 1};
+    }
+
+    // Handle "> ₦5,000,000"
+    if (rateString.includes('>')) {
+      const min = parseFloat(rateString.replace(/[^0-9.]/g, ''));
+      return {min: min + 1};
+    }
+
+    // Handle "₦100,000 - ₦499,000"
+    if (rateString.includes('-')) {
+      const parts = rateString.split('-');
+      const min = parseFloat(parts[0].replace(/[^0-9.]/g, ''));
+      const max = parseFloat(parts[1].replace(/[^0-9.]/g, ''));
+      return {min, max};
+    }
+
+    return {};
+  };
+
+  // Filter DJs based on search query, rate, and state
+  const filteredDjs = React.useMemo(() => {
+    if (!data?.data) {
+      return [];
+    }
+
+    return data.data.filter((dj: any) => {
+      // Filter by search query
+      if (searchQuery.trim()) {
+        const query = searchQuery.toLowerCase().trim();
+        const djName = dj?.name?.toLowerCase() || '';
+        if (!djName.includes(query)) {
+          return false;
+        }
+      }
+
+      // Filter by rate range
+      if (selectedRate) {
+        const rateRange = parseRateRange(selectedRate);
+        const djRate = parseFloat(dj?.chargePerPlay?.toString() || '0');
+
+        if (rateRange.min !== undefined && djRate < rateRange.min) {
+          return false;
+        }
+        if (rateRange.max !== undefined && djRate > rateRange.max) {
+          return false;
+        }
+      }
+
+      // Filter by state
+      if (selectedState) {
+        const djState = dj?.address?.state || '';
+        if (djState.toLowerCase() !== selectedState.toLowerCase()) {
+          return false;
+        }
+      }
+
+      return true;
+    });
+  }, [data?.data, searchQuery, selectedRate, selectedState]);
 
   const onComplete = async (value: string) => {
     setOpen('');
@@ -107,6 +177,10 @@ export const PromotionBudget = () => {
 
       <FilterTabs
         title="Filter Tab"
+        resetFilters={() => {
+          setSelectedRate('');
+          setSelectedState('');
+        }}
         selectedRate={selectedRate}
         selectedState={selectedState}
         setOpen={(open: string) =>
@@ -125,12 +199,15 @@ export const PromotionBudget = () => {
           placeholder="Search DJ"
           selectionColor={theme.colors.WHITE}
           placeholderTextColor={theme.colors.TEXT_INPUT_PLACEHOLDER}
+          value={searchQuery}
+          onChangeText={setSearchQuery}
         />
       </Box>
 
       <FlatList
-        data={data?.data}
+        data={filteredDjs}
         contentContainerStyle={styles.contentContainerStyle}
+        keyExtractor={(item, index) => item?.userId || index.toString()}
         renderItem={({item}) => (
           <SelectDjItemComponent
             item={item}
@@ -153,83 +230,34 @@ export const PromotionBudget = () => {
             selectedDjs={selectedDjs}
           />
         )}
+        ListEmptyComponent={
+          <EmptyPromotionContainer
+            icon="empty-folder"
+            title={
+              searchQuery || selectedRate || selectedState
+                ? 'No DJs Found'
+                : 'No DJs Available'
+            }
+            subTitle={
+              searchQuery || selectedRate || selectedState
+                ? 'Try adjusting your filters or search query'
+                : 'There are no DJs available at the moment'
+            }
+            containerStyles={{my: hp(100)}}
+          />
+        }
       />
       <ScrollView>
-        {selectedDjs.length > 0 && (
-          <Box
-            mt={hp(24)}
-            mx={wp(16)}
-            position={'absolute'}
-            bottom={hp(100)}
-            left={0}
-            right={0}>
-            <Box
-              bg={theme.colors.BLACK_DEFAULT}
-              p={hp(24)}
-              borderRadius={hp(24)}>
-              <Box
-                as={TouchableOpacity}
-                activeOpacity={0.8}
-                onPress={() => setShowSelectedDjs(!showSelectedDjs)}
-                flexDirection={'row'}
-                mb={showSelectedDjs ? hp(16) : 0}
-                alignItems={'center'}
-                justifyContent={'space-between'}>
-                <Text variant="bodyMedium" color={theme.colors.WHITE}>
-                  ({selectedDjs.length}) DJs Added
-                </Text>
-
-                <Box>
-                  <Icon
-                    name={showSelectedDjs ? 'arrow-up-2' : 'arrow-down-2'}
-                  />
-                </Box>
-              </Box>
-
-              {showSelectedDjs && (
-                <Box mt={hp(16)}>
-                  {selectedDjs.map((dj: any, index: number) => (
-                    <Box
-                      key={dj?.userId || index}
-                      flexDirection={'row'}
-                      alignItems={'center'}
-                      pb={hp(16)}
-                      borderBottomWidth={index < selectedDjs.length - 1 ? 1 : 0}
-                      borderBottomColor={theme.colors.BASE_SECONDARY}
-                      mb={index < selectedDjs.length - 1 ? hp(16) : 0}>
-                      <Box
-                        as={TouchableOpacity}
-                        activeOpacity={0.8}
-                        onPress={() => {
-                          setSelectedDjs(prevDjs =>
-                            prevDjs.filter(
-                              (selectedDj: any) =>
-                                selectedDj?.userId !== dj?.userId,
-                            ),
-                          );
-                        }}
-                        width={wp(32)}
-                        height={hp(24)}
-                        borderRadius={hp(16)}
-                        bg={theme.colors.WHITE}
-                        alignItems={'center'}
-                        justifyContent={'center'}>
-                        <Icon name="trash-3" />
-                      </Box>
-
-                      <Text
-                        variant="bodyMedium"
-                        pl={wp(12)}
-                        color={theme.colors.TEXT_INPUT_PLACEHOLDER}>
-                        {dj?.name}
-                      </Text>
-                    </Box>
-                  ))}
-                </Box>
-              )}
-            </Box>
-          </Box>
-        )}
+        <SelectedDjsList
+          selectedDjs={selectedDjs}
+          onRemoveDj={(dj: any) => {
+            setSelectedDjs(prevDjs =>
+              prevDjs.filter(
+                (selectedDj: any) => selectedDj?.userId !== dj?.userId,
+              ),
+            );
+          }}
+        />
       </ScrollView>
       <SelectFrequency
         isVisible={open === 'frequency'}
@@ -294,18 +322,30 @@ export const PromotionBudget = () => {
       <SelectState
         isVisible={open === 'state'}
         onClose={() => setOpen('')}
+        selectedState={selectedState}
         onSelectState={(state: any) => {
           setOpen('');
-          setSelectedState(state?.state);
+          // Toggle selection: if the same state is selected, deselect it
+          if (selectedState === state?.state) {
+            setSelectedState('');
+          } else {
+            setSelectedState(state?.state);
+          }
         }}
       />
 
       <SelectRate
         isVisible={open === 'rate'}
         onClose={() => setOpen('')}
+        selectedRate={selectedRate}
         onComplete={(rate: string) => {
           setOpen('');
-          setSelectedRate(rate);
+          // Toggle selection: if the same rate is selected, deselect it
+          if (selectedRate === rate) {
+            setSelectedRate('');
+          } else {
+            setSelectedRate(rate);
+          }
         }}
       />
     </Screen>

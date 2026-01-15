@@ -5,6 +5,7 @@ import theme from 'theme';
 import {
   NavigationProp,
   RouteProp,
+  useFocusEffect,
   useNavigation,
   useRoute,
 } from '@react-navigation/native';
@@ -16,7 +17,10 @@ import {DashboardStackParamList} from 'types';
 import {useGetDiscography} from 'store';
 import moment from 'moment';
 import {styles} from './style';
-import {useCreatePromotion} from 'store/usePromotion';
+import {
+  useCreatePromotion,
+  usePromotionPaymentSummary,
+} from 'store/usePromotion';
 import {showMessage} from 'react-native-flash-message';
 import {PaymentRedirection, WebviewModal} from './modals';
 import {useExternalLinks} from 'hooks';
@@ -33,6 +37,7 @@ export const PromotionCheckout = () => {
   const [url, setUrl] = useState('');
   const [showPromoBudgetDetails, setShowPromoBudgetDetails] = useState(true);
   const [showPaymentDetails, setShowPaymentDetails] = useState(true);
+  const [paymentSummary, setPaymentSummary] = useState<any>(null);
 
   const {data: discographyList, refetch} = useGetDiscography();
 
@@ -58,7 +63,7 @@ export const PromotionCheckout = () => {
         setOpen('');
         setTimeout(() => {
           if (data?.data?.hasPaymentLink) {
-            setUrl(data?.data?.paymentInfo?.authorization_url);
+            setUrl(data?.data?.paymentLink);
             // Linking.openURL(data?.data?.paymentInfo?.authorization_url);
             setTimeout(() => {
               setOpen('webview');
@@ -69,35 +74,138 @@ export const PromotionCheckout = () => {
     },
   });
 
+  const {mutate: getPaymentSummary} = usePromotionPaymentSummary({
+    onSuccess: (response: any) => {
+      console.log('Payment Summary:', response);
+      if (response?.status === 'success' && response?.data) {
+        setPaymentSummary(response.data);
+      }
+    },
+    onError: (error: any) => {
+      console.error('Payment Summary Error:', error);
+    },
+  });
+
   const {validLinks} = useExternalLinks(data);
 
-  // Calculate cumulative cost from selected DJs' chargePerPlay
+  // Extract values from payment summary response
+  const budgetAmountItem = paymentSummary?.find(
+    (item: any) => item?.title === 'budgetAmount',
+  );
+  const serviceChargeItem = paymentSummary?.find(
+    (item: any) => item?.title === 'service charge',
+  );
+
+  const budgetAmount = budgetAmountItem?.amount || 0;
+  const serviceCharge = serviceChargeItem?.amount || 0;
+  const totalAmount = budgetAmount + serviceCharge;
+
+  // Fallback: Calculate cumulative cost from selected DJs' chargePerPlay if no payment summary
   const cumulativeCost = data?.responseData?.reduce((sum: number, dj: any) => {
     return sum + (Number(dj?.chargePerPlay) || 0);
   }, 0);
 
+  // Call payment summary when screen is focused
+  useFocusEffect(
+    useCallback(() => {
+      if (!data || !findDiscography) {
+        return;
+      }
+
+      const promoters: any[] = [];
+      data?.responseData?.forEach((dj: any) => {
+        if (dj?.userId) {
+          promoters.push({promoterId: dj.userId});
+        }
+      });
+
+      const cost = cumulativeCost || 0;
+      const payload = {
+        promotionLink: findDiscography?.url || '',
+        startDate: moment(data.startDate || data.date).format('YYYY-MM-DD'),
+        endDate: moment(data.endDate).format('YYYY-MM-DD'),
+        amount: Number(cost + cost * 0.05),
+        bidAmount: Number(cost),
+        frequency: data.frequency?.toLowerCase() || 'daily',
+        promoters,
+        minPlayCount: 12,
+        externalLinks: data?.externalLinks || [],
+        locations: data?.locations || [],
+        promotionTypes: data?.promotionTypes || [],
+      };
+
+      getPaymentSummary(payload);
+    }, [data, findDiscography, cumulativeCost, getPaymentSummary]),
+  );
+
   const handlePayment = useCallback(() => {
     const promoters: any[] = [];
-    data?.activePromoters?.map((promoter: any) => {
-      promoters.push({promoterId: promoter.userId});
+    data?.responseData?.forEach((dj: any) => {
+      if (dj?.userId) {
+        promoters.push({promoterId: dj.userId});
+      }
     });
 
     setOpen('payment-info');
 
-    const payload = {
-      promotionId: data?.discographyId,
+    // Build payload and filter out empty/null values
+    const rawPayload: any = {
+      discographyId: data?.discographyId,
       promotionLink: findDiscography?.url,
       frequency: data.frequency?.toLowerCase(),
-      startDate: moment(data.startDate).format('YYYY-MM-DD'),
-      endDate: moment(data.endDate).format('YYYY-MM-DD'),
-      bidAmount: Number(cumulativeCost),
-      promoters,
-      amount: Number(cumulativeCost + cumulativeCost * 0.05),
+      startDate:
+        data?.startDate || data?.date
+          ? moment(data.startDate || data.date).format('YYYY-MM-DD')
+          : undefined,
+      endDate: data?.endDate
+        ? moment(data.endDate).format('YYYY-MM-DD')
+        : undefined,
+      bidAmount:
+        budgetAmount || cumulativeCost
+          ? Number(budgetAmount || cumulativeCost)
+          : undefined,
+      promoters: promoters.length > 0 ? promoters : undefined,
+      amount:
+        totalAmount || cumulativeCost
+          ? Number(totalAmount || cumulativeCost + cumulativeCost * 0.05)
+          : undefined,
       minPlayCount: 12,
+      externalLinks:
+        data?.externalLinks?.filter(
+          (link: any) => link?.link && link.link.trim() !== '',
+        ) || undefined,
+      locations:
+        data?.locations?.filter((loc: string) => loc && loc.trim() !== '') ||
+        undefined,
+      promotionTypes:
+        data?.promotionTypes?.filter(
+          (type: string) => type && type.trim() !== '',
+        ) || undefined,
     };
 
+    // Remove null, undefined, empty string, and empty array values
+    const payload = Object.keys(rawPayload).reduce((acc: any, key: string) => {
+      const value = rawPayload[key];
+      if (
+        value !== null &&
+        value !== undefined &&
+        value !== '' &&
+        !(Array.isArray(value) && value.length === 0)
+      ) {
+        acc[key] = value;
+      }
+      return acc;
+    }, {});
+
     mutate(payload);
-  }, [data, findDiscography?.url, mutate, cumulativeCost]);
+  }, [
+    data,
+    findDiscography?.url,
+    mutate,
+    budgetAmount,
+    totalAmount,
+    cumulativeCost,
+  ]);
 
   return (
     <Screen removeSafeaArea backgroundColor={theme.colors.BASE_PRIMARY}>
@@ -213,6 +321,23 @@ export const PromotionCheckout = () => {
                     <Text
                       variant="body"
                       color={theme.colors.TEXT_INPUT_PLACEHOLDER}>
+                      Promotion Frequency
+                    </Text>
+                    <Text variant="bodyBold" color={theme.colors.WHITE}>
+                      {data?.frequency}
+                    </Text>
+                  </Box>
+                  <Box
+                    flexDirection={'row'}
+                    alignItems={'center'}
+                    borderBottomWidth={1}
+                    pb={2}
+                    pt={hp(14)}
+                    borderBottomColor={theme.colors.BASE_SECONDARY}
+                    justifyContent={'space-between'}>
+                    <Text
+                      variant="body"
+                      color={theme.colors.TEXT_INPUT_PLACEHOLDER}>
                       Promo Start Date
                     </Text>
                     <Text variant="bodyBold" color={theme.colors.WHITE}>
@@ -307,7 +432,11 @@ export const PromotionCheckout = () => {
                   </Text>
                   <Text variant="bodyBold" color={theme.colors.WHITE}>
                     NGN{' '}
-                    {formatNumberWithCommas(cumulativeCost?.toString() || '0')}
+                    {formatNumberWithCommas(
+                      budgetAmount?.toString() ||
+                        cumulativeCost?.toString() ||
+                        '0',
+                    )}
                   </Text>
                 </Box>
                 <Box
@@ -326,7 +455,9 @@ export const PromotionCheckout = () => {
                   <Text variant="bodyBold" color={theme.colors.WHITE}>
                     NGN{' '}
                     {formatNumberWithCommas(
-                      (cumulativeCost * 0.05)?.toString() || '0',
+                      serviceCharge?.toString() ||
+                        (cumulativeCost * 0.05)?.toString() ||
+                        '0',
                     )}
                   </Text>
                 </Box>
@@ -347,7 +478,8 @@ export const PromotionCheckout = () => {
                   <Text variant="bodyBold" color={theme.colors.WHITE}>
                     NGN{' '}
                     {formatNumberWithCommas(
-                      (cumulativeCost + cumulativeCost * 0.05)?.toString() ||
+                      totalAmount?.toString() ||
+                        (cumulativeCost + cumulativeCost * 0.05)?.toString() ||
                         '0',
                     )}
                   </Text>

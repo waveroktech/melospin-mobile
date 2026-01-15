@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {Box, Text} from 'design-system';
-import {fontSz, hp, wp} from 'utils';
+import {fontSz, formatNumberWithCommas, hp, wp} from 'utils';
 import theme from 'theme';
 import {Icon} from 'shared';
 import {ImageBackground, ScrollView, TouchableOpacity} from 'react-native';
@@ -17,7 +17,7 @@ export const DjEarnings = ({setActiveIndex}: DjEarningsProps) => {
   const [hideBalance, setHideBalance] = useState(false);
   const [open, setOpen] = useState<'cashout' | ''>('');
   const {userInfo} = useMelospinStore();
-  const balance = userInfo;
+  const balance = userInfo?.balance;
   console.log(balance, 'balance');
 
   const addBank = () => {
@@ -63,7 +63,10 @@ export const DjEarnings = ({setActiveIndex}: DjEarningsProps) => {
                 variant="bodyBold"
                 fontSize={fontSz(20)}
                 color={theme.colors.WHITE}>
-                N {hideBalance ? '•••••••••' : '1,000,000'}
+                N{' '}
+                {hideBalance
+                  ? '•••••••••'
+                  : formatNumberWithCommas(balance?.availableBalance)}
               </Text>
             </Box>
             <Box
@@ -97,7 +100,7 @@ export const DjEarnings = ({setActiveIndex}: DjEarningsProps) => {
                     variant="body"
                     fontSize={fontSz(14)}
                     color={theme.colors.WHITE}>
-                    N {hideBalance ? '•••••••••' : '1,000,000'}
+                    N {hideBalance ? '•••••••••' : balance?.ledgerBalance}
                   </Text>
                 </Box>
               </Box>

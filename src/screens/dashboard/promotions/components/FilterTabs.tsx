@@ -1,6 +1,6 @@
 import React from 'react';
 import {Box, Text} from 'design-system';
-import {hp, wp} from 'utils';
+import {fontSz, hp, wp} from 'utils';
 import theme from 'theme';
 import {ScrollView, TouchableOpacity} from 'react-native';
 import {Icon} from 'shared';
@@ -22,6 +22,7 @@ interface FilterTabsProps {
   setOpen?: (open: string) => void;
   selectedRate?: string;
   selectedState?: string;
+  resetFilters?: () => void;
 }
 
 const DEFAULT_FILTERS: FilterOption[] = [
@@ -46,6 +47,7 @@ export const FilterTabs = ({
   title,
   filters,
   setOpen,
+  resetFilters,
   selectedRate,
   selectedState,
 }: FilterTabsProps) => {
@@ -107,9 +109,33 @@ export const FilterTabs = ({
   return (
     <Box mx={wp(16)} mt={hp(24)}>
       {title && (
-        <Text variant="bodySemiBold" color={theme.colors.WHITE}>
-          {title}
-        </Text>
+        <Box
+          flexDirection={'row'}
+          justifyContent={'space-between'}
+          alignItems={'center'}>
+          <Text variant="bodySemiBold" color={theme.colors.WHITE}>
+            {title}
+          </Text>
+
+          {(selectedRate || selectedState) && (
+            <Box
+              as={TouchableOpacity}
+              activeOpacity={0.8}
+              onPress={() => {
+                resetFilters?.();
+              }}
+              flexDirection={'row'}
+              alignItems={'center'}>
+              <Text
+                variant="body"
+                color={theme.colors.ACCENT_04}
+                ml={wp(4)}
+                fontSize={fontSz(12)}>
+                Clear All
+              </Text>
+            </Box>
+          )}
+        </Box>
       )}
 
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>

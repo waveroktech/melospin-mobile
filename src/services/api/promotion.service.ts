@@ -1,4 +1,10 @@
-import {get, post} from './melospin.service';
+import {get, post, put} from './melospin.service';
+import {
+  ApproveDeclinePromoRequestPayload,
+  CreatePromotionPayload,
+  PromotionPaymentSummaryPayload,
+  PromotionRequestsResponse,
+} from 'interfaces/services';
 
 export const getPromotions = async (): Promise<any> => {
   return get('promotions').then(data => data as any);
@@ -15,14 +21,48 @@ export const setCalculateBiddingSplit = async (payload: any) => {
   );
 };
 
-export const setCreatePromotion = async (payload: any) => {
+export const setCreatePromotion = async (payload: CreatePromotionPayload) => {
   return post('promotions', payload).then(data => data as any);
 };
 
-export const getPromotionRequests = async () => {
-  return get('promotions/requests').then(data => data as any);
+export const getPromotionPaymentSummary = async (
+  payload: PromotionPaymentSummaryPayload,
+) => {
+  return post('promotions/payment-summary', payload).then(data => data as any);
 };
+
+export const getPromotionRequests =
+  async (): Promise<PromotionRequestsResponse> => {
+    return get('promotions/requests').then(
+      data => data as PromotionRequestsResponse,
+    );
+  };
 
 export const getPromotionTypes = async (): Promise<any> => {
   return get('promotion-types').then(data => data as any);
+};
+
+export const approveDeclinePromoRequest = async (
+  requestId: string,
+  payload: ApproveDeclinePromoRequestPayload,
+): Promise<any> => {
+  return put(`promotions/requests/${requestId}`, payload).then(
+    data => data as any,
+  );
+};
+
+export const uploadProofOfPlay = async (
+  requestId: string,
+  file: {uri: string; type?: string; name?: string},
+): Promise<any> => {
+  const formData = new FormData();
+  formData.append('file', {
+    uri: file.uri,
+    type: file.type || 'video/mp4',
+    name: file.name || 'proof-of-play.mp4',
+  } as any);
+
+  return put(`promotions/requests/${requestId}/proof-of-play`, formData).then(
+    data => data as any,
+  );
 };

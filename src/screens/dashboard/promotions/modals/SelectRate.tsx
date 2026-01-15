@@ -1,6 +1,6 @@
 import React from 'react';
 import {Box, Text} from 'design-system';
-import {BaseModal, ModalHeader} from 'shared';
+import {BaseModal, Icon, ModalHeader} from 'shared';
 import {hp, wp} from 'utils';
 import theme from 'theme';
 import {rateAmount} from 'data';
@@ -10,12 +10,14 @@ interface SelectRateProps {
   isVisible: boolean;
   onClose: () => void;
   onComplete: (rate: string) => void;
+  selectedRate?: string;
 }
 
 export const SelectRate = ({
   isVisible,
   onClose,
   onComplete,
+  selectedRate,
 }: SelectRateProps) => {
   return (
     <BaseModal visible={isVisible} onClose={onClose}>
@@ -24,6 +26,7 @@ export const SelectRate = ({
 
         <Box mt={hp(20)} mx={wp(16)}>
           {rateAmount?.map((item: any, index: number) => {
+            const isSelected = selectedRate === item.title;
             return (
               <Box
                 key={index}
@@ -33,13 +36,22 @@ export const SelectRate = ({
                 flexDirection={'row'}
                 alignItems={'center'}
                 justifyContent={'space-between'}
+                borderBottomWidth={index < rateAmount.length - 1 ? 1 : 0}
+                borderBottomColor={theme.colors.BASE_SECONDARY}
                 onPress={() => onComplete(item.title)}>
                 <Text
                   variant="body"
-                  fontFamily={theme.font.AvenirNextSemiBold}
-                  color={theme.colors.WHITE}>
+                  fontFamily={
+                    isSelected
+                      ? theme.font.AvenirNextSemiBold
+                      : theme.font.AvenirNextRegular
+                  }
+                  color={
+                    isSelected ? theme.colors.LIGHT_PRIMARY : theme.colors.WHITE
+                  }>
                   {item.title}
                 </Text>
+                {isSelected && <Icon name="active-checkbox" />}
               </Box>
             );
           })}

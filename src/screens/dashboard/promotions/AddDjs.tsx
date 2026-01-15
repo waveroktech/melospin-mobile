@@ -1,10 +1,10 @@
 import React, {useState} from 'react';
 import {Box, Button, FormInput, Text} from 'design-system';
 import {AvoidingView, Header, HeaderText, Icon, Screen} from 'shared';
-import {fontSz, hp, wp} from 'utils';
+import {calculateEndDate, fontSz, hp, wp} from 'utils';
 import theme from 'theme';
 import {BackHandler, ScrollView, TouchableOpacity} from 'react-native';
-import {SelectTimeline} from './modals';
+import {SelectFrequency, SelectTimeline} from './modals';
 import {
   NavigationProp,
   RouteProp,
@@ -26,6 +26,7 @@ interface FormData {
   date: string;
   timeline: string;
   promotionTypes: string[];
+  frequency: string;
 }
 
 const schema = yup.object().shape({
@@ -35,11 +36,12 @@ const schema = yup.object().shape({
     .array()
     .of(yup.string().required())
     .required('Promotion types are required'),
+  frequency: yup.string().required('Frequency is required'),
 });
 
 export const AddDjs = () => {
   const [open, setOpen] = useState<
-    'select-dj' | 'date' | 'select-timeline' | ''
+    'select-dj' | 'date' | 'select-timeline' | 'select-frequency' | ''
   >('');
 
   const {data} =
@@ -59,6 +61,7 @@ export const AddDjs = () => {
       date: '',
       timeline: '',
       promotionTypes: [],
+      frequency: '',
     },
     mode: 'all',
   });
@@ -68,6 +71,11 @@ export const AddDjs = () => {
   const onCompleteTimeline = async (timeline: string) => {
     setOpen('');
     setValue('timeline', timeline);
+  };
+
+  const onCompleteFrequency = async (frequency: string) => {
+    setOpen('');
+    setValue('frequency', frequency);
   };
 
   useFocusEffect(
@@ -90,13 +98,18 @@ export const AddDjs = () => {
   );
 
   const continueProcess = async () => {
+    const endDate = calculateEndDate(form.date, form.timeline);
+
     navigate('PromotionBudget', {
       payload: {
         ...data,
         promotionTypes: form.promotionTypes,
         timeline: form?.timeline,
         date: form?.date,
-      },
+        startDate: form?.date,
+        endDate: endDate,
+        frequency: form?.frequency,
+      } as any,
     });
   };
 
@@ -111,8 +124,19 @@ export const AddDjs = () => {
       />
 
       <AvoidingView>
-        <ScrollView>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{paddingBottom: hp(50)}}>
           <Box mx={wp(16)} mt={hp(24)}>
+            <FormInput
+              control={control}
+              name="frequency"
+              label="Select Frequency"
+              value={form.frequency}
+              errorText={errors.frequency?.message}
+              isDropDown
+              onPressDropDown={() => setOpen('select-frequency')}
+            />
             <Box
               style={styles.calendarContainer}
               as={TouchableOpacity}
@@ -218,6 +242,12 @@ export const AddDjs = () => {
         isVisible={open === 'select-timeline'}
         onClose={() => setOpen('')}
         onComplete={onCompleteTimeline}
+      />
+
+      <SelectFrequency
+        isVisible={open === 'select-frequency'}
+        onClose={() => setOpen('')}
+        onComplete={onCompleteFrequency}
       />
     </Screen>
   );

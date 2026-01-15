@@ -11,12 +11,14 @@ interface SelectStateProps {
   isVisible: boolean;
   onClose: () => void;
   onSelectState: (state: any) => void;
+  selectedState?: string;
 }
 
 export const SelectState = ({
   isVisible,
   onClose,
   onSelectState,
+  selectedState,
 }: SelectStateProps) => {
   const [searchQuery, setSearchQuery] = useState('');
   const searchInputRef = useRef<TextInput>(null);
@@ -119,34 +121,48 @@ export const SelectState = ({
             data={filteredStates}
             keyboardShouldPersistTaps="handled"
             keyExtractor={(item, index) => `${item.state}-${index}`}
-            renderItem={({item, index}: any) => (
-              <Box
-                key={index}
-                borderBottomWidth={1}
-                p={hp(20)}
-                as={TouchableOpacity}
-                activeOpacity={0.8}
-                onPress={() => handleStateSelection(item)}
-                flexDirection={'row'}
-                alignItems={'center'}
-                mb={hp(14)}
-                borderBottomColor={theme.colors.BASE_SECONDARY}
-                mx={wp(16)}>
-                <Box ml={wp(10)}>
-                  <Box flexDirection={'row'} alignItems={'center'}>
+            renderItem={({item, index}: any) => {
+              const isSelected = selectedState === item?.state;
+              return (
+                <Box
+                  key={index}
+                  borderBottomWidth={1}
+                  p={hp(20)}
+                  as={TouchableOpacity}
+                  activeOpacity={0.8}
+                  onPress={() => handleStateSelection(item)}
+                  flexDirection={'row'}
+                  alignItems={'center'}
+                  justifyContent={'space-between'}
+                  mb={hp(14)}
+                  borderBottomColor={theme.colors.BASE_SECONDARY}
+                  mx={wp(16)}>
+                  <Box ml={wp(10)}>
                     <Box flexDirection={'row'} alignItems={'center'}>
-                      <Text
-                        pr={2}
-                        variant="bodyBold"
-                        fontSize={fontSz(14)}
-                        color={theme.colors.WHITE}>
-                        {item?.state}
-                      </Text>
+                      <Box flexDirection={'row'} alignItems={'center'}>
+                        <Text
+                          pr={2}
+                          variant="bodyBold"
+                          fontSize={fontSz(14)}
+                          fontFamily={
+                            isSelected
+                              ? theme.font.AvenirNextSemiBold
+                              : theme.font.AvenirNextRegular
+                          }
+                          color={
+                            isSelected
+                              ? theme.colors.LIGHT_PRIMARY
+                              : theme.colors.WHITE
+                          }>
+                          {item?.state}
+                        </Text>
+                      </Box>
                     </Box>
                   </Box>
+                  {isSelected && <Icon name="active-checkbox" />}
                 </Box>
-              </Box>
-            )}
+              );
+            }}
             ListFooterComponent={<Box pb={hp(200)} />}
             ListEmptyComponent={
               <Box mx={wp(16)} mt={hp(40)}>

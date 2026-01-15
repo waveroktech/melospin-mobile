@@ -12,3 +12,4 @@ export * from './PromotionItem';
 export * from './SelectDjItem';
 export * from './FilterTabs';
 export * from './SelectDjItemComponent';
+export * from './SelectedDjsList';

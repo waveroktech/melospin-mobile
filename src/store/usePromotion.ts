@@ -1,11 +1,14 @@
 import {useMutation, useQuery} from '@tanstack/react-query';
 import {
+  approveDeclinePromoRequest,
   getPromotions,
   setCalculateBiddingSplit,
   setCalculatePromotionCost,
   setCreatePromotion,
+  getPromotionPaymentSummary,
   getPromotionRequests,
   getPromotionTypes,
+  uploadProofOfPlay,
 } from 'services/api/promotion.service';
 
 export const useUserPromotions = () => {
@@ -58,11 +61,25 @@ export const useCreatePromotion = ({
   });
 };
 
-export const useGetPromotionRequests = () => {
+export const usePromotionPaymentSummary = ({
+  onError,
+  onSuccess,
+}: {
+  onError?: any;
+  onSuccess?: any;
+}) => {
+  return useMutation({
+    mutationFn: getPromotionPaymentSummary,
+    onSuccess,
+    onError,
+  });
+};
+
+export const useGetPromotionRequests = (enabled: boolean = true) => {
   return useQuery({
     queryKey: ['get-promotion-requests'],
     queryFn: () => getPromotionRequests(),
-    enabled: false,
+    enabled,
   });
 };
 
@@ -71,5 +88,45 @@ export const useGetPromotionTypes = () => {
     queryKey: ['get-promotion-types'],
     queryFn: () => getPromotionTypes(),
     enabled: false,
+  });
+};
+
+export const useApproveDeclinePromoRequest = ({
+  onError,
+  onSuccess,
+}: {
+  onError?: any;
+  onSuccess?: any;
+}) => {
+  return useMutation({
+    mutationFn: ({
+      requestId,
+      status,
+    }: {
+      requestId: string;
+      status: 'accepted' | 'declined';
+    }) => approveDeclinePromoRequest(requestId, {status}),
+    onSuccess,
+    onError,
+  });
+};
+
+export const useUploadProofOfPlay = ({
+  onError,
+  onSuccess,
+}: {
+  onError?: any;
+  onSuccess?: any;
+}) => {
+  return useMutation({
+    mutationFn: ({
+      requestId,
+      file,
+    }: {
+      requestId: string;
+      file: {uri: string; type?: string; name?: string};
+    }) => uploadProofOfPlay(requestId, file),
+    onSuccess,
+    onError,
   });
 };

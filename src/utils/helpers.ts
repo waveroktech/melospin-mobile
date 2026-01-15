@@ -84,3 +84,46 @@ export const capitalizeTitle = (str: string) => {
     .map(word => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ');
 };
+
+export const calculateEndDate = (
+  startDate: string,
+  timeline: string,
+): string => {
+  if (!startDate || !timeline) {
+    return '';
+  }
+
+  const moment = require('moment');
+  const start = moment(startDate);
+  let end = moment(startDate);
+
+  // Map timeline to duration in days
+  const timelineMap: {[key: string]: number} = {
+    Today: 0,
+    Yesterday: 0,
+    'This Week': 7,
+    'This Month': 30,
+    'Last Month': 30,
+    'All Time': 365,
+    // Handle month-based timelines (e.g., "1 month", "2 months")
+    '1 month': 30,
+    '2 months': 60,
+    '3 months': 90,
+    '4 months': 120,
+    '5 months': 150,
+    '6 months': 180,
+  };
+
+  // Try to parse timeline as "X month(s)" format
+  const monthMatch = timeline.match(/(\d+)\s*month/i);
+  if (monthMatch) {
+    const months = parseInt(monthMatch[1], 10);
+    end = start.clone().add(months, 'months');
+  } else {
+    // Use the timeline map
+    const days = timelineMap[timeline] || 30; // Default to 30 days if not found
+    end = start.clone().add(days, 'days');
+  }
+
+  return end.toISOString();
+};
