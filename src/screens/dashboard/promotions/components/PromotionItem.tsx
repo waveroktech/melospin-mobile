@@ -50,17 +50,43 @@ interface Promotion {
   timeline?: string;
 }
 
+// New structure for promo requests
+interface PromoRequest {
+  playInfo?: {
+    requestStatus?: string;
+    promoStatus?: string;
+  };
+  promotion?: {
+    _id?: string;
+    status?: string;
+    promotionLink?: string;
+    promotersCount?: number;
+    startDate?: string;
+    endDate?: string;
+  };
+  promoter?: any;
+  owner?: any;
+  proofs?: any[];
+}
+
 interface PromotionItemProps {
-  promotion: Promotion;
+  promotion: Promotion | PromoRequest;
   onPress?: () => void;
 }
 
 export const PromotionItem = ({promotion, onPress}: PromotionItemProps) => {
-  const promotionStatus =
-    promotion?.details?.status === 'pending' ||
-    promotion?.details?.status === 'Pending approval'
+  // Check if it's the new structure (PromoRequest) or old structure (Promotion)
+  const isNewStructure = 'playInfo' in promotion || 'promotion' in promotion;
+
+  const promotionStatus = isNewStructure
+    ? (promotion as PromoRequest)?.playInfo?.requestStatus === 'pending' ||
+      (promotion as PromoRequest)?.playInfo?.promoStatus === 'pending'
       ? 'Pending approval'
-      : 'Active';
+      : 'Active'
+    : (promotion as Promotion)?.details?.status === 'pending' ||
+      (promotion as Promotion)?.details?.status === 'Pending approval'
+    ? 'Pending approval'
+    : 'Active';
 
   const statusBg =
     promotionStatus === 'Pending approval'
@@ -72,7 +98,11 @@ export const PromotionItem = ({promotion, onPress}: PromotionItemProps) => {
       ? theme.colors.SEMANTIC_YELLOW
       : theme.colors.DARKER_GREEN;
 
-  const promotionName = promotion?.details?.promotionLink?.split('/');
+  const promotionLink = isNewStructure
+    ? (promotion as PromoRequest)?.promotion?.promotionLink
+    : (promotion as Promotion)?.details?.promotionLink;
+
+  const promotionName = promotionLink?.split('/');
 
   return (
     <Box
@@ -123,7 +153,11 @@ export const PromotionItem = ({promotion, onPress}: PromotionItemProps) => {
                 variant="body"
                 style={{fontSize: fontSz(12), paddingLeft: wp(5)}}
                 color={theme.colors.WHITE}>
-                {promotion?.details?.promotersCount || promotion?.djCount || 0}
+                {isNewStructure
+                  ? (promotion as PromoRequest)?.promotion?.promotersCount || 0
+                  : (promotion as Promotion)?.details?.promotersCount ||
+                    (promotion as Promotion)?.djCount ||
+                    0}
               </Text>
             </Box>
           </Box>
@@ -134,9 +168,17 @@ export const PromotionItem = ({promotion, onPress}: PromotionItemProps) => {
               variant="body"
               style={{fontSize: fontSz(12), paddingLeft: wp(5)}}
               color={theme.colors.WHITE}>
-              {promotion?.details?.startDate
-                ? new Date(promotion.details.startDate).toLocaleDateString()
-                : promotion?.playlistName || 'N/A'}
+              {isNewStructure
+                ? (promotion as PromoRequest)?.promotion?.startDate
+                  ? new Date(
+                      (promotion as PromoRequest).promotion!.startDate!,
+                    ).toLocaleDateString()
+                  : 'N/A'
+                : (promotion as Promotion)?.details?.startDate
+                ? new Date(
+                    (promotion as Promotion).details.startDate,
+                  ).toLocaleDateString()
+                : (promotion as Promotion)?.playlistName || 'N/A'}
             </Text>
           </Box>
 
@@ -146,13 +188,31 @@ export const PromotionItem = ({promotion, onPress}: PromotionItemProps) => {
               variant="body"
               style={{fontSize: fontSz(12), paddingLeft: wp(5)}}
               color={theme.colors.WHITE}>
-              {promotion?.details?.startDate && promotion?.details?.endDate
+              {isNewStructure
+                ? (promotion as PromoRequest)?.promotion?.startDate &&
+                  (promotion as PromoRequest)?.promotion?.endDate
+                  ? `${Math.ceil(
+                      (new Date(
+                        (promotion as PromoRequest).promotion!.endDate!,
+                      ).getTime() -
+                        new Date(
+                          (promotion as PromoRequest).promotion!.startDate!,
+                        ).getTime()) /
+                        (1000 * 60 * 60 * 24),
+                    )} days`
+                  : 'N/A'
+                : (promotion as Promotion)?.details?.startDate &&
+                  (promotion as Promotion)?.details?.endDate
                 ? `${Math.ceil(
-                    (new Date(promotion.details.endDate).getTime() -
-                      new Date(promotion.details.startDate).getTime()) /
+                    (new Date(
+                      (promotion as Promotion).details.endDate,
+                    ).getTime() -
+                      new Date(
+                        (promotion as Promotion).details.startDate,
+                      ).getTime()) /
                       (1000 * 60 * 60 * 24),
                   )} days`
-                : promotion?.timeline || 'N/A'}
+                : (promotion as Promotion)?.timeline || 'N/A'}
             </Text>
           </Box>
         </Box>

@@ -93,6 +93,85 @@ export interface PromotionRequestsResponse {
   status: 'success' | 'failed';
 }
 
+// New response structure for promo requests
+export interface PlayInfo {
+  logType: string;
+  playId: string;
+  bidAmount: number;
+  originalAmount: number;
+  createdAt: string;
+  promoStatus: string;
+  requestStatus: string;
+  rating: number;
+  plays: number;
+  launchDate: string | null;
+}
+
+export interface PromotionInfo {
+  _id: string;
+  status: string;
+  promotionLink: string;
+  paid: boolean;
+  startDate: string;
+  endDate: string;
+  externalPlatformsLink: any[];
+  amount: number;
+  bidAmount: number;
+  locations: string[];
+  minPlayCount: number;
+  promotionTypes: string[];
+  paymentReference: string;
+  promotersCount: number;
+}
+
+export interface PromoterInfo {
+  _id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  brandName: string;
+  instagram: string;
+}
+
+export interface OwnerInfo {
+  _id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  brandName: string;
+  instagram: string;
+}
+
+export interface PromoRequest {
+  playInfo: PlayInfo;
+  promotion: PromotionInfo;
+  promoter: PromoterInfo;
+  owner: OwnerInfo;
+  proofs: any[];
+}
+
+export interface PaginationInfo {
+  prevPage: number | null;
+  nextPage: number | null;
+  perPage: number;
+  offset: number;
+  total: number;
+  currentPage: number;
+  totalPages: number;
+}
+
+export interface PromoRequestsData {
+  promoRequests: PromoRequest[];
+}
+
+export interface PromoRequestsResponse {
+  status: 'success' | 'failed';
+  data: PromoRequestsData;
+  message: string;
+  code: string;
+  pagination: PaginationInfo;
+}
+
 export interface ApproveDeclinePromoRequestPayload {
   status: 'accepted' | 'declined';
 }

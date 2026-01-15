@@ -8,10 +8,10 @@ export const styles = StyleSheet.create({
     paddingVertical: hp(8),
     paddingHorizontal: wp(16),
     borderRadius: hp(24),
-    marginBottom: hp(16),
     marginHorizontal: wp(16),
     flexDirection: 'row',
     alignItems: 'center',
+    marginTop: hp(16),
   },
   sharedList: {
     width: 50,

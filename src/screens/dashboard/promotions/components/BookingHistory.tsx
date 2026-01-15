@@ -1,25 +1,93 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {Box, Text} from 'design-system';
 import {hp, wp} from 'utils';
-import {FlatList, TextInput, TouchableOpacity} from 'react-native';
+import {
+  FlatList,
+  RefreshControl,
+  TextInput,
+  TouchableOpacity,
+} from 'react-native';
 import {Icon} from 'shared';
 import theme from 'theme';
 import {styles} from './style';
 import {PromotionItem} from './PromotionItem';
-import {useGetPromotionRequests} from 'store';
+import {useApproveDeclinePromoRequest, useGetPromotionRequests} from 'store';
 import {EmptyPromotionContainer} from './EmptyPromotionContainer';
 import {OngoingPromotionDetails, PromotionDetails} from '../modals';
 import {showMessage} from 'react-native-flash-message';
+import {PromoRequest} from 'interfaces/services';
+import {useQueryClient} from '@tanstack/react-query';
 
 export const BookingHistory = () => {
-  const {refetch, data} = useGetPromotionRequests();
+  const queryClient = useQueryClient();
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    refetch,
+    isLoading,
+  } = useGetPromotionRequests();
   const [open, setOpen] = useState<
     'promotion-details' | 'ongoing-promotion-details' | ''
   >('');
+  const [selectedPromotion, setSelectedPromotion] =
+    useState<PromoRequest | null>(null);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const {mutate: approveDeclinePromotion} = useApproveDeclinePromoRequest({
+    onSuccess: (
+      _: any,
+      variables: {requestId: string; status: 'accepted' | 'declined'},
+    ) => {
+      setOpen('');
+      setSelectedPromotion(null);
+      // Invalidate queries to refetch updated data
+      queryClient.invalidateQueries({
+        queryKey: ['get-promotion-requests'],
+      });
+      showMessage({
+        message:
+          variables.status === 'accepted'
+            ? 'Promotion accepted successfully'
+            : 'Promotion declined successfully',
+        type: 'success',
+      });
+    },
+    onError: (error: any) => {
+      showMessage({
+        message: error?.message || 'Failed to process promotion request',
+        type: 'danger',
+      });
+    },
+  });
+
+  // Flatten all pages into a single array
+  const promoRequests =
+    data?.pages?.flatMap(page => page?.data?.promoRequests || []) || [];
 
   useEffect(() => {
     refetch();
   }, [refetch]);
+
+  const loadMore = useCallback(() => {
+    if (hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    try {
+      // Reset and refetch the query from the first page
+      await queryClient.resetQueries({
+        queryKey: ['get-promotion-requests'],
+      });
+      await refetch();
+    } finally {
+      setRefreshing(false);
+    }
+  }, [queryClient, refetch]);
 
   const renderHeader = () => (
     <Box mt={hp(10)}>
@@ -66,46 +134,88 @@ export const BookingHistory = () => {
           paddingBottom: hp(100),
         }}
         ListHeaderComponent={renderHeader}
-        data={data?.data?.promotionRequests}
+        data={promoRequests}
         renderItem={({item}) => {
           return (
             <PromotionItem
               promotion={item}
-              onPress={() =>
-                item.status === 'Pending approval'
-                  ? setOpen('promotion-details')
-                  : setOpen('ongoing-promotion-details')
-              }
+              onPress={() => {
+                setSelectedPromotion(item);
+                if (item?.playInfo?.requestStatus === 'pending') {
+                  setOpen('promotion-details');
+                } else {
+                  setOpen('ongoing-promotion-details');
+                }
+              }}
             />
           );
         }}
-        ListEmptyComponent={
-          <EmptyPromotionContainer
-            icon="empty-folder"
-            containerStyles={{my: hp(100)}}
-            title="No Promotions"
-            subTitle="You do not have any available promotions"
+        keyExtractor={(item, index) =>
+          item?.playInfo?.playId || index.toString()
+        }
+        onEndReached={loadMore}
+        onEndReachedThreshold={0.5}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor={theme.colors.WHITE}
+            colors={[theme.colors.WHITE]}
           />
+        }
+        ListFooterComponent={
+          isFetchingNextPage ? (
+            <Box py={hp(20)} alignItems="center">
+              <Text variant="body" color={theme.colors.TEXT_INPUT_PLACEHOLDER}>
+                Loading more...
+              </Text>
+            </Box>
+          ) : null
+        }
+        ListEmptyComponent={
+          !isLoading ? (
+            <EmptyPromotionContainer
+              icon="empty-folder"
+              containerStyles={{my: hp(100)}}
+              title="No Promotions"
+              subTitle="You do not have any available promotions"
+            />
+          ) : null
         }
       />
 
       <PromotionDetails
         isVisible={open === 'promotion-details'}
-        onClose={() => setOpen('')}
-        onAccept={() => {
+        promotion={selectedPromotion}
+        onClose={() => {
           setOpen('');
-          setTimeout(() => {
-            showMessage({
-              message: 'Promotion accepted',
-              type: 'success',
+          setSelectedPromotion(null);
+        }}
+        onAccept={() => {
+          if (selectedPromotion?.playInfo?.playId) {
+            approveDeclinePromotion({
+              requestId: selectedPromotion.playInfo.playId,
+              status: 'accepted',
             });
-          }, 1000);
+          }
+        }}
+        onDecline={() => {
+          if (selectedPromotion?.playInfo?.playId) {
+            approveDeclinePromotion({
+              requestId: selectedPromotion.playInfo.playId,
+              status: 'declined',
+            });
+          }
         }}
       />
 
       <OngoingPromotionDetails
         isVisible={open === 'ongoing-promotion-details'}
-        onClose={() => setOpen('')}
+        promotion={selectedPromotion}
+        onClose={() => {
+          setOpen('');
+          setSelectedPromotion(null);
+        }}
       />
     </Box>
   );

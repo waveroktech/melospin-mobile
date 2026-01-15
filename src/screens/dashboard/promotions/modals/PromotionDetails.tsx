@@ -7,18 +7,24 @@ import {GradientBorderView} from '@good-react-native/gradient-border';
 import {Image, ScrollView, TouchableOpacity} from 'react-native';
 import {styles} from './style';
 import {PromotionItem} from '../components';
-import {promotions, streamingLinks} from 'data';
+import {streamingLinks} from 'data';
+import {PromoRequest} from 'interfaces/services';
+import {formatNumberWithCommas} from 'utils';
 
 interface PromotionDetailsProps {
   isVisible: boolean;
+  promotion: PromoRequest | null;
   onClose: () => void;
   onAccept: () => void;
+  onDecline: () => void;
 }
 
 export const PromotionDetails = ({
   isVisible,
+  promotion,
   onClose,
   onAccept,
+  onDecline,
 }: PromotionDetailsProps) => {
   return (
     <BaseModal
@@ -60,7 +66,9 @@ export const PromotionDetails = ({
                 variant="body"
                 fontFamily={theme.font.AvenirNextRegular}
                 color={theme.colors.WHITE}>
-                FalzBahdguy
+                {promotion?.owner?.brandName ||
+                  promotion?.owner?.firstName ||
+                  'N/A'}
               </Text>
             </GradientBorderView>
           </Box>
@@ -75,7 +83,7 @@ export const PromotionDetails = ({
               Audio file
             </Text>
 
-            <PromotionItem promotion={promotions[0]} />
+            {promotion && <PromotionItem promotion={promotion} />}
           </Box>
 
           <Box mt={hp(20)} mx={wp(16)}>
@@ -88,22 +96,42 @@ export const PromotionDetails = ({
 
             <ScrollView horizontal>
               <Box mt={hp(16)} flexDirection={'row'} alignItems={'center'}>
-                {streamingLinks?.map((song: any, index: number) => {
-                  return (
-                    <Box
-                      as={TouchableOpacity}
-                      backgroundColor={theme.colors.BLACK_DEFAULT}
-                      activeOpacity={0.8}
-                      key={index}
-                      mr={wp(10)}
-                      borderRadius={hp(24)}
-                      borderWidth={1}
-                      borderColor={theme.colors.WHITE}
-                      p={hp(12)}>
-                      <Icon name={song.icon2} color={theme.colors.WHITE} />
-                    </Box>
-                  );
-                })}
+                {promotion?.promotion?.externalPlatformsLink &&
+                promotion.promotion.externalPlatformsLink.length > 0
+                  ? promotion.promotion.externalPlatformsLink.map(
+                      (link: any, index: number) => {
+                        return (
+                          <Box
+                            as={TouchableOpacity}
+                            backgroundColor={theme.colors.BLACK_DEFAULT}
+                            activeOpacity={0.8}
+                            key={index}
+                            mr={wp(10)}
+                            borderRadius={hp(24)}
+                            borderWidth={1}
+                            borderColor={theme.colors.WHITE}
+                            p={hp(12)}>
+                            <Icon name="link-icon" color={theme.colors.WHITE} />
+                          </Box>
+                        );
+                      },
+                    )
+                  : streamingLinks?.map((song: any, index: number) => {
+                      return (
+                        <Box
+                          as={TouchableOpacity}
+                          backgroundColor={theme.colors.BLACK_DEFAULT}
+                          activeOpacity={0.8}
+                          key={index}
+                          mr={wp(10)}
+                          borderRadius={hp(24)}
+                          borderWidth={1}
+                          borderColor={theme.colors.WHITE}
+                          p={hp(12)}>
+                          <Icon name={song.icon2} color={theme.colors.WHITE} />
+                        </Box>
+                      );
+                    })}
               </Box>
             </ScrollView>
           </Box>
@@ -136,7 +164,10 @@ export const PromotionDetails = ({
                   Amount
                 </Text>
                 <Text variant="bodyMedium" color={theme.colors.WHITE}>
-                  N 100,000
+                  NGN{' '}
+                  {formatNumberWithCommas(
+                    promotion?.playInfo?.bidAmount?.toString() || '0',
+                  )}
                 </Text>
               </Box>
               <Box
@@ -151,7 +182,7 @@ export const PromotionDetails = ({
                   Play count
                 </Text>
                 <Text variant="bodyMedium" color={theme.colors.WHITE}>
-                  100
+                  {promotion?.promotion?.minPlayCount || 0}
                 </Text>
               </Box>
             </Box>
@@ -169,7 +200,7 @@ export const PromotionDetails = ({
             width={wp(160)}
             hasIcon
             title="Decline"
-            onPress={onClose}
+            onPress={onDecline}
           />
           <Button
             isNotBottom

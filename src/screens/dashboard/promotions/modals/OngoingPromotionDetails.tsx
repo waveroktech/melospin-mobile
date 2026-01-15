@@ -1,24 +1,61 @@
-import React, {useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {Box, Text} from 'design-system';
-import {Icon, ModalHeader} from 'shared';
-import {deviceWidth, fontSz, hp, wp} from 'utils';
+import {Icon, Loader, ModalHeader} from 'shared';
+import {deviceWidth, fontSz, formatNumberWithCommas, hp, wp} from 'utils';
 import theme from 'theme';
 import {proofOfPlay, streamingLinks} from 'data';
 import Modal from 'react-native-modal';
 import {ImageBackground, ScrollView, TouchableOpacity} from 'react-native';
 import {styles} from './style';
+import {PromoRequest} from 'interfaces/services';
+import moment from 'moment';
+import {useGetPromotion} from 'store';
 
 interface OngoingPromotionDetailsProps {
   isVisible: boolean;
+  promotion: PromoRequest | null;
   onClose: () => void;
 }
 
 export const OngoingPromotionDetails = ({
   isVisible,
+  promotion,
   onClose,
 }: OngoingPromotionDetailsProps) => {
   const [showPromotionDetails, setShowPromotionDetails] = useState(true);
   const [showProofOfPlay, setShowProofOfPlay] = useState(true);
+
+  // Get promotion ID from the promotion prop
+  const promotionId =
+    promotion?.promotion?._id || promotion?.playInfo?.playId || null;
+
+  // Fetch promotion details using the query hook
+  const {
+    data: promotionData,
+    isLoading,
+    isError,
+    refetch,
+  } = useGetPromotion(promotionId, isVisible && !!promotionId);
+
+  // Refetch when modal opens to ensure fresh data
+  useEffect(() => {
+    if (isVisible && promotionId) {
+      console.log('Fetching promotion details for ID:', promotionId);
+      refetch();
+    }
+  }, [isVisible, promotionId, refetch]);
+
+  // Use fetched data if available, otherwise fall back to prop data
+  // API response structure: { _id, statusReport[], details: {...} }
+  const promotionDetails = promotionData?.data || promotion;
+  const details = promotionDetails?.details || promotionDetails?.promotion;
+  console.log(details, 'details');
+  const statusReport = useMemo(
+    () => promotionDetails?.statusReport || promotionDetails?.proofs || [],
+    [promotionDetails?.statusReport, promotionDetails?.proofs],
+  );
+
+  console.log(promotionDetails, 'promotionDetails');
 
   return (
     <Modal
@@ -42,6 +79,14 @@ export const OngoingPromotionDetails = ({
           iconName="back-icon"
           modalHeaderText="Ongoing Promotion Details"
         />
+        <Loader loading={isLoading} />
+        {isError && (
+          <Box px={wp(16)} py={hp(20)}>
+            <Text variant="body" color={theme.colors.RED}>
+              Failed to load promotion details
+            </Text>
+          </Box>
+        )}
         <ScrollView
           style={styles.scrollViewContainer}
           showsVerticalScrollIndicator={false}
@@ -73,15 +118,45 @@ export const OngoingPromotionDetails = ({
                     <Icon name="file-upload" color={theme.colors.WHITE} />
                   </ImageBackground>
 
-                  <Box ml={wp(12)}>
-                    <Text variant="bodyMedium" color={theme.colors.WHITE}>
-                      Who go pay
+                  <Box ml={wp(12)} width={wp(200)}>
+                    <Text
+                      variant="bodyMedium"
+                      color={theme.colors.WHITE}
+                      numberOfLines={1}
+                      ellipsizeMode="tail">
+                      {details?.promotionLink?.split('/').pop() || 'N/A'}
                     </Text>
                     <Text variant="body" color={theme.colors.OFF_WHITE_100}>
-                      Falz feat. Adekunle Gold
+                      {(() => {
+                        const firstName =
+                          details?.owner?.firstName ||
+                          promotionDetails?.owner?.firstName ||
+                          '';
+                        const lastName =
+                          details?.owner?.lastName ||
+                          promotionDetails?.owner?.lastName ||
+                          '';
+                        const capitalize = (str: string) =>
+                          str.charAt(0).toUpperCase() +
+                          str.slice(1).toLowerCase();
+                        return `${capitalize(firstName)} ${capitalize(
+                          lastName,
+                        )}`.trim();
+                      })()}
                     </Text>
                     <Text variant="body" color={theme.colors.WHITE}>
-                      MP3 File
+                      {details?.promotionTypes
+                        ?.map((type: string) =>
+                          type
+                            .split(' ')
+                            .map(
+                              (word: string) =>
+                                word.charAt(0).toUpperCase() +
+                                word.slice(1).toLowerCase(),
+                            )
+                            .join(' '),
+                        )
+                        .join(', ') || 'N/A'}
                     </Text>
                   </Box>
                 </Box>
@@ -109,22 +184,48 @@ export const OngoingPromotionDetails = ({
 
               <ScrollView horizontal>
                 <Box mt={hp(16)} flexDirection={'row'} alignItems={'center'}>
-                  {streamingLinks?.map((song: any, index: number) => {
-                    return (
-                      <Box
-                        as={TouchableOpacity}
-                        backgroundColor={theme.colors.BLACK_DEFAULT}
-                        activeOpacity={0.8}
-                        key={index}
-                        mr={wp(10)}
-                        borderRadius={hp(24)}
-                        borderWidth={1}
-                        borderColor={theme.colors.WHITE}
-                        p={hp(12)}>
-                        <Icon name={song.icon2} color={theme.colors.WHITE} />
-                      </Box>
-                    );
-                  })}
+                  {details?.externalPlatformsLink &&
+                  details.externalPlatformsLink.length > 0
+                    ? details.externalPlatformsLink.map(
+                        (link: any, index: number) => {
+                          return (
+                            <Box
+                              as={TouchableOpacity}
+                              backgroundColor={theme.colors.BLACK_DEFAULT}
+                              activeOpacity={0.8}
+                              key={index}
+                              mr={wp(10)}
+                              borderRadius={hp(24)}
+                              borderWidth={1}
+                              borderColor={theme.colors.WHITE}
+                              p={hp(12)}>
+                              <Icon
+                                name="link-icon"
+                                color={theme.colors.WHITE}
+                              />
+                            </Box>
+                          );
+                        },
+                      )
+                    : streamingLinks?.map((song: any, index: number) => {
+                        return (
+                          <Box
+                            as={TouchableOpacity}
+                            backgroundColor={theme.colors.BLACK_DEFAULT}
+                            activeOpacity={0.8}
+                            key={index}
+                            mr={wp(10)}
+                            borderRadius={hp(24)}
+                            borderWidth={1}
+                            borderColor={theme.colors.WHITE}
+                            p={hp(12)}>
+                            <Icon
+                              name={song.icon2}
+                              color={theme.colors.WHITE}
+                            />
+                          </Box>
+                        );
+                      })}
                 </Box>
               </ScrollView>
             </Box>
@@ -170,7 +271,9 @@ export const OngoingPromotionDetails = ({
                         Promo Start Date
                       </Text>
                       <Text variant="bodyMedium" color={theme.colors.WHITE}>
-                        10/10/2025
+                        {details?.startDate
+                          ? moment(details.startDate).format('MM/DD/YYYY')
+                          : 'N/A'}
                       </Text>
                     </Box>
                     <Box
@@ -186,7 +289,12 @@ export const OngoingPromotionDetails = ({
                         Amount to earn
                       </Text>
                       <Text variant="bodyMedium" color={theme.colors.WHITE}>
-                        200,000.00
+                        NGN{' '}
+                        {formatNumberWithCommas(
+                          details?.bidAmount?.toString() ||
+                            promotionDetails?.playInfo?.bidAmount?.toString() ||
+                            '0',
+                        )}
                       </Text>
                     </Box>
                     <Box
@@ -202,7 +310,13 @@ export const OngoingPromotionDetails = ({
                         Promotion Timeline
                       </Text>
                       <Text variant="bodyMedium" color={theme.colors.WHITE}>
-                        1 month
+                        {details?.startDate && details?.endDate
+                          ? `${Math.ceil(
+                              (new Date(details.endDate).getTime() -
+                                new Date(details.startDate).getTime()) /
+                                (1000 * 60 * 60 * 24),
+                            )} days`
+                          : 'N/A'}
                       </Text>
                     </Box>
                     <Box
@@ -218,7 +332,7 @@ export const OngoingPromotionDetails = ({
                         Min. Play Count
                       </Text>
                       <Text variant="bodyMedium" color={theme.colors.WHITE}>
-                        12
+                        {details?.minPlayCount || 0}
                       </Text>
                     </Box>
                   </Box>
@@ -286,7 +400,8 @@ export const OngoingPromotionDetails = ({
                 alignItems={'center'}
                 justifyContent={'space-between'}>
                 <Text variant="bodyMedium" color={theme.colors.WHITE}>
-                  Proof of Play Report (1/12)
+                  Proof of Play Report ({statusReport?.length || 0}/
+                  {details?.minPlayCount || 12})
                 </Text>
 
                 <Box>
@@ -298,56 +413,124 @@ export const OngoingPromotionDetails = ({
 
               {showProofOfPlay && (
                 <Box mt={hp(12)}>
-                  {proofOfPlay?.map((item: any) => {
-                    return (
-                      <Box
-                        key={item.id}
-                        flexDirection={'row'}
-                        alignItems={'center'}
-                        mb={hp(12)}
-                        borderBottomWidth={1}
-                        borderBottomColor={theme.colors.BASE_SECONDARY}
-                        pb={hp(16)}
-                        justifyContent={'space-between'}>
-                        <Box flexDirection={'row'} alignItems={'center'}>
-                          <Text
-                            variant="bodyMedium"
-                            color={theme.colors.TEXT_INPUT_PLACEHOLDER}>
-                            {item.title}
-                          </Text>
+                  {statusReport && statusReport.length > 0
+                    ? statusReport.map((report: any, index: number) => {
+                        return (
                           <Box
-                            width={wp(4)}
-                            height={hp(4)}
-                            mx={wp(12)}
-                            bg={theme.colors.TEXT_INPUT_PLACEHOLDER}
-                            borderRadius={hp(10)}
-                          />
-                          <Text
-                            variant="bodyMedium"
-                            color={theme.colors.TEXT_INPUT_PLACEHOLDER}>
-                            {item.date}
-                          </Text>
-                        </Box>
+                            key={report?.reportId || report?._id || index}
+                            flexDirection={'row'}
+                            alignItems={'center'}
+                            mb={hp(12)}
+                            borderBottomWidth={1}
+                            borderBottomColor={theme.colors.BASE_SECONDARY}
+                            pb={hp(16)}
+                            justifyContent={'space-between'}>
+                            <Box flexDirection={'row'} alignItems={'center'}>
+                              <Text
+                                variant="bodyMedium"
+                                color={theme.colors.TEXT_INPUT_PLACEHOLDER}>
+                                {report?.brandName ||
+                                  `${report?.firstName} ${report?.lastName}` ||
+                                  `Report ${index + 1}`}
+                              </Text>
+                              <Box
+                                width={wp(4)}
+                                height={hp(4)}
+                                mx={wp(12)}
+                                bg={theme.colors.TEXT_INPUT_PLACEHOLDER}
+                                borderRadius={hp(10)}
+                              />
+                              <Text
+                                variant="bodyMedium"
+                                color={theme.colors.TEXT_INPUT_PLACEHOLDER}>
+                                {report?.createdAt
+                                  ? moment(report.createdAt).format(
+                                      'MM/DD/YYYY',
+                                    )
+                                  : report?.date || 'N/A'}
+                              </Text>
+                            </Box>
 
-                        <Box
-                          bg={item.statusBg}
-                          style={{padding: wp(4)}}
-                          borderRadius={hp(10)}
-                          borderWidth={item.statusBgBorder ? 1 : 0}
-                          borderColor={item.statusBgBorder}>
-                          <Text
-                            variant="bodyMedium"
-                            style={{
-                              fontSize: fontSz(10),
-                              paddingHorizontal: wp(4),
-                            }}
-                            color={item.statusTextColor}>
-                            {item.status}
-                          </Text>
-                        </Box>
-                      </Box>
-                    );
-                  })}
+                            <Box
+                              bg={
+                                report?.status === 'accepted'
+                                  ? theme.colors.SEMANTIC_GREEN
+                                  : report?.status === 'declined'
+                                  ? theme.colors.RED
+                                  : theme.colors.LIGHT_YELLOW
+                              }
+                              style={{padding: wp(4)}}
+                              borderRadius={hp(10)}
+                              borderWidth={0}>
+                              <Text
+                                variant="bodyMedium"
+                                style={{
+                                  fontSize: fontSz(10),
+                                  paddingHorizontal: wp(4),
+                                }}
+                                color={
+                                  report?.status === 'accepted'
+                                    ? theme.colors.DARKER_GREEN
+                                    : report?.status === 'declined'
+                                    ? theme.colors.WHITE
+                                    : theme.colors.SEMANTIC_YELLOW
+                                }>
+                                {report?.status || 'pending'}
+                              </Text>
+                            </Box>
+                          </Box>
+                        );
+                      })
+                    : proofOfPlay?.map((item: any) => {
+                        return (
+                          <Box
+                            key={item.id}
+                            flexDirection={'row'}
+                            alignItems={'center'}
+                            mb={hp(12)}
+                            borderBottomWidth={1}
+                            borderBottomColor={theme.colors.BASE_SECONDARY}
+                            pb={hp(16)}
+                            justifyContent={'space-between'}>
+                            <Box flexDirection={'row'} alignItems={'center'}>
+                              <Text
+                                variant="bodyMedium"
+                                color={theme.colors.TEXT_INPUT_PLACEHOLDER}>
+                                {item.title}
+                              </Text>
+                              <Box
+                                width={wp(4)}
+                                height={hp(4)}
+                                mx={wp(12)}
+                                bg={theme.colors.TEXT_INPUT_PLACEHOLDER}
+                                borderRadius={hp(10)}
+                              />
+                              <Text
+                                variant="bodyMedium"
+                                color={theme.colors.TEXT_INPUT_PLACEHOLDER}>
+                                {item.date}
+                              </Text>
+                            </Box>
+
+                            <Box
+                              bg={item.statusBg}
+                              style={{padding: wp(4)}}
+                              borderRadius={hp(10)}
+                              borderWidth={item.statusBgBorder ? 1 : 0}
+                              borderColor={item.statusBgBorder}>
+                              <Text
+                                variant="bodyMedium"
+                                style={{
+                                  fontSize: fontSz(10),
+                                  paddingHorizontal: wp(4),
+                                }}
+                                color={item.statusTextColor}>
+                                {item.status}
+                              </Text>
+                            </Box>
+                          </Box>
+                        );
+                      })}
                 </Box>
               )}
             </Box>

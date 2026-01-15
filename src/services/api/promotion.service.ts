@@ -3,7 +3,7 @@ import {
   ApproveDeclinePromoRequestPayload,
   CreatePromotionPayload,
   PromotionPaymentSummaryPayload,
-  PromotionRequestsResponse,
+  PromoRequestsResponse,
 } from 'interfaces/services';
 
 export const getPromotions = async (): Promise<any> => {
@@ -31,12 +31,17 @@ export const getPromotionPaymentSummary = async (
   return post('promotions/payment-summary', payload).then(data => data as any);
 };
 
-export const getPromotionRequests =
-  async (): Promise<PromotionRequestsResponse> => {
-    return get('promotions/requests').then(
-      data => data as PromotionRequestsResponse,
-    );
-  };
+export const getPromotionRequests = async (
+  page: number = 1,
+): Promise<PromoRequestsResponse> => {
+  return get(`promotions/requests?page=${page}`).then(
+    data => data as PromoRequestsResponse,
+  );
+};
+
+export const getPromotion = async (promotionId: string): Promise<any> => {
+  return get(`promotions/${promotionId}`).then(data => data as any);
+};
 
 export const getPromotionTypes = async (): Promise<any> => {
   return get('promotion-types').then(data => data as any);

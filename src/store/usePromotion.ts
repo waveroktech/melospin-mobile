@@ -1,4 +1,4 @@
-import {useMutation, useQuery} from '@tanstack/react-query';
+import {useInfiniteQuery, useMutation, useQuery} from '@tanstack/react-query';
 import {
   approveDeclinePromoRequest,
   getPromotions,
@@ -7,6 +7,7 @@ import {
   setCreatePromotion,
   getPromotionPaymentSummary,
   getPromotionRequests,
+  getPromotion,
   getPromotionTypes,
   uploadProofOfPlay,
 } from 'services/api/promotion.service';
@@ -76,10 +77,23 @@ export const usePromotionPaymentSummary = ({
 };
 
 export const useGetPromotionRequests = (enabled: boolean = true) => {
-  return useQuery({
+  return useInfiniteQuery({
     queryKey: ['get-promotion-requests'],
-    queryFn: () => getPromotionRequests(),
+    queryFn: ({pageParam = 1}) => getPromotionRequests(pageParam),
+    getNextPageParam: lastPage => {
+      if (lastPage?.pagination?.nextPage) {
+        return lastPage.pagination.nextPage;
+      }
+      return undefined;
+    },
+    getPreviousPageParam: firstPage => {
+      if (firstPage?.pagination?.prevPage) {
+        return firstPage.pagination.prevPage;
+      }
+      return undefined;
+    },
     enabled,
+    initialPageParam: 1,
   });
 };
 
@@ -88,6 +102,22 @@ export const useGetPromotionTypes = () => {
     queryKey: ['get-promotion-types'],
     queryFn: () => getPromotionTypes(),
     enabled: false,
+  });
+};
+
+export const useGetPromotion = (
+  promotionId: string | null,
+  enabled: boolean = true,
+) => {
+  return useQuery({
+    queryKey: ['get-promotion', promotionId],
+    queryFn: () => {
+      if (!promotionId) {
+        throw new Error('Promotion ID is required');
+      }
+      return getPromotion(promotionId);
+    },
+    enabled: enabled && !!promotionId,
   });
 };
 
