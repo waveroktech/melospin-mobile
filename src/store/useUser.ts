@@ -5,6 +5,7 @@ import {
   getDJs,
   getUserProfile,
   setUserProfileUpdate,
+  submitKyc,
   updateBookingRate,
   updateUserBankDetails,
   updateUserPlaySessions,
@@ -131,6 +132,20 @@ export const useUpdateUserPlaySessions = ({
 }) => {
   return useMutation({
     mutationFn: updateUserPlaySessions,
+    onSuccess,
+    onError,
+  });
+};
+
+export const useSubmitKyc = ({
+  onError,
+  onSuccess,
+}: {
+  onError?: any;
+  onSuccess?: any;
+}) => {
+  return useMutation({
+    mutationFn: submitKyc,
     onSuccess,
     onError,
   });

@@ -12,3 +12,12 @@ export interface BankListResponse {
   name: string;
   active: boolean;
 }
+
+export interface KycSubmissionPayload {
+  userId: string;
+  file: {uri: string; type?: string; name?: string};
+  identificationType: string;
+  identificationNumber: string;
+  homeAddress: string;
+  phoneNumber: string;
+}

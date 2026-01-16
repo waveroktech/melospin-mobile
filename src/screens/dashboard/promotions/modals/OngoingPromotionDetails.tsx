@@ -10,6 +10,7 @@ import {styles} from './style';
 import {PromoRequest} from 'interfaces/services';
 import moment from 'moment';
 import {useGetPromotion} from 'store';
+import {ProofOfPlayUpload} from '../components';
 
 interface OngoingPromotionDetailsProps {
   isVisible: boolean;
@@ -28,6 +29,9 @@ export const OngoingPromotionDetails = ({
   // Get promotion ID from the promotion prop
   const promotionId =
     promotion?.promotion?._id || promotion?.playInfo?.playId || null;
+
+  // Get request ID for proof of play upload
+  const requestId = promotion?.playInfo?.playId || null;
 
   // Fetch promotion details using the query hook
   const {
@@ -356,35 +360,10 @@ export const OngoingPromotionDetails = ({
               </Box>
             </Box>
 
-            <Box
-              mt={hp(30)}
-              mx={wp(16)}
-              borderWidth={1}
-              borderColor={theme.colors.BASE_SECONDARY}
-              borderRadius={hp(24)}
-              flexDirection={'row'}
-              as={TouchableOpacity}
-              activeOpacity={0.8}
-              alignItems={'center'}
-              p={hp(16)}>
-              <Box
-                width={wp(56)}
-                height={hp(56)}
-                borderRadius={hp(12)}
-                bg={theme.colors.OFF_BLACK_300}
-                alignItems={'center'}
-                justifyContent={'center'}>
-                <Icon name="video-icon" />
-              </Box>
-
-              <Text
-                variant="body"
-                color={theme.colors.WHITE}
-                ml={wp(12)}
-                fontSize={fontSz(12)}>
-                Click here to Upload Proof of Play
-              </Text>
-            </Box>
+            <ProofOfPlayUpload
+              requestId={requestId}
+              onUploadSuccess={refetch}
+            />
 
             <Box
               mt={hp(30)}

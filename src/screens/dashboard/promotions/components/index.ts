@@ -13,3 +13,4 @@ export * from './SelectDjItem';
 export * from './FilterTabs';
 export * from './SelectDjItemComponent';
 export * from './SelectedDjsList';
+export * from './ProofOfPlayUpload';

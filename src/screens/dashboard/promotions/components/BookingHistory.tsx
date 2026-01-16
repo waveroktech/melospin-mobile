@@ -136,6 +136,8 @@ export const BookingHistory = () => {
         ListHeaderComponent={renderHeader}
         data={promoRequests}
         renderItem={({item}) => {
+          console.log(item);
+          console.log(item?.playInfo?.requestStatus);
           return (
             <PromotionItem
               promotion={item}

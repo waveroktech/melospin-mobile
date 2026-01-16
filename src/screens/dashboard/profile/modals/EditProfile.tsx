@@ -1,16 +1,14 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {Box, Button, FormInput, Text} from 'design-system';
+import {Box, Button, FormInput} from 'design-system';
 import {AvoidingView, BaseModal, Loader, ModalHeader} from 'shared';
-import {fontSz, hp, wp} from 'utils';
-import {Image, ScrollView, TouchableOpacity} from 'react-native';
+import {hp} from 'utils';
+import {ScrollView} from 'react-native';
 import {useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import theme from 'theme';
-import {useGetGenre} from 'store/useGenre';
 import {useGetUserProfile, useMelospinStore, useUserProfileUpdate} from 'store';
-import {styles} from './style';
 import {showMessage} from 'react-native-flash-message';
+import {GenreSelector} from '../components';
 
 interface EditProfileProps {
   isVisible: boolean;
@@ -32,11 +30,7 @@ const schema = yup.object().shape({
 });
 
 export const EditProfile = ({isVisible, onClose}: EditProfileProps) => {
-  const {data: musicGenres, refetch} = useGetGenre();
-
   const {userData} = useMelospinStore();
-
-  console.log(userData, 'userData');
 
   const {refetch: refetchUserProfile} = useGetUserProfile({
     userId: userData?.userId,
@@ -52,23 +46,17 @@ export const EditProfile = ({isVisible, onClose}: EditProfileProps) => {
   const {control, watch} = useForm<FormData>({
     resolver: yupResolver(schema),
     defaultValues: {
-      brandName: userData?.brandName,
-      tiktok: userData?.tictok,
-      snapchat: userData?.snapchat,
-      instagram: userData?.instagram,
+      brandName: userData?.brandName || '',
+      tiktok: userData?.tictok || '',
+      snapchat: userData?.snapchat || '',
+      instagram: userData?.instagram || '',
     },
     mode: 'all',
   });
 
   const form = watch();
 
-  useEffect(() => {
-    if (isVisible) {
-      refetch();
-    }
-  }, [isVisible, refetch]);
-
-  const selectGenre = async (selector: string) => {
+  const selectGenre = (selector: string) => {
     setSelectedGenres(prevState => {
       if (prevState.includes(selector)) {
         return prevState.filter(genre => genre !== selector);
@@ -106,7 +94,7 @@ export const EditProfile = ({isVisible, onClose}: EditProfileProps) => {
       twitter: form.tiktok,
       instagram: form.instagram,
       user_id: userData?.userId,
-      userType: userData?.currentUserType,
+      userType: userData?.currentUserType || '',
     });
   }, [
     form.brandName,
@@ -143,58 +131,10 @@ export const EditProfile = ({isVisible, onClose}: EditProfileProps) => {
                 value={form.brandName}
               />
 
-              <Box
-                bg={theme.colors.TEXT_INPUT_BG}
-                pt={hp(12)}
-                px={wp(16)}
-                mb={hp(20)}
-                pb={hp(16)}
-                borderRadius={hp(24)}>
-                <Text variant="body" color={theme.colors.WHITE}>
-                  Select genre of music you specialize in
-                </Text>
-                <Box
-                  mt={hp(10)}
-                  flexDirection={'row'}
-                  alignItems={'center'}
-                  flexWrap={'wrap'}>
-                  {musicGenres?.data?.map(
-                    (genre: {_id: string; title: string}) => {
-                      return (
-                        <Box
-                          key={genre?._id}
-                          flexDirection={'row'}
-                          alignItems={'center'}
-                          mr={2}
-                          py={2}
-                          onPress={() => selectGenre(genre?.title)}
-                          as={TouchableOpacity}
-                          activeOpacity={0.8}
-                          px={2}
-                          borderRadius={hp(24)}
-                          mb={10}
-                          bg={theme.colors.BASE_SECONDARY}>
-                          <Image
-                            source={
-                              selectedGenres?.includes(genre.title)
-                                ? theme.images.icons['active-tick']
-                                : theme.images.icons['inactive-tick']
-                            }
-                            style={styles.icon}
-                          />
-                          <Text
-                            pl={2}
-                            variant="body"
-                            fontSize={fontSz(14)}
-                            color={theme.colors.WHITE}>
-                            {genre?.title}
-                          </Text>
-                        </Box>
-                      );
-                    },
-                  )}
-                </Box>
-              </Box>
+              <GenreSelector
+                selectedGenres={selectedGenres}
+                onGenreSelect={selectGenre}
+              />
 
               <FormInput
                 label="Instagram handle"

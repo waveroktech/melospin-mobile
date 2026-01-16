@@ -3,14 +3,15 @@ import {Box, Text} from 'design-system';
 import {fontSz, hp, wp} from 'utils';
 import theme from 'theme';
 import {TouchableOpacity} from 'react-native';
-import {playSpots} from 'data';
 import {Icon} from 'shared';
+import {useMelospinStore} from 'store';
 
 interface PlaySpotsProps {
   onAddNew: () => void;
 }
 
 export const PlaySpots = ({onAddNew}: PlaySpotsProps) => {
+  const {userInfo} = useMelospinStore();
   return (
     <Box
       mt={hp(26)}
@@ -37,35 +38,29 @@ export const PlaySpots = ({onAddNew}: PlaySpotsProps) => {
       </Box>
 
       <Box mt={hp(16)}>
-        {playSpots.map((spot, index) => (
+        <Box flexDirection={'row'} alignItems={'center'}>
           <Box
-            key={spot.id}
-            flexDirection={'row'}
-            alignItems={'center'}
-            mb={index < playSpots.length - 1 ? hp(16) : 0}>
-            <Box
-              width={wp(32)}
-              height={wp(32)}
-              bg={theme.colors.OFF_BLACK_300}
-              borderRadius={hp(12)}
-              justifyContent={'center'}
-              alignItems={'center'}>
-              <Icon name="spot-icon" />
-            </Box>
-            <Box ml={wp(12)}>
-              <Text variant="bodyMedium" color={theme.colors.WHITE}>
-                {spot.title}
-              </Text>
-              <Text
-                variant="body"
-                pt={hp(2)}
-                fontSize={fontSz(12)}
-                color={theme.colors.OFF_WHITE_100}>
-                {spot.location}
-              </Text>
-            </Box>
+            width={wp(32)}
+            height={wp(32)}
+            bg={theme.colors.OFF_BLACK_300}
+            borderRadius={hp(12)}
+            justifyContent={'center'}
+            alignItems={'center'}>
+            <Icon name="spot-icon" />
           </Box>
-        ))}
+          <Box ml={wp(12)}>
+            <Text variant="bodyMedium" color={theme.colors.WHITE}>
+              {userInfo?.playSpot}
+            </Text>
+            <Text
+              variant="body"
+              pt={hp(2)}
+              fontSize={fontSz(12)}
+              color={theme.colors.OFF_WHITE_100}>
+              {userInfo?.playSpotAddress}
+            </Text>
+          </Box>
+        </Box>
       </Box>
     </Box>
   );

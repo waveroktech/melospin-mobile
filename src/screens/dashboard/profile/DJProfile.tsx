@@ -20,7 +20,14 @@ export const DJProfile = () => {
   const [open, setOpen] = useState<
     'share-profile' | 'edit-profile' | 'manage-kyc' | 'add-new-play-spot' | ''
   >('');
-  const {userData} = useMelospinStore();
+  const {userInfo} = useMelospinStore();
+
+  console.log(userInfo, 'userInfo');
+
+  // Get KYC status from userData, default to 'pending' if not available
+  const kycStatusKey =
+    (userInfo?.kycStatus as 'pending' | 'approved' | 'rejected') || 'pending';
+  const currentKycStatus = kycStatus[kycStatusKey] || kycStatus.pending;
 
   return (
     <Screen removeSafeaArea>
@@ -98,7 +105,7 @@ export const DJProfile = () => {
                 fontSize={fontSz(16)}
                 pr={2}
                 color={theme.colors.WHITE}>
-                {userData?.brandName}
+                {userInfo?.brandName}
               </Text>
               <Box top={0.5}>
                 <Icon name="verified-icon" />
@@ -213,11 +220,11 @@ export const DJProfile = () => {
                     Manage KYC
                   </Text>
                   <Box
-                    bg={kycStatus.pending.bgColor}
+                    bg={currentKycStatus.bgColor}
                     style={styles.kycStatusContainer}
                     borderRadius={hp(12)}>
-                    <Text color={kycStatus.pending.textColor}>
-                      {kycStatus.pending.title}
+                    <Text color={currentKycStatus.textColor}>
+                      {currentKycStatus.title}
                     </Text>
                   </Box>
                 </Box>
@@ -227,7 +234,7 @@ export const DJProfile = () => {
                 pt={hp(12)}
                 fontSize={fontSz(12)}
                 color={theme.colors.TEXT_INPUT_PLACEHOLDER}>
-                {kycStatus.pending.description}
+                {currentKycStatus.description}
               </Text>
             </Box>
             <PlaySpots
@@ -236,7 +243,7 @@ export const DJProfile = () => {
               }}
             />
 
-            <Genres genres={userData?.musicGenres || []} />
+            <Genres genres={userInfo?.musicGenres || []} />
           </Box>
         </Box>
       </ScrollView>

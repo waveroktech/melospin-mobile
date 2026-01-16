@@ -81,3 +81,25 @@ export const updateUserPlaySessions = async (payload: {
     data => data as any,
   );
 };
+
+export const submitKyc = async (payload: {
+  userId: string;
+  file: {uri: string; type?: string; name?: string};
+  identificationType: string;
+  identificationNumber: string;
+  homeAddress: string;
+  phoneNumber: string;
+}): Promise<any> => {
+  const formData = new FormData();
+  formData.append('file', {
+    uri: payload.file.uri,
+    type: payload.file.type || 'image/png',
+    name: payload.file.name || 'kyc-document.png',
+  } as any);
+  formData.append('identificationType', payload.identificationType);
+  formData.append('identificationNumber', payload.identificationNumber);
+  formData.append('homeAddress', payload.homeAddress);
+  formData.append('phoneNumber', payload.phoneNumber);
+
+  return put(`users/${payload.userId}/kyc`, formData).then(data => data as any);
+};

@@ -18,7 +18,7 @@ export const DjEarnings = ({setActiveIndex}: DjEarningsProps) => {
   const [open, setOpen] = useState<'cashout' | ''>('');
   const {userInfo} = useMelospinStore();
   const balance = userInfo?.balance;
-  console.log(balance, 'balance');
+  console.log(userInfo, 'balance');
 
   const addBank = () => {
     setOpen('');
