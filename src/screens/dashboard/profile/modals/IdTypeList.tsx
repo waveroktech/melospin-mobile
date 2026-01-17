@@ -9,7 +9,7 @@ import {TouchableOpacity} from 'react-native';
 interface IdTypeListProps {
   isVisible: boolean;
   onClose: () => void;
-  onComplete: (value: string) => void;
+  onComplete: (value: {id: number; title: string; value: string}) => void;
 }
 
 export const IdTypeList = ({
@@ -29,7 +29,7 @@ export const IdTypeList = ({
                 key={index}
                 as={TouchableOpacity}
                 activeOpacity={0.8}
-                onPress={() => onComplete(item.title)}
+                onPress={() => onComplete(item)}
                 height={hp(56)}
                 flexDirection={'row'}
                 alignItems={'center'}

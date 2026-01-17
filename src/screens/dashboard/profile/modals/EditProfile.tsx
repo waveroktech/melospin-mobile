@@ -115,7 +115,7 @@ export const EditProfile = ({isVisible, onClose}: EditProfileProps) => {
         />
 
         <AvoidingView>
-          <ScrollView>
+          <ScrollView contentContainerStyle={{paddingBottom: hp(120)}} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
             <Box mt={hp(40)} mx={16}>
               <FormInput
                 label="Brand name"
@@ -150,7 +150,7 @@ export const EditProfile = ({isVisible, onClose}: EditProfileProps) => {
                 name="tiktok"
                 value={form.tiktok}
               />
-              <FormInput
+             <FormInput
                 label="Snapchat handle"
                 autoCapitalize="none"
                 control={control}

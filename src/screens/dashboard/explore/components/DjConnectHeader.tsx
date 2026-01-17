@@ -20,7 +20,7 @@ export const DjConnectHeader = ({
   connectCount,
   requestCount,
 }: DjConnectHeaderProps) => {
-  const {userData} = useMelospinStore();
+  const {userData, userInfo} = useMelospinStore();
   return (
     <Box
       bg={theme.colors.BASE_SECONDARY}
@@ -32,7 +32,7 @@ export const DjConnectHeader = ({
       <Box flexDirection={'row'} justifyContent={'space-between'}>
         <Box flexDirection={'row'} alignItems={'center'}>
           <Image
-            source={theme.images['dj-images']['dj-1']}
+            source={userInfo?.profileUrl ? {uri: userInfo?.profileUrl} : theme.images['dj-images']['dj-1']}
             style={styles.djProfileImage}
           />
 

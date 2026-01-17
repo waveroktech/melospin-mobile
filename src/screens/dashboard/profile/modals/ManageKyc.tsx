@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {Box, Button, Text} from 'design-system';
-import {AvoidingView, BaseModal, ModalHeader} from 'shared';
+import {AvoidingView, BaseModal, Loader, ModalHeader} from 'shared';
 import {hp, wp} from 'utils';
 import {ScrollView} from 'react-native';
 import {FormInput} from 'design-system';
@@ -16,6 +16,9 @@ import {
   MediaType,
 } from 'react-native-image-picker';
 import {showMessage} from 'react-native-flash-message';
+import {useSubmitKyc} from 'store/useUser';
+import {useMelospinStore} from 'store';
+import {useQueryClient} from '@tanstack/react-query';
 
 interface ManageKycProps {
   isVisible: boolean;
@@ -40,12 +43,16 @@ const schema = yup.object().shape({
 
 export const ManageKyc = ({isVisible, onClose}: ManageKycProps) => {
   const [open, setOpen] = useState<'id-type' | ''>('');
+  const {userInfo} = useMelospinStore();
+  const queryClient = useQueryClient();
 
   const {
     control,
     watch,
     setValue,
+    handleSubmit,
     formState: {errors},
+    reset,
   } = useForm<FormData>({
     resolver: yupResolver(schema),
     defaultValues: {
@@ -59,6 +66,71 @@ export const ManageKyc = ({isVisible, onClose}: ManageKycProps) => {
   });
 
   const form = watch();
+
+  // Submit KYC mutation
+  const {mutate: submitKyc, isPending} = useSubmitKyc({
+    onSuccess: (data: any) => {
+      if (data?.status === 'success' || data?.data) {
+        showMessage({
+          message: 'KYC submitted successfully',
+          type: 'success',
+          duration: 2000,
+        });
+        // Invalidate user profile query to get updated KYC status
+        queryClient.invalidateQueries({queryKey: ['get-user-profile']});
+        // Reset form and close modal
+        reset();
+        onClose();
+      } else {
+        showMessage({
+          message: data?.message || 'Failed to submit KYC',
+          type: 'danger',
+          duration: 2000,
+        });
+      }
+    },
+    onError: (error: any) => {
+      showMessage({
+        message: error?.message || 'Failed to submit KYC',
+        type: 'danger',
+        duration: 2000,
+      });
+    },
+  });
+
+  // Handle form submission
+  const onSubmit = (data: FormData) => {
+    if (!userInfo?.userId) {
+      showMessage({
+        message: 'User ID not found',
+        type: 'danger',
+        duration: 2000,
+      });
+      return;
+    }
+
+    if (!data.idFile?.uri) {
+      showMessage({
+        message: 'Please upload an ID document',
+        type: 'danger',
+        duration: 2000,
+      });
+      return;
+    }
+
+    submitKyc({
+      userId: userInfo.userId,
+      file: {
+        uri: data.idFile.uri,
+        type: data.idFile.type || 'image/png',
+        name: data.idFile.name || 'kyc-document.png',
+      },
+      identificationType: data.idType.toLowerCase(),
+      identificationNumber: data.idNumber,
+      homeAddress: data.personalAddress,
+      phoneNumber: data.phoneNumber,
+    });
+  };
 
   const openMediaPicker = async () => {
     try {
@@ -116,6 +188,7 @@ export const ManageKyc = ({isVisible, onClose}: ManageKycProps) => {
                 control={control}
                 name="phoneNumber"
                 value={form.phoneNumber}
+                maxLength={11}
                 keyboardType="numeric"
                 errorText={errors.phoneNumber?.message}
               />
@@ -157,6 +230,8 @@ export const ManageKyc = ({isVisible, onClose}: ManageKycProps) => {
                   autoCapitalize="none"
                   control={control}
                   name="idNumber"
+                  keyboardType="numeric"
+                  maxLength={11}
                   value={form.idNumber}
                   errorText={errors.idNumber?.message}
                 />
@@ -180,25 +255,28 @@ export const ManageKyc = ({isVisible, onClose}: ManageKycProps) => {
       <Button
         title="Submit"
         hasBorder
-        onPress={() => {}}
+        onPress={handleSubmit(onSubmit)}
         iconName="arrow-right-3"
         disabled={
-          form.phoneNumber &&
-          form.personalAddress &&
-          form.idType &&
-          form.idNumber &&
-          form.idFile
-            ? false
-            : true
+          isPending ||
+          !(
+            form.phoneNumber &&
+            form.personalAddress &&
+            form.idType &&
+            form.idNumber &&
+            form.idFile
+          )
         }
       />
+
+      <Loader loading={isPending} />
 
       <IdTypeList
         isVisible={open === 'id-type'}
         onClose={() => setOpen('')}
         onComplete={value => {
           setOpen('');
-          setValue('idType', value);
+          setValue('idType', value.title);
         }}
       />
     </BaseModal>

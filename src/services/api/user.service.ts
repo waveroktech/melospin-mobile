@@ -1,4 +1,7 @@
-import {UserProfileUpdateRequest} from 'interfaces/services/user.interface';
+import {
+  UploadProfileImagePayload,
+  UserProfileUpdateRequest,
+} from 'interfaces/services/user.interface';
 import {get, put} from './melospin.service';
 
 export const setUserProfileUpdate = async (
@@ -102,4 +105,20 @@ export const submitKyc = async (payload: {
   formData.append('phoneNumber', payload.phoneNumber);
 
   return put(`users/${payload.userId}/kyc`, formData).then(data => data as any);
+};
+
+export const uploadProfileImage = async (
+  payload: UploadProfileImagePayload,
+): Promise<any> => {
+  const formData = new FormData();
+  formData.append('file', {
+    uri: payload.file.uri,
+    type: payload.file.type || 'image/png',
+    name: payload.file.name || 'profile-image.png',
+  } as any);
+  formData.append('imageType', payload.imageType || 'profile');
+
+  return put(`users/${payload.userId}/user-image`, formData).then(
+    data => data as any,
+  );
 };

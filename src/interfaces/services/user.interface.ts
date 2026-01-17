@@ -21,3 +21,9 @@ export interface KycSubmissionPayload {
   homeAddress: string;
   phoneNumber: string;
 }
+
+export interface UploadProfileImagePayload {
+  userId: string;
+  file: {uri: string; type?: string; name?: string};
+  imageType?: string;
+}

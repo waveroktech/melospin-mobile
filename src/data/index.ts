@@ -1485,19 +1485,8 @@ export const kycStatus = {
 export const idTypeList = [
   {
     id: 1,
-    title: 'National ID',
-  },
-  {
-    id: 2,
-    title: 'Passport',
-  },
-  {
-    id: 3,
-    title: "Driver's License",
-  },
-  {
-    id: 4,
-    title: "Voter's Card",
+    title: 'NIN',
+    value: 'nin',
   },
 ];
 

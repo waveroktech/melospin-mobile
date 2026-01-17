@@ -10,6 +10,7 @@ import {
   updateUserBankDetails,
   updateUserPlaySessions,
   updateUserPreferences,
+  uploadProfileImage,
 } from 'services/api/user.service';
 import {useMelospinStore} from './useStore';
 import {useEffect} from 'react';
@@ -146,6 +147,20 @@ export const useSubmitKyc = ({
 }) => {
   return useMutation({
     mutationFn: submitKyc,
+    onSuccess,
+    onError,
+  });
+};
+
+export const useUploadProfileImage = ({
+  onError,
+  onSuccess,
+}: {
+  onError?: any;
+  onSuccess?: any;
+}) => {
+  return useMutation({
+    mutationFn: uploadProfileImage,
     onSuccess,
     onError,
   });

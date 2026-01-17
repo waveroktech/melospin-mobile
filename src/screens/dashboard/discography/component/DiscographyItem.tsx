@@ -33,7 +33,7 @@ export const DiscographyItem = ({
 }: DiscographyItemProps) => {
   console.log(item);
   const [showToast, setShowToast] = useState(false);
-  const {mutate: deleteDiscography, isPending} = useDeleteDiscography({
+  const {mutate: deleteDiscography} = useDeleteDiscography({
     onSuccess: (data: any) => {
       console.log(data, 'data');
     },

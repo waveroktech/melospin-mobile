@@ -18,7 +18,7 @@ export const DashboardHeader = ({title}: DashboardHeaderProps) => {
   const [open, setOpen] = useState<'profile-options' | ''>('');
   const {navigate} = useNavigation<NavigationProp<DashboardStackParamList>>();
 
-  const {logoutUser, userType} = useMelospinStore();
+  const {logoutUser, userType, userInfo} = useMelospinStore();
 
   const handleLogout = () => {
     setOpen('');
@@ -44,6 +44,7 @@ export const DashboardHeader = ({title}: DashboardHeaderProps) => {
       navigate('Settings');
     }, 400);
   };
+
   return (
     <Box>
       <Box
@@ -77,7 +78,7 @@ export const DashboardHeader = ({title}: DashboardHeaderProps) => {
               }}
               style={styles.gradientContainer}>
               <Image
-                source={theme.images.artist}
+                source={userInfo?.profileUrl ? {uri: userInfo?.profileUrl} : theme.images.artist}
                 style={styles.imageContainer}
               />
             </GradientBorderView>

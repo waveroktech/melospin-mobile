@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {Box, Text} from 'design-system';
-import {Header, Icon, Screen} from 'shared';
+import {Header, Icon, Screen, Loader} from 'shared';
 import {fontSz, hp, wp} from 'utils';
 import {GradientBorderView} from '@good-react-native/gradient-border';
 import {
@@ -8,6 +8,7 @@ import {
   ImageBackground,
   ScrollView,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import theme from 'theme';
 import {styles} from './style';
@@ -15,27 +16,142 @@ import {AddNewPlaySpot, EditProfile, ManageKyc, ShareProfile} from './modals';
 import {useMelospinStore} from 'store';
 import {kycStatus} from 'data';
 import {Genres, PlaySpots} from './components';
+import {
+  launchImageLibrary,
+  ImagePickerResponse,
+  MediaType,
+} from 'react-native-image-picker';
+import {useUploadProfileImage} from 'store/useUser';
+import {showMessage} from 'react-native-flash-message';
+import {useQueryClient} from '@tanstack/react-query';
 
 export const DJProfile = () => {
   const [open, setOpen] = useState<
     'share-profile' | 'edit-profile' | 'manage-kyc' | 'add-new-play-spot' | ''
   >('');
-  const {userInfo} = useMelospinStore();
+  const [selectedImage, setSelectedImage] = useState<{
+    uri: string;
+    type?: string;
+    name?: string;
+  } | null>(null);
+
+
+  const {userInfo, setUserInfo} = useMelospinStore();
+  const queryClient = useQueryClient();
+
+  // Get KYC status from userInfo
+  // Check for status field (can be "uploaded" when document is uploaded but not reviewed)
+  // Check for kyc field (final status: pending/approved/rejected)
+  // Check for kycStatus field (legacy support)
+  const getKycStatus = (): 'pending' | 'approved' | 'rejected' => {
+    // If status is "uploaded", it means document is uploaded but pending review
+    if ((userInfo as any)?.status === 'uploaded') {
+      return 'pending';
+    }
+    // Check kyc field for final status
+    if (userInfo?.kyc) {
+      return userInfo.kyc as 'pending' | 'approved' | 'rejected';
+    }
+    // Check kycStatus field (legacy support)
+    if (userInfo?.kycStatus) {
+      return userInfo.kycStatus;
+    }
+    return 'pending';
+  };
+
+  const kycStatusKey = getKycStatus();
+  const currentKycStatus = kycStatus[kycStatusKey] || kycStatus.pending;
+
+  console.log(currentKycStatus, 'userInfo');
+
+  // Upload profile image mutation
+  const {mutate: uploadProfileImage, isPending: isUploading} =
+    useUploadProfileImage({
+      onSuccess: (data: any) => {
+        if (data?.status === 'success' || data?.data) {
+          showMessage({
+            message: 'Profile image updated successfully',
+            type: 'success',
+            duration: 2000,
+          });
+          // Update user info with new profile URL if provided
+          if (data?.data?.profileUrl) {
+            setUserInfo({...userInfo, profileUrl: data.data.profileUrl});
+          }
+          // Invalidate user profile query to refetch updated data
+          queryClient.invalidateQueries({queryKey: ['get-user-profile']});
+          setSelectedImage(null);
+        } else {
+          showMessage({
+            message: data?.message || 'Failed to upload profile image',
+            type: 'danger',
+            duration: 2000,
+          });
+        }
+      },
+      onError: (error: any) => {
+        showMessage({
+          message: error?.message || 'Failed to upload profile image',
+          type: 'danger',
+          duration: 2000,
+        });
+      },
+    });
+
+  // Open image picker
+  const openImagePicker = () => {
+    launchImageLibrary(
+      {
+        mediaType: 'photo' as MediaType,
+        quality: 1,
+        selectionLimit: 1,
+      },
+      (response: ImagePickerResponse) => {
+        if (response.didCancel) {
+          return;
+        }
+        if (response.errorMessage) {
+          Alert.alert('Error', response.errorMessage);
+          return;
+        }
+        if (response.assets && response.assets.length > 0) {
+          const asset = response.assets[0];
+          const file = {
+            uri: asset.uri || '',
+            type: asset.type || 'image/jpeg',
+            name:
+              asset.fileName ||
+              asset.uri?.split('/').pop() ||
+              'profile-image.jpg',
+          };
+          setSelectedImage(file);
+          // Automatically upload after selection
+          if (userInfo?.userId) {
+            uploadProfileImage({
+              userId: userInfo.userId,
+              file,
+              imageType: 'profile',
+            });
+          }
+        }
+      },
+    );
+  };
 
   console.log(userInfo, 'userInfo');
-
-  // Get KYC status from userData, default to 'pending' if not available
-  const kycStatusKey =
-    (userInfo?.kycStatus as 'pending' | 'approved' | 'rejected') || 'pending';
-  const currentKycStatus = kycStatus[kycStatusKey] || kycStatus.pending;
 
   return (
     <Screen removeSafeaArea>
       <Header hasBackText="Profile" />
-
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{paddingBottom: hp(50)}}>
+      <Box flex={1}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{paddingBottom: hp(120)}}
+          nestedScrollEnabled={true}
+          keyboardShouldPersistTaps="handled"
+          scrollEventThrottle={16}
+          bounces={true}
+          removeClippedSubviews={false}>
         <Box mt={hp(20)} mx={wp(16)}>
           <Box>
             <GradientBorderView
@@ -78,10 +194,28 @@ export const DJProfile = () => {
                 style={styles.profileImageContainer}>
                 <Box>
                   <Image
-                    source={theme.images['dj-images']['dj-1']}
+                    source={
+                      selectedImage?.uri || userInfo?.profileUrl
+                        ? {uri: selectedImage?.uri || userInfo?.profileUrl }
+                        : theme.images['dj-images']['dj-1']
+                    }
                     style={styles.djProfileImage2}
-                    resizeMode="contain"
+                    resizeMode="cover"
                   />
+                  {isUploading && (
+                    <Box
+                      position="absolute"
+                      top={0}
+                      left={0}
+                      right={0}
+                      bottom={0}
+                      justifyContent="center"
+                      alignItems="center"
+                      bg={theme.colors.OFF_BLACK_200}
+                      borderRadius={hp(100)}>
+                      <Loader loading={true} />
+                    </Box>
+                  )}
                 </Box>
               </GradientBorderView>
               <Box
@@ -91,7 +225,9 @@ export const DJProfile = () => {
                 position={'absolute'}
                 bottom={-hp(30)}
                 right={wp(-80)}
-                zIndex={1000}>
+                zIndex={1000}
+                onPress={openImagePicker}
+                disabled={isUploading}>
                 <Icon name="edit-icon" />
               </Box>
             </Box>
@@ -246,7 +382,8 @@ export const DJProfile = () => {
             <Genres genres={userInfo?.musicGenres || []} />
           </Box>
         </Box>
-      </ScrollView>
+        </ScrollView>
+      </Box>
 
       <ShareProfile
         isVisible={open === 'share-profile'}

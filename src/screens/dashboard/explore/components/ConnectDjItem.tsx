@@ -56,7 +56,7 @@ export const ConnectDjItem = ({item}: ConnectDjItemProps) => {
         borderRadius={hp(24)}
         height={hp(137)}>
         <Image
-          source={theme.images['dj-images']['dj-1']}
+          source={item?.profileUrl ? {uri: item?.profileUrl} : theme.images['dj-images']['dj-1']}
           style={styles.profileImage}
         />
 
