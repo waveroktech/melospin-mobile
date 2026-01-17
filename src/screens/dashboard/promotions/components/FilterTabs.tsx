@@ -117,7 +117,14 @@ export const FilterTabs = ({
             {title}
           </Text>
 
-          {(selectedRate || selectedState) && (
+          {((selectedRate || selectedState) ||
+            (filters &&
+              filters.some(
+                f =>
+                  f.value &&
+                  (f.label === 'Status' ? f.value !== 'All' : true) &&
+                  (f.label === 'Timeline' ? f.value !== 'All Time' : true),
+              ))) && (
             <Box
               as={TouchableOpacity}
               activeOpacity={0.8}

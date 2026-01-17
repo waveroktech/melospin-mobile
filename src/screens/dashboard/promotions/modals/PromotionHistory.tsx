@@ -1,17 +1,18 @@
 import React, {useState} from 'react';
 import {Box, Text} from 'design-system';
 import {Icon, ModalHeader} from 'shared';
-import {deviceWidth, hp, wp} from 'utils';
+import {capitalizeTitle, deviceWidth, fontSz, formatNumberWithCommas, hp, wp} from 'utils';
 import theme from 'theme';
 import {DiscographyItem} from 'screens/dashboard/discography/component';
 import {ScrollView, StyleSheet, TouchableOpacity} from 'react-native';
-import {promotionStatusReport, streamingLinks} from 'data';
 import Modal from 'react-native-modal';
+import moment from 'moment';
+import {Promotion} from 'interfaces/services';
 
 interface PromotionHistoryProps {
   isVisible: boolean;
   onClose: () => void;
-  promotion: any;
+  promotion: Promotion | null;
 }
 
 export const PromotionHistory = ({
@@ -22,18 +23,47 @@ export const PromotionHistory = ({
   const [showPromotionDetails, setShowPromotionDetails] = useState(true);
   const [showPromotionStatusReport, setShowPromotionStatusReport] =
     useState(true);
-  const promotionData = {
-    ...promotion,
-    title: 'Baddest.zip',
-    otherArtistes: ['Falz', 'Adekunle Gold'],
-    primaryArtiste: 'Falz',
-    fileType: 'zip',
-    url: 'https://www.google.com',
-    userId: '123',
-    _id: '123',
-    createdAt: '2021-01-01',
-    updatedAt: '2021-01-01',
+
+  // Format promotion data for DiscographyItem
+  const promotionData = promotion
+    ? {
+        _id: promotion._id,
+        title: promotion.title || 'Untitled',
+        primaryArtiste: promotion.details?.owner?.firstName || 'Unknown',
+        otherArtistes: [],
+        fileType: 'zip',
+        url: promotion.details?.promotionLink || '',
+        userId: promotion.details?.owner?.promoterId || '',
+        createdAt: promotion.details?.createdAt || '',
+        updatedAt: promotion.details?.createdAt || '',
+        name: '', // Required by DiscographyItem interface
+      }
+    : null;
+
+  // Calculate timeline from start and end dates
+  const getTimeline = () => {
+    if (!promotion?.details?.startDate || !promotion?.details?.endDate) {
+      return promotion?.timeline || 'N/A';
+    }
+    const start = moment(promotion.details.startDate);
+    const end = moment(promotion.details.endDate);
+    const months = end.diff(start, 'months');
+    const days = end.diff(start, 'days');
+    if (months > 0) {
+      return `${months} ${months === 1 ? 'month' : 'months'}`;
+    }
+    return `${days} ${days === 1 ? 'day' : 'days'}`;
   };
+
+  // Get external links from promotion
+  const externalLinks =
+    (promotion?.details as any)?.externalLinks?.length > 0
+      ? (promotion?.details as any).externalLinks.map((link: any) => ({
+          icon2: 'link-icon',
+          name: link.name || 'Link',
+          url: link.link || link.url || '',
+        }))
+      : [];
 
   return (
     <Modal
@@ -70,37 +100,42 @@ export const PromotionHistory = ({
               File shared
             </Text>
 
-            <DiscographyItem item={promotionData} />
+            {promotionData && <DiscographyItem item={promotionData} />}
           </Box>
-          <Box mt={hp(20)} mx={wp(16)}>
-            <Text
-              variant="bodyBold"
-              fontFamily={theme.font.AvenirNextSemiBold}
-              color={theme.colors.WHITE}>
-              Streaming Links
-            </Text>
+          {externalLinks && externalLinks.length > 0 && (
+            <Box mt={hp(20)} mx={wp(16)}>
+              <Text
+                variant="bodyBold"
+                fontFamily={theme.font.AvenirNextSemiBold}
+                color={theme.colors.WHITE}>
+                Streaming Links
+              </Text>
 
-            <ScrollView horizontal>
-              <Box mt={hp(16)} flexDirection={'row'} alignItems={'center'}>
-                {streamingLinks?.map((song: any, index: number) => {
-                  return (
-                    <Box
-                      as={TouchableOpacity}
-                      backgroundColor={theme.colors.BLACK_DEFAULT}
-                      activeOpacity={0.8}
-                      key={index}
-                      mr={wp(10)}
-                      borderRadius={hp(24)}
-                      borderWidth={1}
-                      borderColor={theme.colors.WHITE}
-                      p={hp(12)}>
-                      <Icon name={song.icon2} color={theme.colors.WHITE} />
-                    </Box>
-                  );
-                })}
-              </Box>
-            </ScrollView>
-          </Box>
+              <ScrollView horizontal>
+                <Box mt={hp(16)} flexDirection={'row'} alignItems={'center'}>
+                  {externalLinks.map((link: any, index: number) => {
+                    return (
+                      <Box
+                        as={TouchableOpacity}
+                        backgroundColor={theme.colors.BLACK_DEFAULT}
+                        activeOpacity={0.8}
+                        key={index}
+                        mr={wp(10)}
+                        borderRadius={hp(24)}
+                        borderWidth={1}
+                        borderColor={theme.colors.WHITE}
+                        p={hp(12)}>
+                        <Icon
+                          name={link.icon2 || 'link-icon'}
+                          color={theme.colors.WHITE}
+                        />
+                      </Box>
+                    );
+                  })}
+                </Box>
+              </ScrollView>
+            </Box>
+          )}
           <Box mt={hp(32)}>
             <Box
               mx={wp(16)}
@@ -140,7 +175,9 @@ export const PromotionHistory = ({
                       Promo Start Date
                     </Text>
                     <Text variant="bodyMedium" color={theme.colors.WHITE}>
-                      10/10/2025
+                      {promotion?.details?.startDate
+                        ? moment(promotion.details.startDate).format('MM/DD/YYYY')
+                        : 'N/A'}
                     </Text>
                   </Box>
                   <Box
@@ -156,7 +193,11 @@ export const PromotionHistory = ({
                       Amount Paid (NGN)
                     </Text>
                     <Text variant="bodyMedium" color={theme.colors.WHITE}>
-                      1,500,000.00
+                      {promotion?.details?.amount
+                        ? formatNumberWithCommas(
+                            promotion.details.amount.toFixed(2),
+                          )
+                        : '0.00'}
                     </Text>
                   </Box>
                   <Box
@@ -172,7 +213,9 @@ export const PromotionHistory = ({
                       Assigned DJs
                     </Text>
                     <Text variant="bodyMedium" color={theme.colors.WHITE}>
-                      5
+                      {promotion?.djCount ||
+                        promotion?.details?.promotersCount ||
+                        0}
                     </Text>
                   </Box>
                   <Box
@@ -188,7 +231,7 @@ export const PromotionHistory = ({
                       Promotion Timeline
                     </Text>
                     <Text variant="bodyMedium" color={theme.colors.WHITE}>
-                      1 month
+                      {getTimeline()}
                     </Text>
                   </Box>
                   <Box
@@ -204,7 +247,7 @@ export const PromotionHistory = ({
                       Min. Play Count
                     </Text>
                     <Text variant="bodyMedium" color={theme.colors.WHITE}>
-                      12
+                      {promotion?.details?.minPlayCount || 0}
                     </Text>
                   </Box>
                 </Box>
@@ -234,43 +277,92 @@ export const PromotionHistory = ({
 
                 <Box>
                   <Icon
-                    name={showPromotionDetails ? 'arrow-up-2' : 'arrow-down-2'}
+                    name={
+                      showPromotionStatusReport ? 'arrow-up-2' : 'arrow-down-2'
+                    }
                   />
                 </Box>
               </Box>
               {showPromotionStatusReport && (
                 <Box style={[styles.accordionContent]}>
-                  {promotionStatusReport?.map((item: any, index: number) => {
-                    return (
-                      <Box
-                        key={item.title || index}
-                        flexDirection={'row'}
-                        alignItems={'center'}
-                        borderBottomWidth={1}
-                        py={hp(12)}
-                        borderBottomColor={theme.colors.BASE_SECONDARY}
-                        justifyContent={'space-between'}>
-                        <Text
-                          variant="bodyMedium"
-                          color={theme.colors.TEXT_INPUT_PLACEHOLDER}>
-                          {item.title}
-                        </Text>
+                  {promotion?.statusReport && promotion.statusReport.length > 0
+                    ? promotion.statusReport.map((report: any, index: number) => {
+                        const statusColors: {
+                          [key: string]: {bg: string; text: string};
+                        } = {
+                          pending: {
+                            bg: theme.colors.CREAM,
+                            text: theme.colors.SEMANTIC_YELLOW,
+                          },
+                          accepted: {
+                            bg: theme.colors.SEMANTIC_GREEN,
+                            text: theme.colors.DARKER_GREEN,
+                          },
+                          declined: {
+                            bg: theme.colors.RED,
+                            text: theme.colors.WHITE,
+                          },
+                        };
+                        const statusColor =
+                          statusColors[report.status?.toLowerCase()] ||
+                          statusColors.pending;
+                        return (
+                          <Box
+                            key={report.reportId || index}
+                            flexDirection={'row'}
+                            alignItems={'center'}
+                            borderBottomWidth={1}
+                            py={hp(12)}
+                            borderBottomColor={theme.colors.BASE_SECONDARY}
+                            justifyContent={'space-between'}>
+                            <Text
+                              variant="bodyMedium"
+                              color={theme.colors.TEXT_INPUT_PLACEHOLDER}>
+                              {capitalizeTitle(report.brandName) ||
+                                `${capitalizeTitle(report.firstName)} ${capitalizeTitle(report.lastName)}`}
+                            </Text>
+                            <Box
+                              bg={statusColor.bg}
+                              style={{
+                                paddingHorizontal: wp(6),
+                                paddingVertical: hp(4),
+                              }}
+                              borderRadius={hp(10)}>
+                              <Text
+                                variant="bodyMedium"
+                                fontSize={fontSz(12)}
+                                color={statusColor.text}>
+                                {capitalizeTitle(report.status) || 'Pending'}
+                              </Text>
+                            </Box>
+                          </Box>
+                        );
+                      })
+                    : (
                         <Box
-                          bg={item.statusBg}
-                          style={{
-                            paddingHorizontal: wp(6),
-                            paddingVertical: hp(4),
-                          }}
-                          borderRadius={hp(10)}>
+                          py={hp(24)}
+                          alignItems={'center'}
+                          justifyContent={'center'}>
+                          <Icon name="empty-folder" />
                           <Text
                             variant="bodyMedium"
-                            color={item.statusTextColor}>
-                            {item.status}
+                            color={theme.colors.TEXT_INPUT_PLACEHOLDER}
+                            mt={hp(12)}
+                            textAlign={'center'}>
+                            No status reports available
+                          </Text>
+                          <Text
+                            variant="body"
+                            fontSize={12}
+                            color={theme.colors.GREY}
+                            mt={hp(8)}
+                            textAlign={'center'}
+                            px={wp(16)}>
+                            Status reports will appear here once DJs start
+                            playing your promotion
                           </Text>
                         </Box>
-                      </Box>
-                    );
-                  })}
+                      )}
                 </Box>
               )}
             </Box>

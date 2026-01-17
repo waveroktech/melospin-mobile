@@ -18,7 +18,6 @@ export const Settings = () => {
 
   const {userData, userInfo} = useMelospinStore();
 
-  console.log(userInfo?.accountPreference, 'userInfo');
 
   useEffect(() => {
     if (userInfo?.accountPreference) {

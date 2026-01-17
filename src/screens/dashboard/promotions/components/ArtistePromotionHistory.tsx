@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useMemo, useState} from 'react';
 import {Icon} from 'shared';
 import {FlatList, TextInput} from 'react-native';
 import {Box, Button, Text} from 'design-system';
@@ -10,6 +10,7 @@ import {PromotionItem} from './PromotionItem';
 import {EmptyPromotionContainer} from './EmptyPromotionContainer';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {DashboardStackParamList} from 'types';
+import moment from 'moment';
 
 interface ArtistePromotionHistoryProps {
   promotions?: any[];
@@ -18,6 +19,8 @@ interface ArtistePromotionHistoryProps {
   onStatusPress: () => void;
   onTimelinePress: () => void;
   onPromotionPress: (promotion: any) => void;
+  onResetStatus?: () => void;
+  onResetTimeline?: () => void;
 }
 
 export const ArtistePromotionHistory = ({
@@ -27,8 +30,92 @@ export const ArtistePromotionHistory = ({
   onStatusPress,
   onTimelinePress,
   onPromotionPress,
+  onResetStatus,
+  onResetTimeline,
 }: ArtistePromotionHistoryProps) => {
   const {navigate} = useNavigation<NavigationProp<DashboardStackParamList>>();
+  const [searchQuery, setSearchQuery] = useState('');
+
+  // Filter promotions based on status, timeline, and search query
+  const filteredPromotions = useMemo(() => {
+    if (!promotions || promotions.length === 0) {
+      return [];
+    }
+
+    return promotions.filter(promotion => {
+      // Filter by status
+      if (selectedStatus !== 'All') {
+        const promotionStatus =
+          promotion?.details?.status?.toLowerCase() || '';
+        const normalizedStatus = promotionStatus.replace(/\s+/g, '-');
+        const selectedStatusLower = selectedStatus.toLowerCase().replace(/\s+/g, '-');
+
+        if (normalizedStatus !== selectedStatusLower) {
+          return false;
+        }
+      }
+
+      // Filter by timeline
+      if (selectedTimeline && selectedTimeline !== 'All Time') {
+        const startDate = promotion?.details?.startDate;
+        if (!startDate) {
+          return false;
+        }
+
+        const promoDate = moment(startDate);
+        const now = moment();
+        let shouldInclude = false;
+
+        switch (selectedTimeline) {
+          case 'Today':
+            shouldInclude = promoDate.isSame(now, 'day');
+            break;
+          case 'Yesterday':
+            shouldInclude = promoDate.isSame(now.clone().subtract(1, 'day'), 'day');
+            break;
+          case 'This Week':
+            shouldInclude = promoDate.isSame(now, 'week');
+            break;
+          case 'This Month':
+            shouldInclude = promoDate.isSame(now, 'month');
+            break;
+          case 'Last Month':
+            shouldInclude = promoDate.isSame(
+              now.clone().subtract(1, 'month'),
+              'month',
+            );
+            break;
+          default:
+            shouldInclude = true;
+        }
+
+        if (!shouldInclude) {
+          return false;
+        }
+      }
+
+      // Filter by search query
+      if (searchQuery.trim()) {
+        const query = searchQuery.toLowerCase().trim();
+        const title = (promotion?.title || '').toLowerCase();
+        const ownerName =
+          `${promotion?.details?.owner?.firstName || ''} ${
+            promotion?.details?.owner?.lastName || ''
+          }`.toLowerCase();
+        const brandName = (promotion?.details?.owner?.brandName || '').toLowerCase();
+
+        if (
+          !title.includes(query) &&
+          !ownerName.includes(query) &&
+          !brandName.includes(query)
+        ) {
+          return false;
+        }
+      }
+
+      return true;
+    });
+  }, [promotions, selectedStatus, selectedTimeline, searchQuery]);
 
   return (
     <>
@@ -42,6 +129,12 @@ export const ArtistePromotionHistory = ({
         </Text>
 
         <FilterTabs
+          title="Filter Tab"
+          resetFilters={() => {
+            setSearchQuery('');
+            onResetStatus?.();
+            onResetTimeline?.();
+          }}
           filters={[
             {
               label: 'Status',
@@ -63,13 +156,15 @@ export const ArtistePromotionHistory = ({
             placeholder="Search"
             selectionColor={theme.colors.WHITE}
             placeholderTextColor={theme.colors.TEXT_INPUT_PLACEHOLDER}
+            value={searchQuery}
+            onChangeText={setSearchQuery}
           />
         </Box>
 
         <FlatList
           style={styles.flatListContainer}
           contentContainerStyle={styles.contentContainerStyle}
-          data={promotions}
+          data={filteredPromotions}
           renderItem={({item, index}) => (
             <PromotionItem
               promotion={item}
@@ -80,8 +175,20 @@ export const ArtistePromotionHistory = ({
           ListEmptyComponent={
             <EmptyPromotionContainer
               icon="empty-folder"
-              title="No Promotions Yet"
-              subTitle="You can view and track all promotions history as soon as they are made."
+              title={
+                searchQuery.trim() ||
+                selectedStatus !== 'All' ||
+                selectedTimeline !== 'All Time'
+                  ? 'No Promotions Found'
+                  : 'No Promotions Yet'
+              }
+              subTitle={
+                searchQuery.trim() ||
+                selectedStatus !== 'All' ||
+                selectedTimeline !== 'All Time'
+                  ? 'Try adjusting your filters or search terms to find what you\'re looking for'
+                  : 'You can view and track all promotions history as soon as they are made.'
+              }
             />
           }
         />

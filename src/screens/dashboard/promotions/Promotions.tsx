@@ -55,6 +55,8 @@ export const Promotions = () => {
             setCurrentPromotion(item);
             setOpen('promotion-history');
           }}
+          onResetStatus={() => setSelectedStatus('All')}
+          onResetTimeline={() => setSelectedTimeline('All Time')}
         />
       ) : userType === 'dj' ? (
         <DjPromotionsView
@@ -67,14 +69,27 @@ export const Promotions = () => {
 
       <PromotionDetails
         isVisible={open === 'promotion-details'}
-        onClose={() => setOpen('')}
+        promotion={currentPromotion}
+        onClose={() => {
+          setOpen('');
+          setCurrentPromotion(null);
+        }}
         onAccept={() => {
           setOpen('');
+          setCurrentPromotion(null);
+        }}
+        onDecline={() => {
+          setOpen('');
+          setCurrentPromotion(null);
         }}
       />
       <OngoingPromotionDetails
         isVisible={open === 'ongoing-promotion-details'}
-        onClose={() => setOpen('')}
+        promotion={currentPromotion}
+        onClose={() => {
+          setOpen('');
+          setCurrentPromotion(null);
+        }}
       />
 
       <PromotionHistory

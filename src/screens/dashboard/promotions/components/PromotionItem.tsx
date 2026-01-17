@@ -78,6 +78,7 @@ export const PromotionItem = ({promotion, onPress}: PromotionItemProps) => {
   // Check if it's the new structure (PromoRequest) or old structure (Promotion)
   const isNewStructure = 'playInfo' in promotion || 'promotion' in promotion;
 
+
   const promotionStatus = isNewStructure
     ? (promotion as PromoRequest)?.playInfo?.requestStatus === 'pending' ||
       (promotion as PromoRequest)?.playInfo?.promoStatus === 'pending'
@@ -119,7 +120,10 @@ export const PromotionItem = ({promotion, onPress}: PromotionItemProps) => {
             numberOfLines={1}
             maxWidth={wp(150)}
             color={theme.colors.WHITE}>
-            {promotionName?.[promotionName?.length - 1] ?? promotion?.title}
+            {promotionName?.[promotionName?.length - 1] ??
+              (isNewStructure
+                ? 'Untitled'
+                : (promotion as Promotion)?.title || 'Untitled')}
           </Text>
           <Box ml={10} bg={statusBg} p={1} borderRadius={24}>
             <Text style={{fontSize: fontSz(10)}} color={statusColor}>
