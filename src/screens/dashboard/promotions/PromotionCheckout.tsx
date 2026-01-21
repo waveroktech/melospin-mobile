@@ -128,7 +128,8 @@ export const PromotionCheckout = () => {
         bidAmount: Number(cost),
         frequency: data.frequency?.toLowerCase() || 'daily',
         promoters,
-        minPlayCount: 12,
+        timeline: Number(data.timeline?.split(' ')[0]),
+        minPlayCount: 12 * Number(data?.timeline?.split(' ')[0]),
         externalLinks: data?.externalLinks || [],
         locations: data?.locations || [],
         promotionTypes: data?.promotionTypes || [],
@@ -153,6 +154,7 @@ export const PromotionCheckout = () => {
       discographyId: data?.discographyId,
       promotionLink: findDiscography?.url,
       frequency: data.frequency?.toLowerCase(),
+      timeline: Number(data.timeline?.split(' ')[0]),
       startDate:
         data?.startDate || data?.date
           ? moment(data.startDate || data.date).format('YYYY-MM-DD')
@@ -169,7 +171,7 @@ export const PromotionCheckout = () => {
         totalAmount || cumulativeCost
           ? Number(totalAmount || cumulativeCost + cumulativeCost * 0.05)
           : undefined,
-      minPlayCount: 12,
+      minPlayCount: 12 * Number(data?.timeline?.split(' ')[0]),
       externalLinks:
         data?.externalLinks?.filter(
           (link: any) => link?.link && link.link.trim() !== '',

@@ -3,8 +3,9 @@ import {Box, Text} from 'design-system';
 import theme from 'theme';
 import {styles} from './style';
 import {Image, TouchableOpacity} from 'react-native';
-import {fontSz, hp, wp} from 'utils';
+import {capitalizeTitle, fontSz, hp, wp} from 'utils';
 import {Icon} from 'shared';
+import moment from 'moment';
 
 interface PromotionOwner {
   firstName: string;
@@ -42,8 +43,9 @@ interface StatusReport {
 
 interface Promotion {
   _id: string;
+  discograph: any;
   statusReport?: StatusReport[];
-  details: PromotionDetails;
+  details: any;
   title?: string;
   djCount?: number;
   playlistName?: string;
@@ -52,6 +54,8 @@ interface Promotion {
 
 // New structure for promo requests
 interface PromoRequest {
+  discograph: any;
+  details: PromotionDetails;
   playInfo?: {
     requestStatus?: string;
     promoStatus?: string;
@@ -77,33 +81,60 @@ interface PromotionItemProps {
 export const PromotionItem = ({promotion, onPress}: PromotionItemProps) => {
   // Check if it's the new structure (PromoRequest) or old structure (Promotion)
   const isNewStructure = 'playInfo' in promotion || 'promotion' in promotion;
+  console.log(promotion, 'promotion');
 
+  // Helper function to get promotion status
+  const getPromotionStatus = (promo: Promotion | PromoRequest): string => {
+    if (isNewStructure) {
+      const promoRequest = promo as PromoRequest;
+      if (
+        promoRequest?.playInfo?.requestStatus === 'pending' ||
+        promoRequest?.playInfo?.promoStatus === 'pending'
+      ) {
+        return 'Pending approval';
+      }
+      return 'Active';
+    }
 
-  const promotionStatus = isNewStructure
-    ? (promotion as PromoRequest)?.playInfo?.requestStatus === 'pending' ||
-      (promotion as PromoRequest)?.playInfo?.promoStatus === 'pending'
-      ? 'Pending approval'
-      : 'Active'
-    : (promotion as Promotion)?.details?.status === 'pending' ||
-      (promotion as Promotion)?.details?.status === 'Pending approval'
-    ? 'Pending approval'
-    : 'Active';
+    const promoItem = promo as Promotion;
+    // Check if statusReport exists and has items
+    // if (promoItem?.statusReport && promoItem.statusReport.length > 0) {
+    //   const statusReportStatus = promoItem.statusReport[0].status?.toLowerCase();
+    //   // Map statusReport status to display status
+    //   if (statusReportStatus === 'pending') {
+    //     return 'Pending approval';
+    //   }
+    //   if (statusReportStatus === 'accepted') {
+    //     return 'Active';
+    //   }
+    //   if (statusReportStatus === 'declined') {
+    //     return 'Declined';
+    //   }
+    // }
+
+    // Fall back to details.status
+    const detailsStatus = promoItem?.details?.status?.toLowerCase();
+    if (detailsStatus === 'pending' || detailsStatus === 'pending approval') {
+      return 'Pending approval';
+    }
+    return 'Active';
+  };
+
+  const promotionStatus = getPromotionStatus(promotion);
 
   const statusBg =
     promotionStatus === 'Pending approval'
       ? theme.colors.LIGHT_YELLOW
+      : promotionStatus === 'Declined'
+      ? theme.colors.ERROR_TONE
       : theme.colors.SEMANTIC_GREEN;
 
   const statusColor =
     promotionStatus === 'Pending approval'
       ? theme.colors.SEMANTIC_YELLOW
+      : promotionStatus === 'Declined'
+      ? theme.colors.DANGER_BORDER
       : theme.colors.DARKER_GREEN;
-
-  const promotionLink = isNewStructure
-    ? (promotion as PromoRequest)?.promotion?.promotionLink
-    : (promotion as Promotion)?.details?.promotionLink;
-
-  const promotionName = promotionLink?.split('/');
 
   return (
     <Box
@@ -120,10 +151,7 @@ export const PromotionItem = ({promotion, onPress}: PromotionItemProps) => {
             numberOfLines={1}
             maxWidth={wp(150)}
             color={theme.colors.WHITE}>
-            {promotionName?.[promotionName?.length - 1] ??
-              (isNewStructure
-                ? 'Untitled'
-                : (promotion as Promotion)?.title || 'Untitled')}
+            {capitalizeTitle(promotion?.discograph?.title || promotion?.details?.discograph?.title)}
           </Text>
           <Box ml={10} bg={statusBg} p={1} borderRadius={24}>
             <Text style={{fontSize: fontSz(10)}} color={statusColor}>
@@ -195,27 +223,27 @@ export const PromotionItem = ({promotion, onPress}: PromotionItemProps) => {
               {isNewStructure
                 ? (promotion as PromoRequest)?.promotion?.startDate &&
                   (promotion as PromoRequest)?.promotion?.endDate
-                  ? `${Math.ceil(
-                      (new Date(
+                  ? `${Math.round(
+                      moment(
                         (promotion as PromoRequest).promotion!.endDate!,
-                      ).getTime() -
-                        new Date(
+                      ).diff(
+                        moment(
                           (promotion as PromoRequest).promotion!.startDate!,
-                        ).getTime()) /
-                        (1000 * 60 * 60 * 24),
-                    )} days`
+                        ),
+                        'months',
+                        true,
+                      ),
+                    )} months`
                   : 'N/A'
                 : (promotion as Promotion)?.details?.startDate &&
                   (promotion as Promotion)?.details?.endDate
-                ? `${Math.ceil(
-                    (new Date(
-                      (promotion as Promotion).details.endDate,
-                    ).getTime() -
-                      new Date(
-                        (promotion as Promotion).details.startDate,
-                      ).getTime()) /
-                      (1000 * 60 * 60 * 24),
-                  )} days`
+                ? `${Math.round(
+                    moment((promotion as Promotion).details.endDate).diff(
+                      moment((promotion as Promotion).details.startDate),
+                      'months',
+                      true,
+                    ),
+                  )} months`
                 : (promotion as Promotion)?.timeline || 'N/A'}
             </Text>
           </Box>

@@ -90,9 +90,11 @@ export const BookingRate = ({isVisible, onClose}: BookingRateProps) => {
   };
 
   const handleSave = () => {
+    console.log(form, 'form');
     updateBookingRate({
       userId: userData?.userId,
       chargePerPlay: Number(form.amount.replace(/,/g, '')),
+      password: form.password,
     });
   };
 

@@ -86,11 +86,11 @@ export const Button = ({
             <Box
               flexDirection={'row'}
               alignItems={'center'}
-              justifyContent={hasIcon ? 'center' : 'space-between'}>
+              justifyContent={disabled ? 'center' : (hasIcon ? 'center' : 'space-between')}>
               <Box flexDirection={'row'} alignItems={'center'}>
-                {icon && <Icon name={icon} />}
+                {icon && !disabled && <Icon name={icon} />}
                 <Text
-                  color={disabled ? theme.colors.WHITE : textColor || 'white'}
+                  color={disabled ? theme.colors.PRIMARY : textColor || 'white'}
                   variant={textVariant || 'bodyMedium'}
                   fontSize={fontSz(14)}
                   style={fontStyle}>
@@ -104,7 +104,7 @@ export const Button = ({
                 />
               ) : (
                 <>
-                  {hasIcon ? null : <Icon name={iconName || 'button-icon'} />}
+                  {hasIcon ? null : (!disabled && <Icon name={iconName || 'button-icon'} />)}
                 </>
               )}
             </Box>
@@ -131,5 +131,6 @@ const styles = StyleSheet.create({
     borderLeftWidth: 0,
     borderRightWidth: 0,
     borderBottomWidth: 0,
+    backgroundColor: theme.colors.DISABLED_BG_COLOR,
   },
 });

@@ -36,6 +36,17 @@ export const ArtistePromotionHistory = ({
   const {navigate} = useNavigation<NavigationProp<DashboardStackParamList>>();
   const [searchQuery, setSearchQuery] = useState('');
 
+  // Helper function to get promotion status
+  const getPromotionStatus = (promotion: any): string => {
+    // // Check if statusReport exists and has items
+    // if (promotion?.statusReport && promotion.statusReport.length > 0) {
+    //   // Use the status from the first statusReport item
+    //   return promotion.statusReport[0].status?.toLowerCase() || '';
+    // }
+    // Fall back to details.status
+    return promotion?.details?.status?.toLowerCase() || '';
+  };
+
   // Filter promotions based on status, timeline, and search query
   const filteredPromotions = useMemo(() => {
     if (!promotions || promotions.length === 0) {
@@ -45,8 +56,7 @@ export const ArtistePromotionHistory = ({
     return promotions.filter(promotion => {
       // Filter by status
       if (selectedStatus !== 'All') {
-        const promotionStatus =
-          promotion?.details?.status?.toLowerCase() || '';
+        const promotionStatus = getPromotionStatus(promotion);
         const normalizedStatus = promotionStatus.replace(/\s+/g, '-');
         const selectedStatusLower = selectedStatus.toLowerCase().replace(/\s+/g, '-');
 
@@ -66,27 +76,15 @@ export const ArtistePromotionHistory = ({
         const now = moment();
         let shouldInclude = false;
 
-        switch (selectedTimeline) {
-          case 'Today':
-            shouldInclude = promoDate.isSame(now, 'day');
-            break;
-          case 'Yesterday':
-            shouldInclude = promoDate.isSame(now.clone().subtract(1, 'day'), 'day');
-            break;
-          case 'This Week':
-            shouldInclude = promoDate.isSame(now, 'week');
-            break;
-          case 'This Month':
-            shouldInclude = promoDate.isSame(now, 'month');
-            break;
-          case 'Last Month':
-            shouldInclude = promoDate.isSame(
-              now.clone().subtract(1, 'month'),
-              'month',
-            );
-            break;
-          default:
-            shouldInclude = true;
+        // Parse monthly values (e.g., "1 Month", "2 Months", etc.)
+        const monthMatch = selectedTimeline.match(/(\d+)\s*Month/i);
+        if (monthMatch) {
+          const months = parseInt(monthMatch[1], 10);
+          const startOfPeriod = now.clone().subtract(months, 'months');
+          shouldInclude = promoDate.isAfter(startOfPeriod) || promoDate.isSame(startOfPeriod);
+        } else {
+          // Fallback for any other values
+          shouldInclude = true;
         }
 
         if (!shouldInclude) {

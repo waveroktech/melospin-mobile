@@ -7,7 +7,9 @@ import {useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import theme from 'theme';
-import {useMelospinStore} from 'store';
+import {useMelospinStore, useAddPlayingSpot} from 'store';
+import {showMessage} from 'react-native-flash-message';
+import {useQueryClient} from '@tanstack/react-query';
 
 interface AddNewPlaySpotProps {
   isVisible: boolean;
@@ -26,10 +28,9 @@ const schema = yup.object().shape({
 
 export const AddNewPlaySpot = ({isVisible, onClose}: AddNewPlaySpotProps) => {
   const {userData} = useMelospinStore();
+  const queryClient = useQueryClient();
 
-  console.log(userData, 'userData');
-
-  const {control, watch} = useForm<FormData>({
+  const {control, watch, handleSubmit, reset} = useForm<FormData>({
     resolver: yupResolver(schema),
     defaultValues: {
       title: '',
@@ -39,6 +40,53 @@ export const AddNewPlaySpot = ({isVisible, onClose}: AddNewPlaySpotProps) => {
   });
 
   const form = watch();
+
+  // Add playing spot mutation
+  const {mutate: addPlayingSpot, isPending} = useAddPlayingSpot({
+    onSuccess: (data: any) => {
+      if (data?.status === 'success' || data?.data) {
+        showMessage({
+          message: 'Play spot added successfully',
+          type: 'success',
+          duration: 2000,
+        });
+        // Invalidate user profile query to refetch updated data
+        queryClient.invalidateQueries({queryKey: ['get-user-profile']});
+        reset();
+        onClose();
+      } else {
+        showMessage({
+          message: data?.message || 'Failed to add play spot',
+          type: 'danger',
+          duration: 2000,
+        });
+      }
+    },
+    onError: (error: any) => {
+      showMessage({
+        message: error?.message || 'Failed to add play spot',
+        type: 'danger',
+        duration: 2000,
+      });
+    },
+  });
+
+  const onSubmit = (data: FormData) => {
+    if (!userData?.userId) {
+      showMessage({
+        message: 'User ID not found',
+        type: 'danger',
+        duration: 2000,
+      });
+      return;
+    }
+
+    addPlayingSpot({
+      userId: userData.userId,
+      playSpot: data.title,
+      playSpotAddress: data.location,
+    });
+  };
 
   return (
     <BaseModal visible={isVisible} onClose={onClose}>
@@ -95,9 +143,9 @@ export const AddNewPlaySpot = ({isVisible, onClose}: AddNewPlaySpotProps) => {
       <Button
         title="Save"
         hasBorder
-        onPress={() => {}}
+        onPress={handleSubmit(onSubmit)}
         iconName="arrow-right-3"
-        disabled={form.title && form.location ? false : true}
+        disabled={!form.title || !form.location || isPending}
       />
     </BaseModal>
   );

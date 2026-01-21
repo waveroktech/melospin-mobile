@@ -67,7 +67,15 @@ export const uploadProofOfPlay = async (
     name: file.name || 'proof-of-play.mp4',
   } as any);
 
-  return put(`promotions/requests/${requestId}/proof-of-play`, formData).then(
+  return post(`promotions/requests/${requestId}/proof-of-play`, formData).then(
+    data => data as any,
+  );
+};
+
+export const getProofOfPlays = async (
+  promotionId: string,
+): Promise<any> => {
+  return get(`promotions/${promotionId}/proof-of-plays`).then(
     data => data as any,
   );
 };

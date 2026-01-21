@@ -1,4 +1,4 @@
-import React, {useCallback} from 'react';
+import React, {useCallback, useEffect, useRef} from 'react';
 import {Box, Button, FormInput, Text} from 'design-system';
 import Modal from 'react-native-modal';
 import {hp, wp} from 'utils';
@@ -41,11 +41,12 @@ export const AddDiscography = ({
   const {
     control,
     watch,
+    setValue,
     formState: {errors},
   } = useForm<FormData>({
     resolver: yupResolver(schema),
     defaultValues: {
-      link: '',
+      link: 'https://',
       title: '',
       artist: '',
       collabo: '',
@@ -54,6 +55,31 @@ export const AddDiscography = ({
   });
 
   const form = watch();
+  const isUpdatingLinkRef = useRef(false);
+  const previousLinkRef = useRef('https://');
+
+  // Ensure link always starts with https://
+  useEffect(() => {
+    const linkValue = form.link || '';
+    // Only update if we're not already updating and the value doesn't start with https://
+    if (
+      !isUpdatingLinkRef.current &&
+      linkValue !== previousLinkRef.current &&
+      !linkValue.startsWith('https://')
+    ) {
+      isUpdatingLinkRef.current = true;
+      // Remove http:// if present, then prepend https://
+      const cleanedLink = linkValue.replace(/^https?:\/\//, '');
+      const newValue = cleanedLink ? `https://${cleanedLink}` : 'https://';
+      setValue('link', newValue, {shouldValidate: true});
+      previousLinkRef.current = newValue;
+      setTimeout(() => {
+        isUpdatingLinkRef.current = false;
+      }, 0);
+    } else if (linkValue !== previousLinkRef.current) {
+      previousLinkRef.current = linkValue;
+    }
+  }, [form.link, setValue]);
 
   const {mutate: addDiscography, isPending} = useAddDiscography({
     onSuccess: (data: any) => {

@@ -42,4 +42,5 @@ export const colors = {
   OFF_BLACK_300: '#00000033',
   OFF_WHITE_700: '#FFFFFF1C',
   RED: '#FF3B30',
+  DISABLED_BG_COLOR: '#6E3868',
 };

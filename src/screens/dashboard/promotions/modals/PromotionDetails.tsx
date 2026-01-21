@@ -26,6 +26,7 @@ export const PromotionDetails = ({
   onAccept,
   onDecline,
 }: PromotionDetailsProps) => {
+  console.log(promotion, 'promotion3');
   return (
     <BaseModal
       visible={isVisible}

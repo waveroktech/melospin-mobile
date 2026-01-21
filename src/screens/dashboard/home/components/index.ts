@@ -3,3 +3,4 @@ export * from './ReleaseItem';
 export * from './TrendingNow';
 export * from './DjsOnDeck';
 export * from './NewReleases';
+export * from './MyDeck';

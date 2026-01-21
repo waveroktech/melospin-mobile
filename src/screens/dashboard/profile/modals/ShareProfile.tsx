@@ -12,10 +12,21 @@ import {useMelospinStore} from 'store';
 interface ShareProfileProps {
   isVisible: boolean;
   onClose: () => void;
+  qrCodeUrl?: string;
+  profileImageUrl?: string;
+  coverImageUrl?: string;
+  isLoadingQrCode?: boolean;
 }
 
-export const ShareProfile = ({isVisible, onClose}: ShareProfileProps) => {
-  const {userData} = useMelospinStore();
+export const ShareProfile = ({
+  isVisible,
+  onClose,
+  qrCodeUrl,
+  profileImageUrl,
+  coverImageUrl,
+  isLoadingQrCode = false,
+}: ShareProfileProps) => {
+  const {userData, userInfo} = useMelospinStore();
   return (
     <Modal
       isVisible={isVisible}
@@ -33,7 +44,13 @@ export const ShareProfile = ({isVisible, onClose}: ShareProfileProps) => {
           }}
           style={styles.gradientContainer}>
           <ImageBackground
-            source={theme.images.artist}
+            source={
+              coverImageUrl
+                ? {uri: coverImageUrl}
+                : userInfo?.coverUrl
+                  ? {uri: userInfo.coverUrl}
+                  : theme.images.artist
+            }
             imageStyle={styles.imageStyle}
             style={styles.imageContainer}>
             <Box
@@ -57,8 +74,15 @@ export const ShareProfile = ({isVisible, onClose}: ShareProfileProps) => {
             style={styles.profileImageContainer}>
             <Box>
               <Image
-                source={theme.images['dj-images']['dj-1']}
+                source={
+                  profileImageUrl
+                    ? {uri: profileImageUrl}
+                    : userInfo?.profileUrl
+                      ? {uri: userInfo.profileUrl}
+                      : theme.images['dj-images']['dj-1']
+                }
                 style={styles.djProfileImage}
+                resizeMode="cover"
               />
             </Box>
           </GradientBorderView>
@@ -91,7 +115,21 @@ export const ShareProfile = ({isVisible, onClose}: ShareProfileProps) => {
         </Box>
 
         <Box>
-          <Image source={theme.images.barcode} style={styles.barcode} />
+          {isLoadingQrCode ? (
+            <Box
+              justifyContent="center"
+              alignItems="center"
+              height={hp(200)}
+              width="100%">
+              <Text variant="body" color={theme.colors.BLACK_DEFAULT}>
+                Loading QR Code...
+              </Text>
+            </Box>
+          ) : qrCodeUrl ? (
+            <Image source={{uri: qrCodeUrl}} style={styles.barcode} />
+          ) : (
+            <Image source={theme.images.barcode} style={styles.barcode} />
+          )}
         </Box>
 
         <Box

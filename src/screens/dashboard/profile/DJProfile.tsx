@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {Box, Text} from 'design-system';
 import {Header, Icon, Screen, Loader} from 'shared';
 import {fontSz, hp, wp} from 'utils';
@@ -21,7 +21,7 @@ import {
   ImagePickerResponse,
   MediaType,
 } from 'react-native-image-picker';
-import {useUploadProfileImage} from 'store/useUser';
+import {useUploadProfileImage, useGetProfileQrCode} from 'store/useUser';
 import {showMessage} from 'react-native-flash-message';
 import {useQueryClient} from '@tanstack/react-query';
 
@@ -34,10 +34,48 @@ export const DJProfile = () => {
     type?: string;
     name?: string;
   } | null>(null);
+  const [selectedCoverImage, setSelectedCoverImage] = useState<{
+    uri: string;
+    type?: string;
+    name?: string;
+  } | null>(null);
 
 
-  const {userInfo, setUserInfo} = useMelospinStore();
+  const {userInfo, setUserInfo, userData} = useMelospinStore();
   const queryClient = useQueryClient();
+
+  // QR code query - only enabled when we want to fetch it
+  const [shouldFetchQrCode, setShouldFetchQrCode] = useState(false);
+  const {data: qrCodeData, isLoading: isLoadingQrCode, refetch: refetchQrCode} =
+    useGetProfileQrCode(userData?.userId || null, shouldFetchQrCode);
+
+  // Handle QR code fetch completion
+  useEffect(() => {
+    if (shouldFetchQrCode && !isLoadingQrCode && qrCodeData) {
+      setOpen('share-profile');
+    }
+  }, [shouldFetchQrCode, isLoadingQrCode, qrCodeData]);
+
+  // Handle share profile button press - fetch QR code first
+  const handleShareProfile = () => {
+    if (userData?.userId) {
+      setShouldFetchQrCode(true);
+      refetchQrCode().catch(() => {
+        showMessage({
+          message: 'Failed to load QR code',
+          type: 'danger',
+          duration: 2000,
+        });
+        setShouldFetchQrCode(false);
+      });
+    } else {
+      showMessage({
+        message: 'User ID not found',
+        type: 'danger',
+        duration: 2000,
+      });
+    }
+  };
 
   // Get KYC status from userInfo
   // Check for status field (can be "uploaded" when document is uploaded but not reviewed)
@@ -98,7 +136,41 @@ export const DJProfile = () => {
       },
     });
 
-  // Open image picker
+  // Upload cover image mutation
+  const {mutate: uploadCoverImage, isPending: isUploadingCover} =
+    useUploadProfileImage({
+      onSuccess: (data: any) => {
+        if (data?.status === 'success' || data?.data) {
+          showMessage({
+            message: 'Cover image updated successfully',
+            type: 'success',
+            duration: 2000,
+          });
+          // Update user info with new cover URL if provided
+          if (data?.data?.coverUrl) {
+            setUserInfo({...userInfo, coverUrl: data.data.coverUrl});
+          }
+          // Invalidate user profile query to refetch updated data
+          queryClient.invalidateQueries({queryKey: ['get-user-profile']});
+          setSelectedCoverImage(null);
+        } else {
+          showMessage({
+            message: data?.message || 'Failed to upload cover image',
+            type: 'danger',
+            duration: 2000,
+          });
+        }
+      },
+      onError: (error: any) => {
+        showMessage({
+          message: error?.message || 'Failed to upload cover image',
+          type: 'danger',
+          duration: 2000,
+        });
+      },
+    });
+
+  // Open image picker for profile image
   const openImagePicker = () => {
     launchImageLibrary(
       {
@@ -138,6 +210,46 @@ export const DJProfile = () => {
     );
   };
 
+  // Open image picker for cover image
+  const openCoverImagePicker = () => {
+    launchImageLibrary(
+      {
+        mediaType: 'photo' as MediaType,
+        quality: 1,
+        selectionLimit: 1,
+      },
+      (response: ImagePickerResponse) => {
+        if (response.didCancel) {
+          return;
+        }
+        if (response.errorMessage) {
+          Alert.alert('Error', response.errorMessage);
+          return;
+        }
+        if (response.assets && response.assets.length > 0) {
+          const asset = response.assets[0];
+          const file = {
+            uri: asset.uri || '',
+            type: asset.type || 'image/jpeg',
+            name:
+              asset.fileName ||
+              asset.uri?.split('/').pop() ||
+              'cover-image.jpg',
+          };
+          setSelectedCoverImage(file);
+          // Automatically upload after selection
+          if (userInfo?.userId) {
+            uploadCoverImage({
+              userId: userInfo.userId,
+              file,
+              imageType: 'cover',
+            });
+          }
+        }
+      },
+    );
+  };
+
   console.log(userInfo, 'userInfo');
 
   return (
@@ -160,7 +272,11 @@ export const DJProfile = () => {
               }}
               style={styles.gradientContainer}>
               <ImageBackground
-                source={theme.images.artist}
+                source={
+                  selectedCoverImage?.uri || userInfo?.coverUrl
+                    ? {uri: selectedCoverImage?.uri || userInfo?.coverUrl}
+                    : theme.images.artist
+                }
                 imageStyle={styles.imageStyle}
                 style={styles.imageContainer}>
                 <Box
@@ -169,12 +285,28 @@ export const DJProfile = () => {
                   p={hp(20)}
                   borderRadius={hp(24)}
                   height={hp(145)}>
+                  {isUploadingCover && (
+                    <Box
+                      position="absolute"
+                      top={0}
+                      left={0}
+                      right={0}
+                      bottom={0}
+                      justifyContent="center"
+                      alignItems="center"
+                      bg={theme.colors.OFF_BLACK_200}
+                      borderRadius={hp(24)}>
+                      <Loader loading={true} />
+                    </Box>
+                  )}
                   <Box
                     flexDirection={'row'}
                     as={TouchableOpacity}
                     alignSelf={'flex-end'}
                     activeOpacity={0.8}
-                    alignItems={'center'}>
+                    alignItems={'center'}
+                    onPress={openCoverImagePicker}
+                    disabled={isUploadingCover}>
                     <Text
                       pr={wp(10)}
                       variant="body"
@@ -326,7 +458,7 @@ export const DJProfile = () => {
                 px={wp(2)}
                 as={TouchableOpacity}
                 activeOpacity={0.8}
-                onPress={() => setOpen('share-profile')}
+                onPress={handleShareProfile}
                 justifyContent={'space-evenly'}
                 borderColor={theme.colors.WHITE}>
                 <Icon name="share-profile" />
@@ -387,7 +519,14 @@ export const DJProfile = () => {
 
       <ShareProfile
         isVisible={open === 'share-profile'}
-        onClose={() => setOpen('')}
+        onClose={() => {
+          setOpen('');
+          setShouldFetchQrCode(false);
+        }}
+        qrCodeUrl={qrCodeData?.data?.qrCodeUrl || qrCodeData?.data?.qrCode || qrCodeData?.qrCodeUrl || qrCodeData?.qrCode}
+        profileImageUrl={selectedImage?.uri || userInfo?.profileUrl}
+        coverImageUrl={selectedCoverImage?.uri || userInfo?.coverUrl}
+        isLoadingQrCode={isLoadingQrCode}
       />
       <EditProfile
         isVisible={open === 'edit-profile'}

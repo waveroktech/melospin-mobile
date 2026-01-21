@@ -28,11 +28,11 @@ export const PromotionHistory = ({
   const promotionData = promotion
     ? {
         _id: promotion._id,
-        title: promotion.title || 'Untitled',
-        primaryArtiste: promotion.details?.owner?.firstName || 'Unknown',
-        otherArtistes: [],
+        title: capitalizeTitle(promotion.details?.discograph?.title || 'Untitled'),
+        primaryArtiste: promotion.details?.discograph?.primaryArtiste || 'Unknown',
+        otherArtistes: promotion.details?.discograph?.otherArtistes || [],
         fileType: 'zip',
-        url: promotion.details?.promotionLink || '',
+        url: promotion.details?.discograph?.url || '',
         userId: promotion.details?.owner?.promoterId || '',
         createdAt: promotion.details?.createdAt || '',
         updatedAt: promotion.details?.createdAt || '',

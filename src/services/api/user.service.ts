@@ -15,6 +15,10 @@ export const getUserProfile = async (payload: {userId?: string}) => {
   return get(`users/${payload?.userId}`).then(data => data as any);
 };
 
+export const getProfileQrCode = async (userId: string) => {
+  return get(`users/${userId}/profile-qr-code`).then(data => data as any);
+};
+
 export const getDJs = async () => {
   return get('users?userType=dj&limit=100').then(data => data as any);
 };
@@ -48,14 +52,25 @@ export const updateUserPreferences = async (payload: {
 export const updateBookingRate = async (payload: {
   userId?: string;
   chargePerPlay: number;
+  password: string;
 }) => {
-  return put(`users/${payload?.userId}/booking-rate`, payload).then(
+  console.log(payload, 'payload');
+  return put(`users/${payload?.userId}/booking-rate`, {
+    chargePerPlay: payload.chargePerPlay,
+    password: payload.password,
+  }).then(
     data => data as any,
   );
 };
 
 export const getBankList = async () => {
   return get('payments/banks').then(data => data as any);
+};
+
+export const getPayments = async (isCommission: boolean = true) => {
+  return get('payments', undefined, undefined, {
+    isCommission: isCommission.toString(),
+  }).then(data => data as any);
 };
 
 export const updateUserBankDetails = async (payload: {
@@ -121,4 +136,15 @@ export const uploadProfileImage = async (
   return put(`users/${payload.userId}/user-image`, formData).then(
     data => data as any,
   );
+};
+
+export const addPlayingSpot = async (payload: {
+  userId: string;
+  playSpot: string;
+  playSpotAddress: string;
+}): Promise<any> => {
+  return put(`users/${payload.userId}/playing-spots`, {
+    playSpot: payload.playSpot,
+    playSpotAddress: payload.playSpotAddress,
+  }).then(data => data as any);
 };

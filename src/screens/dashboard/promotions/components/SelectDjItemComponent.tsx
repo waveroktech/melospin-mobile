@@ -40,7 +40,7 @@ export const SelectDjItemComponent = ({
               : theme.images['no-profile']
           }
           style={styles.profileImage}
-          resizeMode="contain"
+          resizeMode="cover"
         />
 
         <Box ml={wp(12)} flex={1}>

@@ -1,9 +1,9 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import {Box, Text} from 'design-system';
 import {Icon, Loader, ModalHeader} from 'shared';
-import {deviceWidth, fontSz, formatNumberWithCommas, hp, wp} from 'utils';
+import {capitalizeTitle, deviceWidth, fontSz, formatNumberWithCommas, hp, wp} from 'utils';
 import theme from 'theme';
-import {proofOfPlay, streamingLinks} from 'data';
+import {streamingLinks} from 'data';
 import Modal from 'react-native-modal';
 import {ImageBackground, ScrollView, TouchableOpacity} from 'react-native';
 import {styles} from './style';
@@ -53,13 +53,10 @@ export const OngoingPromotionDetails = ({
   // API response structure: { _id, statusReport[], details: {...} }
   const promotionDetails = promotionData?.data || promotion;
   const details = promotionDetails?.details || promotionDetails?.promotion;
-  console.log(details, 'details');
   const statusReport = useMemo(
     () => promotionDetails?.statusReport || promotionDetails?.proofs || [],
     [promotionDetails?.statusReport, promotionDetails?.proofs],
   );
-
-  console.log(promotionDetails, 'promotionDetails');
 
   return (
     <Modal
@@ -128,7 +125,7 @@ export const OngoingPromotionDetails = ({
                       color={theme.colors.WHITE}
                       numberOfLines={1}
                       ellipsizeMode="tail">
-                      {details?.promotionLink?.split('/').pop() || 'N/A'}
+                      {capitalizeTitle(promotion?.discograph?.title) || 'N/A'}
                     </Text>
                     <Text variant="body" color={theme.colors.OFF_WHITE_100}>
                       {(() => {
@@ -315,11 +312,13 @@ export const OngoingPromotionDetails = ({
                       </Text>
                       <Text variant="bodyMedium" color={theme.colors.WHITE}>
                         {details?.startDate && details?.endDate
-                          ? `${Math.ceil(
-                              (new Date(details.endDate).getTime() -
-                                new Date(details.startDate).getTime()) /
-                                (1000 * 60 * 60 * 24),
-                            )} days`
+                          ? `${Math.round(
+                              moment(details.endDate).diff(
+                                moment(details.startDate),
+                                'months',
+                                true,
+                              ),
+                            )} months`
                           : 'N/A'}
                       </Text>
                     </Box>
@@ -392,75 +391,7 @@ export const OngoingPromotionDetails = ({
 
               {showProofOfPlay && (
                 <Box mt={hp(12)}>
-                  {statusReport && statusReport.length > 0
-                    ? statusReport.map((report: any, index: number) => {
-                        return (
-                          <Box
-                            key={report?.reportId || report?._id || index}
-                            flexDirection={'row'}
-                            alignItems={'center'}
-                            mb={hp(12)}
-                            borderBottomWidth={1}
-                            borderBottomColor={theme.colors.BASE_SECONDARY}
-                            pb={hp(16)}
-                            justifyContent={'space-between'}>
-                            <Box flexDirection={'row'} alignItems={'center'}>
-                              <Text
-                                variant="bodyMedium"
-                                color={theme.colors.TEXT_INPUT_PLACEHOLDER}>
-                                {report?.brandName ||
-                                  `${report?.firstName} ${report?.lastName}` ||
-                                  `Report ${index + 1}`}
-                              </Text>
-                              <Box
-                                width={wp(4)}
-                                height={hp(4)}
-                                mx={wp(12)}
-                                bg={theme.colors.TEXT_INPUT_PLACEHOLDER}
-                                borderRadius={hp(10)}
-                              />
-                              <Text
-                                variant="bodyMedium"
-                                color={theme.colors.TEXT_INPUT_PLACEHOLDER}>
-                                {report?.createdAt
-                                  ? moment(report.createdAt).format(
-                                      'MM/DD/YYYY',
-                                    )
-                                  : report?.date || 'N/A'}
-                              </Text>
-                            </Box>
-
-                            <Box
-                              bg={
-                                report?.status === 'accepted'
-                                  ? theme.colors.SEMANTIC_GREEN
-                                  : report?.status === 'declined'
-                                  ? theme.colors.RED
-                                  : theme.colors.LIGHT_YELLOW
-                              }
-                              style={{padding: wp(4)}}
-                              borderRadius={hp(10)}
-                              borderWidth={0}>
-                              <Text
-                                variant="bodyMedium"
-                                style={{
-                                  fontSize: fontSz(10),
-                                  paddingHorizontal: wp(4),
-                                }}
-                                color={
-                                  report?.status === 'accepted'
-                                    ? theme.colors.DARKER_GREEN
-                                    : report?.status === 'declined'
-                                    ? theme.colors.WHITE
-                                    : theme.colors.SEMANTIC_YELLOW
-                                }>
-                                {report?.status || 'pending'}
-                              </Text>
-                            </Box>
-                          </Box>
-                        );
-                      })
-                    : proofOfPlay?.map((item: any) => {
+                  {promotion?.proofs?.map((item: any) => {
                         return (
                           <Box
                             key={item.id}
@@ -474,8 +405,10 @@ export const OngoingPromotionDetails = ({
                             <Box flexDirection={'row'} alignItems={'center'}>
                               <Text
                                 variant="bodyMedium"
+                                numberOfLines={1}
+                                width={wp(100)}
                                 color={theme.colors.TEXT_INPUT_PLACEHOLDER}>
-                                {item.title}
+                                {item.fileName}
                               </Text>
                               <Box
                                 width={wp(4)}
@@ -487,24 +420,34 @@ export const OngoingPromotionDetails = ({
                               <Text
                                 variant="bodyMedium"
                                 color={theme.colors.TEXT_INPUT_PLACEHOLDER}>
-                                {item.date}
+                                {moment(item.createdAt).format('MM/DD/YYYY')}
                               </Text>
                             </Box>
 
                             <Box
-                              bg={item.statusBg}
-                              style={{padding: wp(4)}}
-                              borderRadius={hp(10)}
-                              borderWidth={item.statusBgBorder ? 1 : 0}
-                              borderColor={item.statusBgBorder}>
+                              bg={
+                                item.requestStatus === 'accepted'
+                                  ? theme.colors.SEMANTIC_GREEN
+                                  : item.requestStatus === 'pending'
+                                  ? theme.colors.CREAM
+                                  : theme.colors.RED
+                              }
+                              style={{
+                                paddingHorizontal: wp(6),
+                                paddingVertical: hp(4),
+                              }}
+                              borderRadius={hp(10)}>
                               <Text
                                 variant="bodyMedium"
-                                style={{
-                                  fontSize: fontSz(10),
-                                  paddingHorizontal: wp(4),
-                                }}
-                                color={item.statusTextColor}>
-                                {item.status}
+                                fontSize={fontSz(12)}
+                                color={
+                                  item.requestStatus === 'accepted'
+                                    ? theme.colors.DARKER_GREEN
+                                    : item.requestStatus === 'pending'
+                                    ? theme.colors.SEMANTIC_YELLOW
+                                    : theme.colors.WHITE
+                                }>
+                                {item.requestStatus}
                               </Text>
                             </Box>
                           </Box>

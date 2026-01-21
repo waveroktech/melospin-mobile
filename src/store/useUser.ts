@@ -1,8 +1,11 @@
 import {useMutation, useQuery} from '@tanstack/react-query';
 import {
+  addPlayingSpot,
   changeUserPassword,
   getBankList,
   getDJs,
+  getPayments,
+  getProfileQrCode,
   getUserProfile,
   setUserProfileUpdate,
   submitKyc,
@@ -46,11 +49,11 @@ export const useGetUserProfile = (payload: {userId?: string}) => {
   return data;
 };
 
-export const useGetDjs = () => {
+export const useGetDjs = (enabled: boolean = false) => {
   return useQuery({
     queryKey: ['get-djs'],
     queryFn: () => getDJs(),
-    enabled: false,
+    enabled,
   });
 };
 
@@ -110,6 +113,27 @@ export const useGetBankList = () => {
   }, [data?.data, setBankList]);
 };
 
+export const useGetPayments = (isCommission: boolean = true) => {
+  return useQuery({
+    queryKey: ['get-payments', isCommission.toString()],
+    queryFn: () => getPayments(isCommission),
+    enabled: true,
+  });
+};
+
+export const useGetProfileQrCode = (userId: string | null, enabled: boolean = true) => {
+  return useQuery({
+    queryKey: ['get-profile-qr-code', userId],
+    queryFn: () => {
+      if (!userId) {
+        throw new Error('User ID is required');
+      }
+      return getProfileQrCode(userId);
+    },
+    enabled: enabled && !!userId,
+  });
+};
+
 export const useUpdateUserBankDetails = ({
   onError,
   onSuccess,
@@ -161,6 +185,20 @@ export const useUploadProfileImage = ({
 }) => {
   return useMutation({
     mutationFn: uploadProfileImage,
+    onSuccess,
+    onError,
+  });
+};
+
+export const useAddPlayingSpot = ({
+  onError,
+  onSuccess,
+}: {
+  onError?: any;
+  onSuccess?: any;
+}) => {
+  return useMutation({
+    mutationFn: addPlayingSpot,
     onSuccess,
     onError,
   });

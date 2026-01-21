@@ -26,7 +26,7 @@ export const Promotions = () => {
   >('');
   const [currentPromotion, setCurrentPromotion] = useState<any>(null);
   const [selectedStatus, setSelectedStatus] = useState<string>('All');
-  const [selectedTimeline, setSelectedTimeline] = useState<string>('Today');
+  const [selectedTimeline, setSelectedTimeline] = useState<string>('All Time');
 
   useFocusEffect(
     useCallback(() => {

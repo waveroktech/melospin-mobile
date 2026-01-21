@@ -79,9 +79,9 @@ function getStringBeforeSubstring(parentString: string, substring: string) {
 
 export const capitalizeTitle = (str: string) => {
   return str
-    .toLowerCase()
+    ?.toLowerCase()
     .split(' ')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    ?.map(word => word?.charAt(0)?.toUpperCase() + word?.slice(1))
     .join(' ');
 };
 
@@ -99,19 +99,18 @@ export const calculateEndDate = (
 
   // Map timeline to duration in days
   const timelineMap: {[key: string]: number} = {
-    Today: 0,
-    Yesterday: 0,
-    'This Week': 7,
-    'This Month': 30,
-    'Last Month': 30,
-    'All Time': 365,
-    // Handle month-based timelines (e.g., "1 month", "2 months")
-    '1 month': 30,
-    '2 months': 60,
-    '3 months': 90,
-    '4 months': 120,
-    '5 months': 150,
-    '6 months': 180,
+    '1 month': 1,
+    '2 months': 2,
+    '3 months': 3,
+    '4 months': 4,
+    '5 months': 5,
+    '6 months': 6,
+    '7 months': 7,
+    '8 months': 8,
+    '9 months': 9,
+    '10 months': 10,
+    '11 months': 11,
+    '12 months': 12,
   };
 
   // Try to parse timeline as "X month(s)" format

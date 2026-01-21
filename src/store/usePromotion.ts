@@ -10,6 +10,7 @@ import {
   getPromotion,
   getPromotionTypes,
   uploadProofOfPlay,
+  getProofOfPlays,
 } from 'services/api/promotion.service';
 
 export const useUserPromotions = () => {
@@ -158,5 +159,21 @@ export const useUploadProofOfPlay = ({
     }) => uploadProofOfPlay(requestId, file),
     onSuccess,
     onError,
+  });
+};
+
+export const useGetProofOfPlays = (
+  promotionId: string | null,
+  enabled: boolean = true,
+) => {
+  return useQuery({
+    queryKey: ['get-proof-of-plays', promotionId],
+    queryFn: () => {
+      if (!promotionId) {
+        throw new Error('Promotion ID is required');
+      }
+      return getProofOfPlays(promotionId);
+    },
+    enabled: enabled && !!promotionId,
   });
 };

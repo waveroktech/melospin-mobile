@@ -24,7 +24,7 @@ async function handleResponse<T>(response: Response): Promise<T> {
     //   throw new Error(JSON.stringify(data.errors));
     // }
     console.log(response);
-    if (response.status === 401) {
+    if (response.status === 401 || response.status === 403) {
       // toast(data.message, {type: 'error'});
       // Cookies.remove('token');
       // Cookies.remove('refreshToken');
@@ -84,10 +84,18 @@ export const post = async <T>(
   headers?: Record<string, string>,
 ): Promise<T> => {
   try {
+    const isFormData = data instanceof FormData;
+    const defaultHeaders = getDefaultHeaders();
+
+    // Remove Content-Type header for FormData to let the browser set it with boundary
+    if (isFormData) {
+      delete defaultHeaders['Content-Type'];
+    }
+
     const response = await fetch(endpoint, {
       method: 'POST',
-      headers: {...getDefaultHeaders(), ...headers},
-      body: JSON.stringify(cleanData(data)),
+      headers: {...defaultHeaders, ...headers},
+      body: isFormData ? data : JSON.stringify(cleanData(data)),
     });
     return handleResponse(response) as T;
   } catch (error) {

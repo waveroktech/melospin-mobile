@@ -46,6 +46,7 @@ export interface PromotionOwner {
 }
 
 export interface PromotionDetails {
+  discograph: any;
   paid: boolean;
   status: 'pending' | 'active' | 'completed' | 'Pending approval';
   promotionLink: string;
@@ -143,6 +144,7 @@ export interface OwnerInfo {
 }
 
 export interface PromoRequest {
+  discograph: any;
   playInfo: PlayInfo;
   promotion: PromotionInfo;
   promoter: PromoterInfo;
