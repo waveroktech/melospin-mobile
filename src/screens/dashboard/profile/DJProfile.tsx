@@ -242,7 +242,7 @@ export const DJProfile = () => {
             uploadCoverImage({
               userId: userInfo.userId,
               file,
-              imageType: 'cover',
+              imageType: 'banner',
             });
           }
         }
@@ -273,8 +273,8 @@ export const DJProfile = () => {
               style={styles.gradientContainer}>
               <ImageBackground
                 source={
-                  selectedCoverImage?.uri || userInfo?.coverUrl
-                    ? {uri: selectedCoverImage?.uri || userInfo?.coverUrl}
+                  selectedCoverImage?.uri || userInfo?.coverImageUrl
+                    ? {uri: selectedCoverImage?.uri || userInfo?.coverImageUrl}
                     : theme.images.artist
                 }
                 imageStyle={styles.imageStyle}

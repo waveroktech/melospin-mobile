@@ -49,7 +49,6 @@ export const ConnectDj = () => {
     sendConnection({targetUserId: dj?.userId});
   }, [dj?.userId, sendConnection]);
 
-  console.log(dj);
   return (
     <Screen removeSafeaArea>
       <Header hasBackText="Profile" />
@@ -65,7 +64,7 @@ export const ConnectDj = () => {
             height={hp(309)}>
             <Box justifyContent={'center'} py={hp(80)} alignItems={'center'}>
               <Image
-                source={theme.images['dj-images']['dj-1']}
+                source={dj?.profileUrl ? {uri: dj?.profileUrl} : theme.images['no-profile']}
                 style={styles.profileImage}
                 resizeMode="contain"
               />

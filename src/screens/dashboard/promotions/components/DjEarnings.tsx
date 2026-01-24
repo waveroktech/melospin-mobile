@@ -123,7 +123,7 @@ export const DjEarnings = ({setActiveIndex}: DjEarningsProps) => {
           <Box flexDirection={'row'} alignItems={'center'}>
             <Icon name="money" />
             <Text variant="body" color={theme.colors.WHITE} pl={wp(10)}>
-              Available balance
+              Total Earnings
             </Text>
           </Box>
 
@@ -160,7 +160,7 @@ export const DjEarnings = ({setActiveIndex}: DjEarningsProps) => {
             mt={hp(20)}
             py={hp(20)}>
             <Box flexDirection={'row'} alignItems={'center'}>
-              <Box
+              {/* <Box
                 borderRightWidth={1}
                 pr={wp(25)}
                 borderRightColor={theme.colors.BASE_SECONDARY}>
@@ -179,9 +179,9 @@ export const DjEarnings = ({setActiveIndex}: DjEarningsProps) => {
                     N {hideBalance ? '•••••••••' : balance?.ledgerBalance}
                   </Text>
                 </Box>
-              </Box>
+              </Box> */}
 
-              <Box ml={wp(30)}>
+              <Box>
                 <Box flexDirection={'row'} alignItems={'center'}>
                   <Icon name="requests" />
                   <Text pl={wp(10)} variant="body" color={theme.colors.WHITE}>
@@ -195,7 +195,7 @@ export const DjEarnings = ({setActiveIndex}: DjEarningsProps) => {
                     fontFamily={theme.font.AvenirNextSemiBold}
                     fontSize={fontSz(14)}
                     color={theme.colors.WHITE}>
-                    {userInfo?.requests || 0}
+                    {userInfo?.totalPromotions || 0}
                   </Text>
                 </Box>
               </Box>

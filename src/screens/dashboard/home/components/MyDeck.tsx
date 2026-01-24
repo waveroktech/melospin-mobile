@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React from 'react';
+import React, { useEffect } from 'react';
 import {Box, Text} from 'design-system';
 import {Icon} from 'shared';
 import theme from 'theme';
@@ -9,7 +9,7 @@ import {styles} from '../style';
 import {GradientBorderView} from '@good-react-native/gradient-border';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {BottomTabStackParamList, DashboardStackParamList} from 'types';
-import {useMelospinStore} from 'store';
+import {useGetDiscography, useMelospinStore} from 'store';
 import {TrendingNow} from './TrendingNow';
 import {DjsOnDeck} from './DjsOnDeck';
 
@@ -23,6 +23,11 @@ export const MyDeck: React.FC<MyDeckProps> = ({djs}) => {
       NavigationProp<DashboardStackParamList & BottomTabStackParamList>
     >();
   const {userInfo} = useMelospinStore();
+  const {data, refetch} = useGetDiscography();
+
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
 
   return (
     <Box mt={hp(30)} mx={wp(16)}>
@@ -95,31 +100,7 @@ export const MyDeck: React.FC<MyDeckProps> = ({djs}) => {
           alignItems={'center'}
           borderTopColor={theme.colors.BASE_SECONDARY}>
           <Box
-            borderRightWidth={1}
-            borderRightColor={theme.colors.BASE_SECONDARY}
-            pr={wp(10)}>
-            <Box flexDirection={'row'}>
-              <Icon name="star-rating" />
-              <Text
-                pl={wp(1)}
-                variant="body"
-                color={theme.colors.WHITE}
-                fontSize={fontSz(12)}>
-                Play Ratings
-              </Text>
-            </Box>
-            <Text
-              variant="body"
-              fontSize={fontSz(14)}
-              pt={hp(2)}
-              color={theme.colors.WHITE}>
-              {userInfo?.ratings ?? '0'}
-            </Text>
-          </Box>
-          <Box
-            borderRightWidth={1}
-            borderRightColor={theme.colors.BASE_SECONDARY}
-            px={wp(10)}>
+            pr={wp(16)}>
             <Box flexDirection={'row'}>
               <Icon name="requests" />
               <Text
@@ -135,10 +116,11 @@ export const MyDeck: React.FC<MyDeckProps> = ({djs}) => {
               fontSize={fontSz(14)}
               pt={hp(2)}
               color={theme.colors.WHITE}>
-              {userInfo?.requests ?? 0}
+              {userInfo?.totalPromotions ?? 0}
             </Text>
           </Box>
-          <Box pl={wp(10)}>
+          <Box style={{width: 1}} height={hp(50)} backgroundColor={theme.colors.BASE_SECONDARY} />
+          <Box pl={wp(16)}>
             <Box flexDirection={'row'}>
               <Icon name="requests" />
               <Text
@@ -154,7 +136,7 @@ export const MyDeck: React.FC<MyDeckProps> = ({djs}) => {
               fontSize={fontSz(14)}
               pt={hp(2)}
               color={theme.colors.WHITE}>
-              {userInfo?.playsCount ?? 0}
+              {data?.data?.length ?? 0}
             </Text>
           </Box>
         </Box>

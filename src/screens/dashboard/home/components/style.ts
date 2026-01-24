@@ -2,6 +2,7 @@ import {StyleSheet} from 'react-native';
 import {hp, wp} from 'utils';
 
 export const styles = StyleSheet.create({
+  dropdownOverlay: StyleSheet.absoluteFillObject,
   gradientContainer: {
     borderWidth: 0.91,
     borderRadius: 100,

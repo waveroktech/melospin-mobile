@@ -2,11 +2,18 @@ import React from 'react';
 import {Box, Text} from 'design-system';
 import {hp, wp} from 'utils';
 import theme from 'theme';
-import {Image} from 'react-native';
+import {Image, ImageSourcePropType} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {styles} from '../style';
 
 export const TrendingNow = () => {
+  const profileSource: ImageSourcePropType = theme.images['no-profile'];
+  const hasUserProfile =
+    typeof profileSource === 'object' &&
+    profileSource !== null &&
+    'uri' in profileSource &&
+    Boolean(profileSource.uri);
+
   return (
     <Box mt={20}>
       <Box flexDirection={'row'} alignItems={'center'}>
@@ -45,8 +52,8 @@ export const TrendingNow = () => {
               alignItems={'center'}
               paddingLeft={hp(16)}>
               <Image
-                source={theme.images['dj-images']['dj-1']}
-                style={styles.djProfile2}
+                source={profileSource}
+                style={[styles.djProfile2, hasUserProfile && styles.djProfile2Border]}
               />
               <Text
                 variant="bodyMedium"

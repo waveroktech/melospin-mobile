@@ -56,6 +56,8 @@ export const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 12,
+  },
+  djProfile2Border: {
     borderWidth: 1,
     borderColor: theme.colors.OFF_WHITE_300,
   },

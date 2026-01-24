@@ -1,41 +1,262 @@
-import React, {useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {
+  Alert,
   Image,
   ImageBackground,
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import {Header, Icon, Screen} from 'shared';
+import {Header, Icon, Loader, Screen} from 'shared';
 import theme from 'theme';
 import {styles} from './style';
 import {Box, Text} from 'design-system';
 import {deviceWidth, fontSz, formatNumber, hp, wp} from 'utils';
 import {EmptyPromotionContainer} from '../promotions/components';
 import {EditProfile} from './modals';
-import {useMelospinStore} from 'store';
+import {useGetDiscography, useMelospinStore} from 'store';
 import {DiscographyItem} from '../discography/component';
+import {useFocusEffect} from '@react-navigation/native';
+import {
+  launchImageLibrary,
+  ImagePickerResponse,
+  MediaType,
+} from 'react-native-image-picker';
+import {useUploadProfileImage} from 'store/useUser';
+import {showMessage} from 'react-native-flash-message';
+import {useQueryClient} from '@tanstack/react-query';
 
 export const Profile = () => {
   const [open, setOpen] = useState<'edit-profile' | ''>('');
-  const {userData} = useMelospinStore();
+  const [selectedImage, setSelectedImage] = useState<{
+    uri: string;
+    type?: string;
+    name?: string;
+  } | null>(null);
+  const [selectedCoverImage, setSelectedCoverImage] = useState<{
+    uri: string;
+    type?: string;
+    name?: string;
+  } | null>(null);
+  const {userData, setUserData, userInfo, setUserInfo} = useMelospinStore();
+  const {data: discographyData, refetch, isPending} = useGetDiscography();
+  const queryClient = useQueryClient();
+  const coverImageUrl =
+    selectedCoverImage?.uri ||
+    (userData as any)?.coverImageUrl ||
+    (userData as any)?.coverUrl ||
+    (userInfo as any)?.coverImageUrl ||
+    (userInfo as any)?.coverUrl;
+
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+    }, [refetch]),
+  );
+
+  const {mutate: uploadProfileImage, isPending: isUploading} =
+    useUploadProfileImage({
+      onSuccess: (response: any) => {
+        if (response?.status === 'success' || response?.data) {
+          showMessage({
+            message: 'Profile image updated successfully',
+            type: 'success',
+            duration: 2000,
+          });
+          if (response?.data?.profileUrl) {
+            if (userData) {
+              setUserData({...userData, profileUrl: response.data.profileUrl});
+            }
+            if (userInfo) {
+              setUserInfo({...userInfo, profileUrl: response.data.profileUrl});
+            }
+          }
+          queryClient.invalidateQueries({queryKey: ['get-user-profile']});
+          setSelectedImage(null);
+        } else {
+          showMessage({
+            message: response?.message || 'Failed to upload profile image',
+            type: 'danger',
+            duration: 2000,
+          });
+        }
+      },
+      onError: (error: any) => {
+        showMessage({
+          message: error?.message || 'Failed to upload profile image',
+          type: 'danger',
+          duration: 2000,
+        });
+      },
+    });
+
+  const {mutate: uploadCoverImage, isPending: isUploadingCover} =
+    useUploadProfileImage({
+      onSuccess: (response: any) => {
+        if (response?.status === 'success' || response?.data) {
+          showMessage({
+            message: 'Cover image updated successfully',
+            type: 'success',
+            duration: 2000,
+          });
+          if (response?.data?.coverImageUrl || response?.data?.coverUrl) {
+            const coverUrl =
+              response?.data?.coverImageUrl || response?.data?.coverUrl;
+            if (userData) {
+              setUserData({...userData, coverImageUrl: coverUrl} as any);
+            }
+            if (userInfo) {
+              setUserInfo({...userInfo, coverImageUrl: coverUrl});
+            }
+          }
+          queryClient.invalidateQueries({queryKey: ['get-user-profile']});
+          setSelectedCoverImage(null);
+        } else {
+          showMessage({
+            message: response?.message || 'Failed to upload cover image',
+            type: 'danger',
+            duration: 2000,
+          });
+        }
+      },
+      onError: (error: any) => {
+        showMessage({
+          message: error?.message || 'Failed to upload cover image',
+          type: 'danger',
+          duration: 2000,
+        });
+      },
+    });
+
+  const openImagePicker = () => {
+    launchImageLibrary(
+      {
+        mediaType: 'photo' as MediaType,
+        quality: 1,
+        selectionLimit: 1,
+      },
+      (response: ImagePickerResponse) => {
+        if (response.didCancel) {
+          return;
+        }
+        if (response.errorMessage) {
+          Alert.alert('Error', response.errorMessage);
+          return;
+        }
+        if (response.assets && response.assets.length > 0) {
+          const asset = response.assets[0];
+          const file = {
+            uri: asset.uri || '',
+            type: asset.type || 'image/jpeg',
+            name:
+              asset.fileName ||
+              asset.uri?.split('/').pop() ||
+              'profile-image.jpg',
+          };
+          setSelectedImage(file);
+          if (userData?.userId) {
+            uploadProfileImage({
+              userId: userData.userId,
+              file,
+              imageType: 'profile',
+            });
+          }
+        }
+      },
+    );
+  };
+
+  const openCoverImagePicker = () => {
+    launchImageLibrary(
+      {
+        mediaType: 'photo' as MediaType,
+        quality: 1,
+        selectionLimit: 1,
+      },
+      (response: ImagePickerResponse) => {
+        if (response.didCancel) {
+          return;
+        }
+        if (response.errorMessage) {
+          Alert.alert('Error', response.errorMessage);
+          return;
+        }
+        if (response.assets && response.assets.length > 0) {
+          const asset = response.assets[0];
+          const file = {
+            uri: asset.uri || '',
+            type: asset.type || 'image/jpeg',
+            name:
+              asset.fileName ||
+              asset.uri?.split('/').pop() ||
+              'cover-image.jpg',
+          };
+          setSelectedCoverImage(file);
+          if (userData?.userId) {
+            uploadCoverImage({
+              userId: userData.userId,
+              file,
+              imageType: 'banner',
+            });
+          }
+        }
+      },
+    );
+  };
   return (
     <Screen removeSafeaArea>
       <Header hasBackText="Profile" />
       <ScrollView>
         <ImageBackground
-          source={theme.images['cover-image']}
+          source={
+            coverImageUrl ? {uri: coverImageUrl} : theme.images['cover-image']
+          }
           resizeMode="cover"
           style={styles.imageBg}>
           <Box
             bg={theme.colors.OFF_BLACK_200}
             width={deviceWidth}
             height={hp(309)}>
+            {isUploadingCover && (
+              <Box
+                position="absolute"
+                top={0}
+                left={0}
+                right={0}
+                bottom={0}
+                justifyContent="center"
+                alignItems="center"
+                bg={theme.colors.OFF_BLACK_200}>
+                <Loader loading={true} />
+              </Box>
+            )}
+            <Box
+              flexDirection={'row'}
+              as={TouchableOpacity}
+              alignSelf={'flex-end'}
+              activeOpacity={0.8}
+              position={'absolute'}
+              alignItems={'center'}
+              mt={hp(12)}
+              mr={wp(16)}
+              onPress={openCoverImagePicker}
+              disabled={isUploadingCover}>
+              <Text pr={wp(10)} variant="body" color={theme.colors.LIGHT_PRIMARY}>
+                Change Cover
+              </Text>
+              <Icon name="arrow-right-2" />
+            </Box>
             <Box justifyContent={'center'} py={hp(80)} alignItems={'center'}>
-              <Image
-                source={theme.images['dj-images']['dj-1']}
-                style={styles.profileImage}
-                resizeMode="contain"
-              />
+              <TouchableOpacity activeOpacity={0.8} onPress={openImagePicker}>
+                <Image
+                  source={
+                    selectedImage?.uri || userData?.profileUrl
+                      ? {uri: selectedImage?.uri || userData?.profileUrl}
+                      : theme.images['no-profile']
+                  }
+                  style={styles.profileImage}
+                  resizeMode="contain"
+                />
+              </TouchableOpacity>
               <Box flexDirection={'row'} alignItems={'center'}>
                 <Text variant="bodyMedium" color={theme.colors.WHITE} pr={1}>
                   {userData?.firstName} {userData?.lastName}
@@ -179,7 +400,7 @@ export const Profile = () => {
             Latest Releases
           </Text>
 
-          {userData?.recentUploads?.length === 0 ? (
+          {(discographyData?.data?.length ?? 0) === 0 ? (
             <EmptyPromotionContainer
               icon="empty-folder"
               containerStyles={{my: hp(40)}}
@@ -188,7 +409,7 @@ export const Profile = () => {
             />
           ) : (
             <Box mt={hp(20)}>
-              {userData?.recentUploads?.slice(0, 5)?.map(item => (
+              {discographyData?.data?.slice(0, 5)?.map((item: any) => (
                 <DiscographyItem item={item} />
               ))}
             </Box>
@@ -200,6 +421,8 @@ export const Profile = () => {
         isVisible={open === 'edit-profile'}
         onClose={() => setOpen('')}
       />
+
+      <Loader loading={isUploading || isPending} />
     </Screen>
   );
 };

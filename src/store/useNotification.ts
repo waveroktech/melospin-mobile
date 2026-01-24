@@ -17,12 +17,12 @@ export const useGetNotifications = (perPage: number = 25) => {
     getNextPageParam: lastPage => {
       const {pagination} = lastPage;
       // Return next page if it exists, otherwise undefined to stop pagination
-      return pagination.nextPage ?? undefined;
+      return pagination?.nextPage ?? undefined;
     },
     getPreviousPageParam: firstPage => {
       const {pagination} = firstPage;
       // Return previous page if it exists
-      return pagination.prevPage ?? undefined;
+      return pagination?.prevPage ?? undefined;
     },
     initialPageParam: 1,
     enabled: false,
