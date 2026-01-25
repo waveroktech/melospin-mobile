@@ -59,7 +59,7 @@ export const PromotionDetails = ({
               }}
               style={styles.gradientContainer}>
               <Image
-                source={theme.images.artist}
+                source={theme.images['no-profile']}
                 style={styles.imageContainer}
               />
 
@@ -87,6 +87,7 @@ export const PromotionDetails = ({
             {promotion && <PromotionItem promotion={promotion} />}
           </Box>
 
+{promotion?.promotion?.externalPlatformsLink && promotion?.promotion?.externalPlatformsLink?.length > 0 && (
           <Box mt={hp(20)} mx={wp(16)}>
             <Text
               variant="bodyBold"
@@ -98,8 +99,8 @@ export const PromotionDetails = ({
             <ScrollView horizontal>
               <Box mt={hp(16)} flexDirection={'row'} alignItems={'center'}>
                 {promotion?.promotion?.externalPlatformsLink &&
-                promotion.promotion.externalPlatformsLink.length > 0
-                  ? promotion.promotion.externalPlatformsLink.map(
+                promotion?.promotion?.externalPlatformsLink?.length > 0
+                  && promotion.promotion.externalPlatformsLink.map(
                       (link: any, index: number) => {
                         return (
                           <Box
@@ -116,26 +117,12 @@ export const PromotionDetails = ({
                           </Box>
                         );
                       },
-                    )
-                  : streamingLinks?.map((song: any, index: number) => {
-                      return (
-                        <Box
-                          as={TouchableOpacity}
-                          backgroundColor={theme.colors.BLACK_DEFAULT}
-                          activeOpacity={0.8}
-                          key={index}
-                          mr={wp(10)}
-                          borderRadius={hp(24)}
-                          borderWidth={1}
-                          borderColor={theme.colors.WHITE}
-                          p={hp(12)}>
-                          <Icon name={song.icon2} color={theme.colors.WHITE} />
-                        </Box>
-                      );
-                    })}
+                    )}
+
               </Box>
             </ScrollView>
           </Box>
+          )}
 
           <Box mt={hp(20)}>
             <Text

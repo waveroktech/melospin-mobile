@@ -18,6 +18,8 @@ export const ConnectDj = () => {
   const {goBack} = useNavigation();
   const {userType} = useMelospinStore();
 
+  console.log(dj, 'dj');
+
   const {refetch} = useGetDjs();
 
   useEffect(() => {
@@ -99,7 +101,7 @@ export const ConnectDj = () => {
                   fontFamily={theme.font.AvenirNextSemiBold}
                   color={theme.colors.WHITE}
                   px={10}>
-                  {formatNumber(100)} Connects
+                  {formatNumber(0)} Connects
                 </Text>
 
                 <Icon name="song-uploads" />
@@ -108,7 +110,7 @@ export const ConnectDj = () => {
                   fontFamily={theme.font.AvenirNextSemiBold}
                   color={theme.colors.WHITE}
                   pl={10}>
-                  {formatNumber(10)}{' '}
+                  {formatNumber(0)}{' '}
                   {userType === 'artiste' ? 'Song Uploads' : 'Song Plays'}
                 </Text>
               </Box>

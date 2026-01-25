@@ -44,6 +44,7 @@ export interface AccountProfileRequest {
     country: string;
     state: string;
   };
+  snapchat?: string;
 }
 
 export interface SetPasswordResetRequest {

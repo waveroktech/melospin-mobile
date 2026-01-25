@@ -1,6 +1,7 @@
 export interface UserProfileUpdateRequest {
   userType?: string;
   brandName: string;
+  bio?: string;
   instagram: string;
   twitter: string;
   music_genres: string[];

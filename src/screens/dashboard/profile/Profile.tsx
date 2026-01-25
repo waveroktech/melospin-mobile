@@ -3,6 +3,7 @@ import {
   Alert,
   Image,
   ImageBackground,
+  Linking,
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
@@ -40,6 +41,11 @@ export const Profile = () => {
   const {userData, setUserData, userInfo, setUserInfo} = useMelospinStore();
   const {data: discographyData, refetch, isPending} = useGetDiscography();
   const queryClient = useQueryClient();
+  const socials = {
+    instagram: (userData as any)?.instagram || '',
+    tiktok: (userData as any)?.tictok || '',
+    snapchat: (userData as any)?.snapchat || '',
+  };
   const coverImageUrl =
     selectedCoverImage?.uri ||
     (userData as any)?.coverImageUrl ||
@@ -202,6 +208,26 @@ export const Profile = () => {
       },
     );
   };
+
+  const openSocialLink = async (platform: 'instagram' | 'tiktok' | 'snapchat') => {
+    const handle = socials[platform];
+    if (!handle) {
+      return;
+    }
+
+    const normalizedHandle = handle.replace(/^@/, '').trim();
+    const urlMap = {
+      instagram: `https://instagram.com/${normalizedHandle}`,
+      tiktok: `https://www.tiktok.com/@${normalizedHandle}`,
+      snapchat: `https://www.snapchat.com/add/${normalizedHandle}`,
+    };
+
+    const url = urlMap[platform];
+    const canOpen = await Linking.canOpenURL(url);
+    if (canOpen) {
+      Linking.openURL(url);
+    }
+  };
   return (
     <Screen removeSafeaArea>
       <Header hasBackText="Profile" />
@@ -360,6 +386,7 @@ export const Profile = () => {
               height={hp(40)}
               as={TouchableOpacity}
               activeOpacity={0.8}
+              onPress={() => openSocialLink('instagram')}
               justifyContent={'center'}
               alignItems={'center'}
               borderRadius={24}
@@ -371,6 +398,7 @@ export const Profile = () => {
               height={hp(40)}
               as={TouchableOpacity}
               activeOpacity={0.8}
+              onPress={() => openSocialLink('tiktok')}
               justifyContent={'center'}
               alignItems={'center'}
               borderRadius={24}
@@ -382,6 +410,7 @@ export const Profile = () => {
               height={hp(40)}
               as={TouchableOpacity}
               activeOpacity={0.8}
+              onPress={() => openSocialLink('snapchat')}
               justifyContent={'center'}
               alignItems={'center'}
               borderRadius={24}

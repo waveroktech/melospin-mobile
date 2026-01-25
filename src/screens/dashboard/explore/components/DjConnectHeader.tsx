@@ -32,8 +32,9 @@ export const DjConnectHeader = ({
       <Box flexDirection={'row'} justifyContent={'space-between'}>
         <Box flexDirection={'row'} alignItems={'center'}>
           <Image
-            source={userInfo?.profileUrl ? {uri: userInfo?.profileUrl} : theme.images['dj-images']['dj-1']}
+            source={userInfo?.profileUrl ? {uri: userInfo?.profileUrl} : theme.images['no-profile']}
             style={styles.djProfileImage}
+            resizeMode="cover"
           />
 
           <Box ml={wp(10)}>
@@ -43,7 +44,7 @@ export const DjConnectHeader = ({
                 fontSize={fontSz(16)}
                 fontFamily={theme.font.AvenirNextSemiBold}
                 color={theme.colors.WHITE}>
-                {userData?.brandName}
+                {userInfo?.brandName}
               </Text>
               <Box top={0.5} ml={1}>
                 <Icon name="verified" />

@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {Box, Button, FormInput} from 'design-system';
 import {AvoidingView, BaseModal, Loader, ModalHeader} from 'shared';
-import {hp} from 'utils';
+import {hp, wp} from 'utils';
 import {ScrollView} from 'react-native';
 import {useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
@@ -17,6 +17,7 @@ interface EditProfileProps {
 
 interface FormData {
   brandName: string;
+  bio?: string;
   instagram: string;
   tiktok: string;
   snapchat: string;
@@ -24,13 +25,14 @@ interface FormData {
 
 const schema = yup.object().shape({
   brandName: yup.string().required(),
+  bio: yup.string().optional(),
   instagram: yup.string().required(),
   snapchat: yup.string().required(),
   tiktok: yup.string().required(),
 });
 
 export const EditProfile = ({isVisible, onClose}: EditProfileProps) => {
-  const {userData} = useMelospinStore();
+  const {userData, userInfo} = useMelospinStore();
 
   const {refetch: refetchUserProfile} = useGetUserProfile({
     userId: userData?.userId,
@@ -47,6 +49,7 @@ export const EditProfile = ({isVisible, onClose}: EditProfileProps) => {
     resolver: yupResolver(schema),
     defaultValues: {
       brandName: userData?.brandName || '',
+      bio: userInfo?.bio || '',
       tiktok: userData?.tictok || '',
       snapchat: userData?.snapchat || '',
       instagram: userData?.instagram || '',
@@ -68,6 +71,7 @@ export const EditProfile = ({isVisible, onClose}: EditProfileProps) => {
 
   const {mutate: updateProfile, isPending} = useUserProfileUpdate({
     onSuccess: (data: any) => {
+      console.log(data, 'data');
       if (data?.status === 'failed') {
         return showMessage({
           message: data?.message,
@@ -91,6 +95,7 @@ export const EditProfile = ({isVisible, onClose}: EditProfileProps) => {
     updateProfile({
       music_genres: selectedGenres,
       brandName: form.brandName,
+      bio: form.bio || '',
       twitter: form.tiktok,
       instagram: form.instagram,
       user_id: userData?.userId,
@@ -98,6 +103,7 @@ export const EditProfile = ({isVisible, onClose}: EditProfileProps) => {
     });
   }, [
     form.brandName,
+    form.bio,
     form.instagram,
     form.tiktok,
     selectedGenres,
@@ -125,10 +131,18 @@ export const EditProfile = ({isVisible, onClose}: EditProfileProps) => {
               />
 
               <FormInput
-                label="Brand name"
+                label="Bio"
                 control={control}
-                name="brandName"
-                value={form.brandName}
+                name="bio"
+                value={form.bio}
+                multiline={true}
+                numberOfLines={4}
+                inputTextStyle={{height: hp(90), width: wp(300), marginTop: hp(12), paddingTop: hp(4)}}
+                containerStyle={{
+                  height: hp(130),
+                }}
+                textAlignVertical="top"
+                maxLength={60}
               />
 
               <GenreSelector

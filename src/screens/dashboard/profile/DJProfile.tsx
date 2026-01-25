@@ -299,14 +299,12 @@ export const DJProfile = () => {
                       <Loader loading={true} />
                     </Box>
                   )}
-                  <Box
-                    flexDirection={'row'}
-                    as={TouchableOpacity}
-                    alignSelf={'flex-end'}
+                  <TouchableOpacity
                     activeOpacity={0.8}
-                    alignItems={'center'}
                     onPress={openCoverImagePicker}
-                    disabled={isUploadingCover}>
+                    disabled={isUploadingCover}
+                    hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}
+                    style={styles.changeCoverButton}>
                     <Text
                       pr={wp(10)}
                       variant="body"
@@ -314,7 +312,7 @@ export const DJProfile = () => {
                       Change Cover
                     </Text>
                     <Icon name="arrow-right-2" />
-                  </Box>
+                  </TouchableOpacity>
                 </Box>
               </ImageBackground>
             </GradientBorderView>
@@ -329,7 +327,7 @@ export const DJProfile = () => {
                     source={
                       selectedImage?.uri || userInfo?.profileUrl
                         ? {uri: selectedImage?.uri || userInfo?.profileUrl }
-                        : theme.images['dj-images']['dj-1']
+                        : theme.images['no-profile']
                     }
                     style={styles.djProfileImage2}
                     resizeMode="cover"
@@ -384,7 +382,7 @@ export const DJProfile = () => {
               fontSize={fontSz(14)}
               color={theme.colors.TEXT_INPUT_PLACEHOLDER}
               pt={hp(2)}>
-              I’m a Multi- talented DJ with a vibe beyond the borders
+             {userInfo?.bio || 'I’m a Multi- talented DJ with a vibe beyond the borders'}
             </Text>
 
             <Box

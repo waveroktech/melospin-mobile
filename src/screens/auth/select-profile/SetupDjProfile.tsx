@@ -112,6 +112,7 @@ export const SetupDjProfile = () => {
       promotionTypes: form.promotionTypes,
       playSpot: form.title,
       playSpotAddress: form.location,
+      snapchat: form.snapchat,
       address: {
         country: form.country,
         state: form.state,
@@ -176,6 +177,13 @@ export const SetupDjProfile = () => {
               name="tictok"
               value={form.tictok}
               errorText={errors.tictok?.message}
+            />
+            <FormInput
+              label="Enter Snapchat handle (ex @dj_zee)"
+              control={control}
+              name="snapchat"
+              value={form.snapchat}
+              errorText={errors.snapchat?.message}
             />
 
             <Controller

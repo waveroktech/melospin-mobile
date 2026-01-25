@@ -54,9 +54,11 @@ export const OngoingPromotionDetails = ({
   const promotionDetails = promotionData?.data || promotion;
   const details = promotionDetails?.details || promotionDetails?.promotion;
   const statusReport = useMemo(
-    () => promotionDetails?.statusReport || promotionDetails?.proofs || [],
-    [promotionDetails?.statusReport, promotionDetails?.proofs],
+    () => promotionDetails?.proofs || [],
+    [promotionDetails?.proofs],
   );
+
+  console.log(promotion?.proofs);
 
   return (
     <Modal
@@ -378,7 +380,7 @@ export const OngoingPromotionDetails = ({
                 alignItems={'center'}
                 justifyContent={'space-between'}>
                 <Text variant="bodyMedium" color={theme.colors.WHITE}>
-                  Proof of Play Report ({statusReport?.length || 0}/
+                  Proof of Play Report ({promotion?.proofs?.length || 0}/
                   {details?.minPlayCount || 12})
                 </Text>
 

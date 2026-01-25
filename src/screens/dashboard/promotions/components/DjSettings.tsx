@@ -13,7 +13,7 @@ export const DjSettings = () => {
     'add-bank' | 'booking-rate' | 'sessions' | ''
   >('');
 
-  const {playSessions, userInfo} = useMelospinStore();
+  const {userInfo} = useMelospinStore();
 
   return (
     <Box mt={hp(20)} height={hp(800)}>
@@ -92,7 +92,7 @@ export const DjSettings = () => {
                   <Box
                     key={index}
                     mb={hp(12)}
-                    px={wp(2)}
+                    px={wp(12)}
                     py={hp(2)}
                     borderRadius={hp(24)}
                     bg={theme.colors.OFF_WHITE_600}

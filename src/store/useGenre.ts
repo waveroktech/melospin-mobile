@@ -5,6 +5,5 @@ export const useGetGenre = () => {
   return useQuery({
     queryKey: ['get-melospin-genres'],
     queryFn: () => getGenres(),
-    enabled: false,
   });
 };

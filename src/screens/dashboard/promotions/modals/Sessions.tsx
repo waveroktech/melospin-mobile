@@ -19,6 +19,12 @@ export const Sessions = ({isVisible, onClose}: SessionsProps) => {
 
   const {userInfo} = useMelospinStore();
 
+  useEffect(() => {
+    if (userInfo?.playingDays) {
+      setSelectedSessions(userInfo?.playingDays);
+    }
+  }, [userInfo?.playingDays]);
+
   const {mutate: updateUserPlaySessions, isPending} = useUpdateUserPlaySessions(
     {
       onSuccess: (data: any) => {
@@ -40,9 +46,6 @@ export const Sessions = ({isVisible, onClose}: SessionsProps) => {
     },
   );
 
-  useEffect(() => {
-    setSelectedSessions(userInfo?.playingDays);
-  }, [userInfo?.playingDays]);
 
   const handleSave = () => {
     updateUserPlaySessions({
@@ -96,15 +99,13 @@ export const Sessions = ({isVisible, onClose}: SessionsProps) => {
                     as={TouchableOpacity}
                     activeOpacity={0.8}
                     onPress={() => {
-                      if (selectedSessions?.includes(session?.title)) {
+                      const sessionTitle = session?.title?.toLowerCase();
+                      if (selectedSessions?.includes(sessionTitle)) {
                         setSelectedSessions(
-                          selectedSessions?.filter(s => s !== session?.title),
+                          selectedSessions?.filter(s => s !== sessionTitle),
                         );
                       } else {
-                        setSelectedSessions([
-                          ...selectedSessions,
-                          session?.title?.toLowerCase(),
-                        ]);
+                        setSelectedSessions([...selectedSessions, sessionTitle]);
                       }
                     }}
                     mb={hp(10)}

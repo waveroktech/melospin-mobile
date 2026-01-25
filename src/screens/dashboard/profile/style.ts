@@ -57,6 +57,13 @@ export const styles = StyleSheet.create({
   imageStyle: {
     borderRadius: hp(24),
   },
+  changeCoverButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'flex-end',
+    zIndex: 2,
+    elevation: 2,
+  },
   kycStatusContainer: {
     paddingHorizontal: hp(8),
     height: hp(24),

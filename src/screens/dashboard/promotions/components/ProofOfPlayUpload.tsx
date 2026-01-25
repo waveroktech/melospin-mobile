@@ -11,6 +11,7 @@ import {
 } from 'react-native-image-picker';
 import {useUploadProofOfPlay} from 'store';
 import {showMessage} from 'react-native-flash-message';
+import {useQueryClient} from '@tanstack/react-query';
 
 interface ProofOfPlayUploadProps {
   requestId: string | null;
@@ -26,6 +27,7 @@ export const ProofOfPlayUpload = ({
     type?: string;
     name?: string;
   } | null>(null);
+  const queryClient = useQueryClient();
 
   // Upload proof of play mutation
   const {mutate: uploadProofOfPlay, isPending: isUploading} =
@@ -39,6 +41,11 @@ export const ProofOfPlayUpload = ({
             duration: 2000,
           });
           setSelectedVideo(null);
+          queryClient.invalidateQueries({queryKey: ['get-user-promotions']});
+          queryClient.invalidateQueries({queryKey: ['get-promotion-requests']});
+          queryClient.invalidateQueries({
+            predicate: query => query.queryKey?.[0] === 'get-proof-of-plays',
+          });
           // Call callback to refetch promotion data
           onUploadSuccess?.();
         } else {
@@ -196,7 +203,7 @@ export const ProofOfPlayUpload = ({
         color={theme.colors.WHITE}
         ml={wp(12)}
         fontSize={fontSz(12)}>
-        Click here to Upload Proof of Play
+        Click here to Upload Proof of Play (5MB max)
       </Text>
     </Box>
   );

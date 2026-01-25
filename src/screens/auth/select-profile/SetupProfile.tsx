@@ -92,6 +92,7 @@ export const SetupProfile = () => {
       brandName: form.brandName,
       instagram: form.instagram,
       tictok: form.tictok,
+      snapchat: form.snapchat,
       musicGenres: selectedGenres,
       address: {
         country: form.country,
@@ -137,6 +138,14 @@ export const SetupProfile = () => {
               name="tictok"
               value={form.tictok}
               errorText={errors.tictok?.message}
+            />
+            <FormInput
+              label="Enter Snapchat handle (ex @dj_zee)"
+              autoCapitalize="none"
+              control={control}
+              name="snapchat"
+              value={form.snapchat}
+              errorText={errors.snapchat?.message}
             />
 
             <FormInput

@@ -17,8 +17,6 @@ export const GenreSelector = ({
 }: GenreSelectorProps) => {
   const {data: musicGenres, refetch} = useGetGenre();
 
-  console.log(musicGenres, 'musicGenres');
-
   useEffect(() => {
     refetch();
   }, [refetch]);
