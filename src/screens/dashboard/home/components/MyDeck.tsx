@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, { useEffect } from 'react';
+import React, {useEffect} from 'react';
 import {Box, Text} from 'design-system';
 import {Icon} from 'shared';
 import theme from 'theme';
@@ -95,12 +95,12 @@ export const MyDeck: React.FC<MyDeckProps> = ({djs}) => {
           borderTopWidth={1}
           mx={wp(30)}
           py={hp(20)}
+          flex={1}
           flexDirection={'row'}
           justifyContent={'space-between'}
           alignItems={'center'}
           borderTopColor={theme.colors.BASE_SECONDARY}>
-          <Box
-            pr={wp(16)}>
+          <Box justifyContent={'center'} alignItems={'center'}>
             <Box flexDirection={'row'}>
               <Icon name="requests" />
               <Text
@@ -119,8 +119,12 @@ export const MyDeck: React.FC<MyDeckProps> = ({djs}) => {
               {userInfo?.totalPromotions ?? 0}
             </Text>
           </Box>
-          <Box style={{width: 1}} height={hp(50)} backgroundColor={theme.colors.BASE_SECONDARY} />
-          <Box pl={wp(16)}>
+          <Box
+            style={{width: 1}}
+            height={hp(50)}
+            backgroundColor={theme.colors.BASE_SECONDARY}
+          />
+          <Box justifyContent={'center'} alignItems={'center'}>
             <Box flexDirection={'row'}>
               <Icon name="requests" />
               <Text

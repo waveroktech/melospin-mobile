@@ -1,12 +1,12 @@
 import React, {useCallback, useState} from 'react';
 import {
   Alert,
-  Image,
   ImageBackground,
   Linking,
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
+import FastImage from 'react-native-fast-image';
 import {Header, Icon, Loader, Screen} from 'shared';
 import theme from 'theme';
 import {styles} from './style';
@@ -209,7 +209,9 @@ export const Profile = () => {
     );
   };
 
-  const openSocialLink = async (platform: 'instagram' | 'tiktok' | 'snapchat') => {
+  const openSocialLink = async (
+    platform: 'instagram' | 'tiktok' | 'snapchat',
+  ) => {
     const handle = socials[platform];
     if (!handle) {
       return;
@@ -237,6 +239,9 @@ export const Profile = () => {
             coverImageUrl ? {uri: coverImageUrl} : theme.images['cover-image']
           }
           resizeMode="cover"
+          tintColor={
+            coverImageUrl ? 'transparent' : theme.colors.BASE_SECONDARY
+          }
           style={styles.imageBg}>
           <Box
             bg={theme.colors.OFF_BLACK_200}
@@ -266,21 +271,24 @@ export const Profile = () => {
               mr={wp(16)}
               onPress={openCoverImagePicker}
               disabled={isUploadingCover}>
-              <Text pr={wp(10)} variant="body" color={theme.colors.LIGHT_PRIMARY}>
+              <Text
+                pr={wp(10)}
+                variant="body"
+                color={theme.colors.LIGHT_PRIMARY}>
                 Change Cover
               </Text>
               <Icon name="arrow-right-2" />
             </Box>
             <Box justifyContent={'center'} py={hp(80)} alignItems={'center'}>
               <TouchableOpacity activeOpacity={0.8} onPress={openImagePicker}>
-                <Image
+                <FastImage
                   source={
                     selectedImage?.uri || userData?.profileUrl
                       ? {uri: selectedImage?.uri || userData?.profileUrl}
                       : theme.images['no-profile']
                   }
                   style={styles.profileImage}
-                  resizeMode="contain"
+                  resizeMode={FastImage.resizeMode.contain}
                 />
               </TouchableOpacity>
               <Box flexDirection={'row'} alignItems={'center'}>
@@ -304,10 +312,10 @@ export const Profile = () => {
                 alignItems={'center'}
                 style={{padding: hp(8)}}
                 borderRadius={hp(24)}>
-                <Image
+                <FastImage
                   source={theme.images['artist-list']}
                   style={styles.artistList}
-                  resizeMode="contain"
+                  resizeMode={FastImage.resizeMode.contain}
                 />
                 <Text
                   variant="bodyMedium"

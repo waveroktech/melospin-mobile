@@ -14,8 +14,15 @@ interface DjsOnDeckProps {
 }
 
 const DjOnDeckCard = ({dj}: {dj: any}) => {
+  const {navigate} =
+    useNavigation<
+      NavigationProp<BottomTabStackParamList & DashboardStackParamList>
+    >();
   return (
     <Box
+      as={TouchableOpacity}
+      activeOpacity={0.8}
+      onPress={() => navigate('ConnectDJ', {dj})}
       mt={hp(10)}
       width={wp(86)}
       mr={wp(10)}
@@ -89,9 +96,7 @@ export const DjsOnDeck = ({djs = []}: DjsOnDeckProps) => {
       ) : (
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           {djs.slice(0, 4).map((dj: any, index: number) => {
-            return (
-              <DjOnDeckCard key={index} dj={dj} />
-            );
+            return <DjOnDeckCard key={index} dj={dj} />;
           })}
         </ScrollView>
       )}

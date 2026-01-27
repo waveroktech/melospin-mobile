@@ -58,9 +58,7 @@ export const updateBookingRate = async (payload: {
   return put(`users/${payload?.userId}/booking-rate`, {
     chargePerPlay: payload.chargePerPlay,
     password: payload.password,
-  }).then(
-    data => data as any,
-  );
+  }).then(data => data as any);
 };
 
 export const getBankList = async () => {
@@ -83,6 +81,7 @@ export const updateUserBankDetails = async (payload: {
     bvn: string;
   };
 }) => {
+  console.log(payload, 'payload');
   return put(`users/${payload?.userId}/banks`, payload?.data).then(
     data => data as any,
   );

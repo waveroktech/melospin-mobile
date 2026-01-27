@@ -1,9 +1,15 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Box, Text} from 'design-system';
 import {Icon, Loader, ModalHeader} from 'shared';
-import {capitalizeTitle, deviceWidth, fontSz, formatNumberWithCommas, hp, wp} from 'utils';
+import {
+  capitalizeTitle,
+  deviceWidth,
+  fontSz,
+  formatNumberWithCommas,
+  hp,
+  wp,
+} from 'utils';
 import theme from 'theme';
-import {streamingLinks} from 'data';
 import Modal from 'react-native-modal';
 import {ImageBackground, ScrollView, TouchableOpacity} from 'react-native';
 import {styles} from './style';
@@ -53,13 +59,6 @@ export const OngoingPromotionDetails = ({
   // API response structure: { _id, statusReport[], details: {...} }
   const promotionDetails = promotionData?.data || promotion;
   const details = promotionDetails?.details || promotionDetails?.promotion;
-  const statusReport = useMemo(
-    () => promotionDetails?.proofs || [],
-    [promotionDetails?.proofs],
-  );
-
-  console.log(promotion?.proofs);
-
   return (
     <Modal
       isVisible={isVisible}
@@ -177,19 +176,22 @@ export const OngoingPromotionDetails = ({
               </Box>
             </Box>
 
-            <Box mt={hp(20)} mx={wp(16)}>
-              <Text
-                variant="bodyBold"
-                fontFamily={theme.font.AvenirNextSemiBold}
-                color={theme.colors.WHITE}>
-                Streaming Links
-              </Text>
+            {details?.externalPlatformsLink &&
+              details.externalPlatformsLink.length > 0 && (
+                <Box mt={hp(20)} mx={wp(16)}>
+                  <Text
+                    variant="bodyBold"
+                    fontFamily={theme.font.AvenirNextSemiBold}
+                    color={theme.colors.WHITE}>
+                    Streaming Links
+                  </Text>
 
-              <ScrollView horizontal>
-                <Box mt={hp(16)} flexDirection={'row'} alignItems={'center'}>
-                  {details?.externalPlatformsLink &&
-                  details.externalPlatformsLink.length > 0
-                    ? details.externalPlatformsLink.map(
+                  <ScrollView horizontal>
+                    <Box
+                      mt={hp(16)}
+                      flexDirection={'row'}
+                      alignItems={'center'}>
+                      {details.externalPlatformsLink.map(
                         (link: any, index: number) => {
                           return (
                             <Box
@@ -209,29 +211,11 @@ export const OngoingPromotionDetails = ({
                             </Box>
                           );
                         },
-                      )
-                    : streamingLinks?.map((song: any, index: number) => {
-                        return (
-                          <Box
-                            as={TouchableOpacity}
-                            backgroundColor={theme.colors.BLACK_DEFAULT}
-                            activeOpacity={0.8}
-                            key={index}
-                            mr={wp(10)}
-                            borderRadius={hp(24)}
-                            borderWidth={1}
-                            borderColor={theme.colors.WHITE}
-                            p={hp(12)}>
-                            <Icon
-                              name={song.icon2}
-                              color={theme.colors.WHITE}
-                            />
-                          </Box>
-                        );
-                      })}
+                      )}
+                    </Box>
+                  </ScrollView>
                 </Box>
-              </ScrollView>
-            </Box>
+              )}
 
             <Box mt={hp(32)}>
               <Box
@@ -394,67 +378,67 @@ export const OngoingPromotionDetails = ({
               {showProofOfPlay && (
                 <Box mt={hp(12)}>
                   {promotion?.proofs?.map((item: any) => {
-                        return (
+                    return (
+                      <Box
+                        key={item.id}
+                        flexDirection={'row'}
+                        alignItems={'center'}
+                        mb={hp(12)}
+                        borderBottomWidth={1}
+                        borderBottomColor={theme.colors.BASE_SECONDARY}
+                        pb={hp(16)}
+                        justifyContent={'space-between'}>
+                        <Box flexDirection={'row'} alignItems={'center'}>
+                          <Text
+                            variant="bodyMedium"
+                            numberOfLines={1}
+                            width={wp(100)}
+                            color={theme.colors.TEXT_INPUT_PLACEHOLDER}>
+                            {item.fileName}
+                          </Text>
                           <Box
-                            key={item.id}
-                            flexDirection={'row'}
-                            alignItems={'center'}
-                            mb={hp(12)}
-                            borderBottomWidth={1}
-                            borderBottomColor={theme.colors.BASE_SECONDARY}
-                            pb={hp(16)}
-                            justifyContent={'space-between'}>
-                            <Box flexDirection={'row'} alignItems={'center'}>
-                              <Text
-                                variant="bodyMedium"
-                                numberOfLines={1}
-                                width={wp(100)}
-                                color={theme.colors.TEXT_INPUT_PLACEHOLDER}>
-                                {item.fileName}
-                              </Text>
-                              <Box
-                                width={wp(4)}
-                                height={hp(4)}
-                                mx={wp(12)}
-                                bg={theme.colors.TEXT_INPUT_PLACEHOLDER}
-                                borderRadius={hp(10)}
-                              />
-                              <Text
-                                variant="bodyMedium"
-                                color={theme.colors.TEXT_INPUT_PLACEHOLDER}>
-                                {moment(item.createdAt).format('MM/DD/YYYY')}
-                              </Text>
-                            </Box>
+                            width={wp(4)}
+                            height={hp(4)}
+                            mx={wp(12)}
+                            bg={theme.colors.TEXT_INPUT_PLACEHOLDER}
+                            borderRadius={hp(10)}
+                          />
+                          <Text
+                            variant="bodyMedium"
+                            color={theme.colors.TEXT_INPUT_PLACEHOLDER}>
+                            {moment(item.createdAt).format('MM/DD/YYYY')}
+                          </Text>
+                        </Box>
 
-                            <Box
-                              bg={
-                                item.requestStatus === 'accepted'
-                                  ? theme.colors.SEMANTIC_GREEN
-                                  : item.requestStatus === 'pending'
-                                  ? theme.colors.CREAM
-                                  : theme.colors.RED
-                              }
-                              style={{
-                                paddingHorizontal: wp(6),
-                                paddingVertical: hp(4),
-                              }}
-                              borderRadius={hp(10)}>
-                              <Text
-                                variant="bodyMedium"
-                                fontSize={fontSz(12)}
-                                color={
-                                  item.requestStatus === 'accepted'
-                                    ? theme.colors.DARKER_GREEN
-                                    : item.requestStatus === 'pending'
-                                    ? theme.colors.SEMANTIC_YELLOW
-                                    : theme.colors.WHITE
-                                }>
-                                {item.requestStatus}
-                              </Text>
-                            </Box>
-                          </Box>
-                        );
-                      })}
+                        <Box
+                          bg={
+                            item.requestStatus === 'accepted'
+                              ? theme.colors.SEMANTIC_GREEN
+                              : item.requestStatus === 'pending'
+                              ? theme.colors.CREAM
+                              : theme.colors.RED
+                          }
+                          style={{
+                            paddingHorizontal: wp(6),
+                            paddingVertical: hp(4),
+                          }}
+                          borderRadius={hp(10)}>
+                          <Text
+                            variant="bodyMedium"
+                            fontSize={fontSz(12)}
+                            color={
+                              item.requestStatus === 'accepted'
+                                ? theme.colors.DARKER_GREEN
+                                : item.requestStatus === 'pending'
+                                ? theme.colors.SEMANTIC_YELLOW
+                                : theme.colors.WHITE
+                            }>
+                            {item.requestStatus}
+                          </Text>
+                        </Box>
+                      </Box>
+                    );
+                  })}
                 </Box>
               )}
             </Box>

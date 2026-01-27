@@ -4,12 +4,12 @@ import {Header, Icon, Screen, Loader} from 'shared';
 import {fontSz, hp, wp} from 'utils';
 import {GradientBorderView} from '@good-react-native/gradient-border';
 import {
-  Image,
   ImageBackground,
   ScrollView,
   TouchableOpacity,
   Alert,
 } from 'react-native';
+import FastImage from 'react-native-fast-image';
 import theme from 'theme';
 import {styles} from './style';
 import {AddNewPlaySpot, EditProfile, ManageKyc, ShareProfile} from './modals';
@@ -40,14 +40,16 @@ export const DJProfile = () => {
     name?: string;
   } | null>(null);
 
-
   const {userInfo, setUserInfo, userData} = useMelospinStore();
   const queryClient = useQueryClient();
 
   // QR code query - only enabled when we want to fetch it
   const [shouldFetchQrCode, setShouldFetchQrCode] = useState(false);
-  const {data: qrCodeData, isLoading: isLoadingQrCode, refetch: refetchQrCode} =
-    useGetProfileQrCode(userData?.userId || null, shouldFetchQrCode);
+  const {
+    data: qrCodeData,
+    isLoading: isLoadingQrCode,
+    refetch: refetchQrCode,
+  } = useGetProfileQrCode(userData?.userId || null, shouldFetchQrCode);
 
   // Handle QR code fetch completion
   useEffect(() => {
@@ -264,254 +266,258 @@ export const DJProfile = () => {
           scrollEventThrottle={16}
           bounces={true}
           removeClippedSubviews={false}>
-        <Box mt={hp(20)} mx={wp(16)}>
-          <Box>
-            <GradientBorderView
-              gradientProps={{
-                colors: ['#FFFFFF', '#D73C3C', '#8932F7'],
-              }}
-              style={styles.gradientContainer}>
-              <ImageBackground
-                source={
-                  selectedCoverImage?.uri || userInfo?.coverImageUrl
-                    ? {uri: selectedCoverImage?.uri || userInfo?.coverImageUrl}
-                    : theme.images.artist
-                }
-                imageStyle={styles.imageStyle}
-                style={styles.imageContainer}>
-                <Box
-                  bg={theme.colors.OFF_BLACK_200}
-                  width={wp(343)}
-                  p={hp(20)}
-                  borderRadius={hp(24)}
-                  height={hp(145)}>
-                  {isUploadingCover && (
-                    <Box
-                      position="absolute"
-                      top={0}
-                      left={0}
-                      right={0}
-                      bottom={0}
-                      justifyContent="center"
-                      alignItems="center"
-                      bg={theme.colors.OFF_BLACK_200}
-                      borderRadius={hp(24)}>
-                      <Loader loading={true} />
-                    </Box>
-                  )}
-                  <TouchableOpacity
-                    activeOpacity={0.8}
-                    onPress={openCoverImagePicker}
-                    disabled={isUploadingCover}
-                    hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}
-                    style={styles.changeCoverButton}>
-                    <Text
-                      pr={wp(10)}
-                      variant="body"
-                      color={theme.colors.LIGHT_PRIMARY}>
-                      Change Cover
-                    </Text>
-                    <Icon name="arrow-right-2" />
-                  </TouchableOpacity>
-                </Box>
-              </ImageBackground>
-            </GradientBorderView>
-            <Box width={wp(100)}>
+          <Box mt={hp(20)} mx={wp(16)}>
+            <Box>
               <GradientBorderView
                 gradientProps={{
                   colors: ['#FFFFFF', '#D73C3C', '#8932F7'],
                 }}
-                style={styles.profileImageContainer}>
-                <Box>
-                  <Image
-                    source={
-                      selectedImage?.uri || userInfo?.profileUrl
-                        ? {uri: selectedImage?.uri || userInfo?.profileUrl }
-                        : theme.images['no-profile']
-                    }
-                    style={styles.djProfileImage2}
-                    resizeMode="cover"
-                  />
-                  {isUploading && (
-                    <Box
-                      position="absolute"
-                      top={0}
-                      left={0}
-                      right={0}
-                      bottom={0}
-                      justifyContent="center"
-                      alignItems="center"
-                      bg={theme.colors.OFF_BLACK_200}
-                      borderRadius={hp(100)}>
-                      <Loader loading={true} />
-                    </Box>
-                  )}
-                </Box>
-              </GradientBorderView>
-              <Box
-                width={wp(100)}
-                as={TouchableOpacity}
-                activeOpacity={0.8}
-                position={'absolute'}
-                bottom={-hp(30)}
-                right={wp(-80)}
-                zIndex={1000}
-                onPress={openImagePicker}
-                disabled={isUploading}>
-                <Icon name="edit-icon" />
-              </Box>
-            </Box>
-          </Box>
-
-          <Box mt={hp(50)}>
-            <Box flexDirection={'row'} alignItems={'center'}>
-              <Text
-                variant="bodyMedium"
-                fontFamily={theme.font.AvenirNextSemiBold}
-                fontSize={fontSz(16)}
-                pr={2}
-                color={theme.colors.WHITE}>
-                {userInfo?.brandName}
-              </Text>
-              <Box top={0.5}>
-                <Icon name="verified-icon" />
-              </Box>
-            </Box>
-            <Text
-              variant="body"
-              fontSize={fontSz(14)}
-              color={theme.colors.TEXT_INPUT_PLACEHOLDER}
-              pt={hp(2)}>
-             {userInfo?.bio || 'I’m a Multi- talented DJ with a vibe beyond the borders'}
-            </Text>
-
-            <Box
-              mt={10}
-              flexDirection={'row'}
-              alignItems={'center'}
-              justifyContent={'space-between'}>
-              <Box
-                width={wp(110)}
-                height={hp(40)}
-                as={TouchableOpacity}
-                activeOpacity={0.8}
-                justifyContent={'center'}
-                alignItems={'center'}
-                borderRadius={24}
-                bg={theme.colors.OFF_WHITE_500}>
-                <Icon name="instagram" />
-              </Box>
-              <Box
-                width={wp(110)}
-                height={hp(40)}
-                as={TouchableOpacity}
-                activeOpacity={0.8}
-                justifyContent={'center'}
-                alignItems={'center'}
-                borderRadius={24}
-                bg={theme.colors.OFF_WHITE_500}>
-                <Icon name="tiktok" />
-              </Box>
-              <Box
-                width={wp(110)}
-                height={hp(40)}
-                as={TouchableOpacity}
-                activeOpacity={0.8}
-                justifyContent={'center'}
-                alignItems={'center'}
-                borderRadius={24}
-                bg={theme.colors.OFF_WHITE_500}>
-                <Icon name="snapchat" />
-              </Box>
-            </Box>
-
-            <Box mt={hp(20)} flexDirection={'row'} alignItems={'center'}>
-              <Box
-                width={wp(134)}
-                height={hp(40)}
-                borderWidth={1}
-                flexDirection={'row'}
-                alignItems={'center'}
-                borderRadius={hp(24)}
-                px={wp(2)}
-                as={TouchableOpacity}
-                activeOpacity={0.8}
-                onPress={() => setOpen('edit-profile')}
-                justifyContent={'space-evenly'}
-                borderColor={theme.colors.WHITE}>
-                <Icon name="edit-profile" />
-                <Text variant="body" color={theme.colors.WHITE}>
-                  Edit Profile
-                </Text>
-              </Box>
-
-              <Box
-                width={wp(134)}
-                height={hp(40)}
-                borderWidth={1}
-                ml={wp(20)}
-                flexDirection={'row'}
-                alignItems={'center'}
-                borderRadius={hp(24)}
-                px={wp(2)}
-                as={TouchableOpacity}
-                activeOpacity={0.8}
-                onPress={handleShareProfile}
-                justifyContent={'space-evenly'}
-                borderColor={theme.colors.WHITE}>
-                <Icon name="share-profile" />
-                <Text variant="body" color={theme.colors.WHITE}>
-                  Share Profile
-                </Text>
-              </Box>
-            </Box>
-          </Box>
-
-          <Box
-            borderTopWidth={1}
-            mt={hp(25)}
-            borderTopColor={theme.colors.BASE_SECONDARY}>
-            <Box
-              as={TouchableOpacity}
-              activeOpacity={0.8}
-              onPress={() => setOpen('manage-kyc')}
-              bg={theme.colors.OFF_BLACK_100}
-              p={hp(16)}
-              mt={hp(20)}
-              borderRadius={hp(12)}>
-              <Box flexDirection={'row'} alignItems={'center'}>
-                <Icon name="verify-icon" />
-                <Box flexDirection={'row'} alignItems={'center'} ml={wp(12)}>
-                  <Text variant="bodyMedium" color={theme.colors.WHITE}>
-                    Manage KYC
-                  </Text>
+                style={styles.gradientContainer}>
+                <ImageBackground
+                  source={
+                    selectedCoverImage?.uri || userInfo?.coverImageUrl
+                      ? {
+                          uri:
+                            selectedCoverImage?.uri || userInfo?.coverImageUrl,
+                        }
+                      : theme.images.artist
+                  }
+                  imageStyle={styles.imageStyle}
+                  style={styles.imageContainer}>
                   <Box
-                    bg={currentKycStatus.bgColor}
-                    style={styles.kycStatusContainer}
-                    borderRadius={hp(12)}>
-                    <Text color={currentKycStatus.textColor}>
-                      {currentKycStatus.title}
-                    </Text>
+                    bg={theme.colors.OFF_BLACK_200}
+                    width={wp(343)}
+                    p={hp(20)}
+                    borderRadius={hp(24)}
+                    height={hp(145)}>
+                    {isUploadingCover && (
+                      <Box
+                        position="absolute"
+                        top={0}
+                        left={0}
+                        right={0}
+                        bottom={0}
+                        justifyContent="center"
+                        alignItems="center"
+                        bg={theme.colors.OFF_BLACK_200}
+                        borderRadius={hp(24)}>
+                        <Loader loading={true} />
+                      </Box>
+                    )}
+                    <TouchableOpacity
+                      activeOpacity={0.8}
+                      onPress={openCoverImagePicker}
+                      disabled={isUploadingCover}
+                      hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}
+                      style={styles.changeCoverButton}>
+                      <Text
+                        pr={wp(10)}
+                        variant="body"
+                        color={theme.colors.LIGHT_PRIMARY}>
+                        Change Cover
+                      </Text>
+                      <Icon name="arrow-right-2" />
+                    </TouchableOpacity>
                   </Box>
+                </ImageBackground>
+              </GradientBorderView>
+              <Box width={wp(100)}>
+                <GradientBorderView
+                  gradientProps={{
+                    colors: ['#FFFFFF', '#D73C3C', '#8932F7'],
+                  }}
+                  style={styles.profileImageContainer}>
+                  <Box>
+                    <FastImage
+                      source={
+                        selectedImage?.uri || userInfo?.profileUrl
+                          ? {uri: selectedImage?.uri || userInfo?.profileUrl}
+                          : theme.images['no-profile']
+                      }
+                      style={styles.djProfileImage2}
+                      resizeMode={FastImage.resizeMode.cover}
+                    />
+                    {isUploading && (
+                      <Box
+                        position="absolute"
+                        top={0}
+                        left={0}
+                        right={0}
+                        bottom={0}
+                        justifyContent="center"
+                        alignItems="center"
+                        bg={theme.colors.OFF_BLACK_200}
+                        borderRadius={hp(100)}>
+                        <Loader loading={true} />
+                      </Box>
+                    )}
+                  </Box>
+                </GradientBorderView>
+                <Box
+                  width={wp(100)}
+                  as={TouchableOpacity}
+                  activeOpacity={0.8}
+                  position={'absolute'}
+                  bottom={-hp(30)}
+                  right={wp(-80)}
+                  zIndex={1000}
+                  onPress={openImagePicker}
+                  disabled={isUploading}>
+                  <Icon name="edit-icon" />
+                </Box>
+              </Box>
+            </Box>
+
+            <Box mt={hp(50)}>
+              <Box flexDirection={'row'} alignItems={'center'}>
+                <Text
+                  variant="bodyMedium"
+                  fontFamily={theme.font.AvenirNextSemiBold}
+                  fontSize={fontSz(16)}
+                  pr={2}
+                  color={theme.colors.WHITE}>
+                  {userInfo?.brandName}
+                </Text>
+                <Box top={0.5}>
+                  <Icon name="verified-icon" />
                 </Box>
               </Box>
               <Text
                 variant="body"
-                pt={hp(12)}
-                fontSize={fontSz(12)}
-                color={theme.colors.TEXT_INPUT_PLACEHOLDER}>
-                {currentKycStatus.description}
+                fontSize={fontSz(14)}
+                color={theme.colors.TEXT_INPUT_PLACEHOLDER}
+                pt={hp(2)}>
+                {userInfo?.bio ||
+                  'I’m a Multi- talented DJ with a vibe beyond the borders'}
               </Text>
-            </Box>
-            <PlaySpots
-              onAddNew={() => {
-                setOpen('add-new-play-spot');
-              }}
-            />
 
-            <Genres genres={userInfo?.musicGenres || []} />
+              <Box
+                mt={10}
+                flexDirection={'row'}
+                alignItems={'center'}
+                justifyContent={'space-between'}>
+                <Box
+                  width={wp(110)}
+                  height={hp(40)}
+                  as={TouchableOpacity}
+                  activeOpacity={0.8}
+                  justifyContent={'center'}
+                  alignItems={'center'}
+                  borderRadius={24}
+                  bg={theme.colors.OFF_WHITE_500}>
+                  <Icon name="instagram" />
+                </Box>
+                <Box
+                  width={wp(110)}
+                  height={hp(40)}
+                  as={TouchableOpacity}
+                  activeOpacity={0.8}
+                  justifyContent={'center'}
+                  alignItems={'center'}
+                  borderRadius={24}
+                  bg={theme.colors.OFF_WHITE_500}>
+                  <Icon name="tiktok" />
+                </Box>
+                <Box
+                  width={wp(110)}
+                  height={hp(40)}
+                  as={TouchableOpacity}
+                  activeOpacity={0.8}
+                  justifyContent={'center'}
+                  alignItems={'center'}
+                  borderRadius={24}
+                  bg={theme.colors.OFF_WHITE_500}>
+                  <Icon name="snapchat" />
+                </Box>
+              </Box>
+
+              <Box mt={hp(20)} flexDirection={'row'} alignItems={'center'}>
+                <Box
+                  width={wp(134)}
+                  height={hp(40)}
+                  borderWidth={1}
+                  flexDirection={'row'}
+                  alignItems={'center'}
+                  borderRadius={hp(24)}
+                  px={wp(2)}
+                  as={TouchableOpacity}
+                  activeOpacity={0.8}
+                  onPress={() => setOpen('edit-profile')}
+                  justifyContent={'space-evenly'}
+                  borderColor={theme.colors.WHITE}>
+                  <Icon name="edit-profile" />
+                  <Text variant="body" color={theme.colors.WHITE}>
+                    Edit Profile
+                  </Text>
+                </Box>
+
+                <Box
+                  width={wp(134)}
+                  height={hp(40)}
+                  borderWidth={1}
+                  ml={wp(20)}
+                  flexDirection={'row'}
+                  alignItems={'center'}
+                  borderRadius={hp(24)}
+                  px={wp(2)}
+                  as={TouchableOpacity}
+                  activeOpacity={0.8}
+                  onPress={handleShareProfile}
+                  justifyContent={'space-evenly'}
+                  borderColor={theme.colors.WHITE}>
+                  <Icon name="share-profile" />
+                  <Text variant="body" color={theme.colors.WHITE}>
+                    Share Profile
+                  </Text>
+                </Box>
+              </Box>
+            </Box>
+
+            <Box
+              borderTopWidth={1}
+              mt={hp(25)}
+              borderTopColor={theme.colors.BASE_SECONDARY}>
+              <Box
+                as={TouchableOpacity}
+                activeOpacity={0.8}
+                onPress={() => setOpen('manage-kyc')}
+                bg={theme.colors.OFF_BLACK_100}
+                p={hp(16)}
+                mt={hp(20)}
+                borderRadius={hp(12)}>
+                <Box flexDirection={'row'} alignItems={'center'}>
+                  <Icon name="verify-icon" />
+                  <Box flexDirection={'row'} alignItems={'center'} ml={wp(12)}>
+                    <Text variant="bodyMedium" color={theme.colors.WHITE}>
+                      Manage KYC
+                    </Text>
+                    <Box
+                      bg={currentKycStatus.bgColor}
+                      style={styles.kycStatusContainer}
+                      borderRadius={hp(12)}>
+                      <Text color={currentKycStatus.textColor}>
+                        {currentKycStatus.title}
+                      </Text>
+                    </Box>
+                  </Box>
+                </Box>
+                <Text
+                  variant="body"
+                  pt={hp(12)}
+                  fontSize={fontSz(12)}
+                  color={theme.colors.TEXT_INPUT_PLACEHOLDER}>
+                  {currentKycStatus.description}
+                </Text>
+              </Box>
+              <PlaySpots
+                onAddNew={() => {
+                  setOpen('add-new-play-spot');
+                }}
+              />
+
+              <Genres genres={userInfo?.musicGenres || []} />
+            </Box>
           </Box>
-        </Box>
         </ScrollView>
       </Box>
 
@@ -521,7 +527,12 @@ export const DJProfile = () => {
           setOpen('');
           setShouldFetchQrCode(false);
         }}
-        qrCodeUrl={qrCodeData?.data?.qrCodeUrl || qrCodeData?.data?.qrCode || qrCodeData?.qrCodeUrl || qrCodeData?.qrCode}
+        qrCodeUrl={
+          qrCodeData?.data?.qrCodeUrl ||
+          qrCodeData?.data?.qrCode ||
+          qrCodeData?.qrCodeUrl ||
+          qrCodeData?.qrCode
+        }
         profileImageUrl={selectedImage?.uri || userInfo?.profileUrl}
         coverImageUrl={selectedCoverImage?.uri || userInfo?.coverUrl}
         isLoadingQrCode={isLoadingQrCode}

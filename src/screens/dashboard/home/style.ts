@@ -22,7 +22,6 @@ export const styles = StyleSheet.create({
     borderRadius: hp(24),
     marginTop: hp(20),
     backgroundColor: theme.colors.OFF_BLACK_100,
-    height: hp(240),
     width: wp(343),
     overflow: 'hidden',
   },

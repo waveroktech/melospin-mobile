@@ -5,7 +5,7 @@ import {ImageBackground, ScrollView, TouchableOpacity} from 'react-native';
 import theme from 'theme';
 import {deviceWidth, fontSz, formatNumber, hp, wp} from 'utils';
 import {styles} from './style';
-import {Image} from 'react-native';
+import FastImage from 'react-native-fast-image';
 import {EmptyPromotionContainer} from '../promotions/components';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {DashboardStackParamList} from 'types';
@@ -57,18 +57,29 @@ export const ConnectDj = () => {
 
       <ScrollView>
         <ImageBackground
-          source={theme.images['cover-image']}
-          resizeMode="cover"
+          source={
+            dj?.coverImageUrl
+              ? {uri: dj?.coverImageUrl}
+              : theme.images['cover-image']
+          }
+          resizeMode={FastImage.resizeMode.cover}
+          tintColor={
+            dj?.coverImageUrl ? 'transparent' : theme.colors.BASE_SECONDARY
+          }
           style={styles.imageBg}>
           <Box
             bg={theme.colors.OFF_BLACK_200}
             width={deviceWidth}
             height={hp(309)}>
             <Box justifyContent={'center'} py={hp(80)} alignItems={'center'}>
-              <Image
-                source={dj?.profileUrl ? {uri: dj?.profileUrl} : theme.images['no-profile']}
+              <FastImage
+                source={
+                  dj?.profileUrl
+                    ? {uri: dj?.profileUrl}
+                    : theme.images['no-profile']
+                }
                 style={styles.profileImage}
-                resizeMode="contain"
+                resizeMode={FastImage.resizeMode.cover}
               />
               <Box flexDirection={'row'} alignItems={'center'}>
                 <Text variant="bodyMedium" color={theme.colors.WHITE} pr={1}>
@@ -91,10 +102,10 @@ export const ConnectDj = () => {
                 alignItems={'center'}
                 style={{padding: hp(8)}}
                 borderRadius={hp(24)}>
-                <Image
+                <FastImage
                   source={theme.images['artist-list']}
                   style={styles.artistList}
-                  resizeMode="contain"
+                  resizeMode={FastImage.resizeMode.contain}
                 />
                 <Text
                   variant="bodyMedium"
